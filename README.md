@@ -13,7 +13,7 @@ Deux
 
 Une grille carrée 7x7, huit pions noirs et blancs et treize pions rouges neutres sont nécessaires pour jouer. Les pions sont décrits comme des « billes » pour ce jeu.
 
-##Histoire
+## Histoire
 
 Kuba a été inventé en 1997 par Patch Products.
 
