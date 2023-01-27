@@ -1,11 +1,12 @@
 package TsioryDirectionPosition;
 
 public enum Direction {
+	// Placement dans un tableau de tableau 
+	NORD(-1,0),SUD(1,0),OUEST(0,-1),EST(0,1);
 	
-	NORD(0,1),SUD(0,-1),OUEST(-1,0),EST(1,0);
+	private int x;
+	private int y;
 	
-	private int x=0;
-	private int y=0;
 	Direction(int x, int y){
 		this.x = x;
 		this.y = y;
