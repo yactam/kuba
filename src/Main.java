@@ -1,5 +1,10 @@
+import model.plateau.Board;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        Board board = new Board(17);
+
+        board.initBoard();
+        System.out.println(board);
     }
 }
