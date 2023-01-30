@@ -12,10 +12,10 @@ public enum Direction {
 		this.y = y;
 	}
 	
-	public int getDirectionX() {
+	public int gDirX() {
 		return this.x;
 	}
-	public int getDirectionY() {
+	public int gtDirY() {
 		return this.y;
 	}
 }
