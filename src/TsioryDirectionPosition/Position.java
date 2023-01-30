@@ -9,10 +9,10 @@ public class Position {
 		this.y = y;
 	}
 	
-	public int getPositionX() {
+	public int gPosX() {
 		return this.x;
 	}
-	public int getPositionY() {
+	public int gPosY() {
 		return this.y;
 	}
 }	
