@@ -15,7 +15,7 @@ public enum Direction {
 	public int gDirX() {
 		return this.x;
 	}
-	public int gtDirY() {
+	public int gDirY() {
 		return this.y;
 	}
 }
