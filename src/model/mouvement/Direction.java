@@ -1,4 +1,4 @@
-package TsioryDirectionPosition;
+package model.mouvement;
 
 public enum Direction {
 	// Placement dans un tableau de tableau 

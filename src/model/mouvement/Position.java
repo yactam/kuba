@@ -1,4 +1,4 @@
-package TsioryDirectionPosition;
+package model.mouvement;
 
 public class Position {
 	private final int x;
