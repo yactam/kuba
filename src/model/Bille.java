@@ -18,7 +18,7 @@ public class Bille {
     public String toString() {
         if(color.equals(Couleur.BLANC)) return "B";
         else if (color.equals(Couleur.ROUGE)) return "R";
-        else return "B";
+        else return "N";
     }
 
 }
