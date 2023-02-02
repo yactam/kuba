@@ -2,6 +2,7 @@ package model.plateau;
 
 import model.Bille;
 import model.Couleur;
+import model.mouvement.Position;
 
 public class Board {
 
@@ -27,8 +28,8 @@ public class Board {
     private void initWhite() {
         for(int i = 0; i < n; i++) {
             for(int j = 0; j < n; j++) {
-                board[i][j].setBille(new Bille(Couleur.White));
-                board[board.length-1 - i][board.length-1 - j].setBille(new Bille(Couleur.White));
+                board[i][j].setBille(new Bille(Couleur.BLANC, new Position(i, j)));
+                board[board.length-1 - i][board.length-1 - j].setBille(new Bille(Couleur.BLANC, new Position(i, j)));
             }
         }
     }
@@ -36,8 +37,8 @@ public class Board {
     private void initBlack() {
         for(int i = 0; i < n; i++) {
             for(int j = board[i].length-1; j >= board[i].length-n; j--) {
-                board[i][j].setBille(new Bille(Couleur.Black));
-                board[j][i].setBille(new Bille(Couleur.Black));
+                board[i][j].setBille(new Bille(Couleur.NOIR, new Position(i, j)));
+                board[j][i].setBille(new Bille(Couleur.NOIR, new Position(i, j)));
             }
         }
     }
@@ -51,7 +52,7 @@ public class Board {
                 spaces = i + 1 - (k/2);
             }
             for(int j = 0; j < count; j++) {
-                board[i][j+spaces].setBille(new Bille(Couleur.Red));
+                board[i][j+spaces].setBille(new Bille(Couleur.ROUGE, new Position(i, j)));
             }
             if(i < k/2) {
                 count += 2;

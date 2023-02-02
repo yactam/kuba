@@ -1,17 +1,24 @@
 package model;
 
+import model.mouvement.*;;
+
 public class Bille {
+    private Position pos;
+    private final Couleur color;
 
-    private final Couleur couleur;
-
-    public Bille(Couleur couleur) {
-        this.couleur = couleur;
+    public Bille(Couleur c, Position p){
+        color = c;
+        pos = p;
     }
+
+    public Couleur getColor() { return color; }
+    public Position getPos() { return pos; }
 
     @Override
     public String toString() {
-        if(couleur.equals(Couleur.White)) return "W";
-        else if (couleur.equals(Couleur.Red)) return "R";
+        if(color.equals(Couleur.BLANC)) return "B";
+        else if (color.equals(Couleur.ROUGE)) return "R";
         else return "B";
     }
+
 }
