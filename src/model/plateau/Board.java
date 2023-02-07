@@ -2,6 +2,7 @@ package model.plateau;
 
 import model.Bille;
 import model.Couleur;
+import model.mouvement.Direction;
 import model.mouvement.Position;
 import java.util.Random;
 
@@ -76,6 +77,34 @@ public class Board {
         }
     }
 
+    public void bouger(Position pos, Direction dir) {
+        int x = pos.gPosX(), y = pos.gPosY();
+        int dx = dir.gDirX(), dy = dir.gDirY();
+
+        while(estDansLimite(x+dx, y+dy) && !board[x][y].estVide()) {
+            x += dx;
+            y += dy;
+        }
+
+        if(dx == 0) {
+            for(int i = y; i != pos.gPosY(); i -= dy) {
+                board[x][i].setBille(board[x][i-dy].getBille());
+                board[x][i-dy].clear();
+            }
+        }
+        if(dy == 0) {
+            for(int i = x; i != pos.gPosX(); i -= dx) {
+                board[i][y].setBille(board[i-dx][y].getBille());
+                board[i-dx][y].clear();
+            }
+        }
+
+    }
+
+    private boolean estDansLimite(int i, int j) {
+        return i >= 0 && i < board.length && j >= 0 && j < board[i].length;
+    }
+
     @Override
     public String toString() {
         StringBuilder plateau = new StringBuilder();
@@ -104,5 +133,12 @@ public class Board {
             }
         }
         return (int) zobristHash;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == this) return true;
+        if(!(o instanceof Board)) return false;
+        return o.hashCode() == this.hashCode();
     }
 }
