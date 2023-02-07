@@ -6,19 +6,22 @@ import model.Couleur;
 public class Board {
 
     private final Cell[][] board;
+    private static Long[][] keys;
     private final int n;
 
     public Board(int n) {
         this.n = n;
-        board = new Cell[4*n-1][4*n-1];
+        int k = 4 * n - 1;
+        board = new Cell[k][k];
+        keys  = new Long[k][k];
+    }
+
+    public void initBoard() {
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board[i].length; j++) {
                 board[i][j] = new Cell();
             }
         }
-    }
-
-    public void initBoard() {
         initWhite();
         initBlack();
         initRed();
