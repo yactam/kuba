@@ -3,23 +3,37 @@ package model.plateau;
 import model.Bille;
 import model.Couleur;
 import model.mouvement.Position;
+import java.util.Random;
+
 
 public class Board {
 
     private final Cell[][] board;
+    private static Long[][] keys;
     private final int n;
 
     public Board(int n) {
         this.n = n;
-        board = new Cell[4*n-1][4*n-1];
-        for(int i = 0; i < board.length; i++) {
-            for(int j = 0; j < board[i].length; j++) {
-                board[i][j] = new Cell();
+        int k = 4 * n - 1;
+        board = new Cell[k][k];
+        keys  = new Long[3][k*k];
+        initKeys();
+    }
+
+    private static void initKeys() {
+        for(int i = 0; i < keys.length; i++) {
+            for(int j = 0; j < keys[i].length; j++) {
+                keys[i][j] = new Random().nextLong();
             }
         }
     }
 
     public void initBoard() {
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board[i].length; j++) {
+                board[i][j] = new Cell();
+            }
+        }
         initWhite();
         initBlack();
         initRed();
@@ -72,5 +86,23 @@ public class Board {
             plateau.append("\n");
         }
         return plateau.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        long zobristHash = 0;
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board[i].length; j++) {
+                if(!board[i][j].estVide()) {
+                    switch (board[i][j].getBille().getColor()) {
+                        case ROUGE -> zobristHash = zobristHash ^ keys[0][i + board[i].length * j];
+                        case NOIR -> zobristHash = zobristHash ^ keys[1][i + board[i].length * j];
+                        case BLANC -> zobristHash = zobristHash ^ keys[2][i + board[i].length * j];
+                    }
+
+                }
+            }
+        }
+        return (int) zobristHash;
     }
 }
