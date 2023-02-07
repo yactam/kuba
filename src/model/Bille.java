@@ -8,6 +8,10 @@ public class Bille {
         this.couleur = couleur;
     }
 
+    public Couleur getCouleur() {
+        return couleur;
+    }
+
     @Override
     public String toString() {
         if(couleur.equals(Couleur.White)) return "W";
