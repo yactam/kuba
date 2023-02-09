@@ -79,57 +79,40 @@ public class Board{
         }
     }
 
+    private boolean estVide(Position position) {
+        return board[position.getI()][position.getJ()].estVide();
+    }
+
+    private void updatePosition(Position prev, Position next) {
+        Bille bille = board[prev.getI()][prev.getJ()].getBille();
+        board[prev.getI()][prev.getJ()].clear();
+        board[next.getI()][next.getJ()].setBille(bille);
+    }
+
     public void move(Position pos, Direction dir) {
-        int x = pos.gPosX(), y = pos.gPosY();
-        int dx = dir.gDirX(), dy = dir.gDirY();
-
-        Cell[][] saved_board = copyBoard();
-
-        while(estDansLimite(x+dx, y+dy) && !board[x][y].estVide()) {
-            x += dx;
-            y += dy;
+        if(!estVide(pos.prev(dir))) return; // Mouvement pas valide
+        Position next = pos.next(dir); // Trouver la limite
+        while(estDansLimite(next) && !estVide(next)) {
+            next = next.next(dir);
         }
-        if(dx == 0) {
-            for(int i = y; i != pos.gPosY(); i -= dy) {
-                Bille bille = board[x][i-dy].getBille();
-                if (bille != null) bille.setPostion(new Position(x, i));
-                board[x][i].setBille(bille);
-                board[x][i-dy].clear();
-            }
-        }
-        if(dy == 0) {
-            for(int i = x; i != pos.gPosX(); i -= dx) {
-                Bille bille = board[i-dx][y].getBille();
-                if (bille != null) bille.setPostion(new Position(i, y));
-                board[i][y].setBille(bille);
-                board[i-dx][y].clear();
-            }
-        }
-        int hash_code = hashCode();
-        if (isTreated(hash_code)) undoMove(saved_board);
-        else treated_confs.add(hash_code);
+        if(!estDansLimite(next)) return;
 
-    }
-
-    private Cell[][] copyBoard(){
-        Cell[][] cells = new Cell[board.length][board[0].length];
-        for (int i=0;i<board.length;i++){
-            for (int j=0;j<board[i].length;j++){
-                cells[i][j] = (Cell) board[i][j].clone();
-            }
+        while (!next.equals(pos)) { // Décaler les pions
+            Position prev = next.prev(dir);
+            updatePosition(prev, next);
+            next = next.prev(dir);
         }
-        return cells;
-    }
 
-    private void undoMove(Cell[][] saved_board){
-        for (int i=0;i<board.length;i++){
-            for (int j=0;j<board[i].length;j++){
-                board[i][j] = saved_board[i][j];
-            }
+        int hash_code = hashCode(); // KO
+        if(isTreated(hash_code)) {
+            updatePosition(next, pos); // Mouvement non valide
+        } else {
+            treated_confs.add(hash_code);
         }
     }
 
-    private boolean estDansLimite(int i, int j) {
+    private boolean estDansLimite(Position position) {
+        int i = position.getI(), j = position.getJ();
         return i >= 0 && i < board.length && j >= 0 && j < board[i].length;
     }
 
@@ -156,11 +139,10 @@ public class Board{
             for(int j = 0; j < board[i].length; j++) {
                 if(!board[i][j].estVide()) {
                     switch (board[i][j].getBille().getColor()) {
-                        case ROUGE -> zobristHash = zobristHash ^ keys[0][i + board[i].length * j];
-                        case NOIR -> zobristHash = zobristHash ^ keys[1][i + board[i].length * j];
-                        case BLANC -> zobristHash = zobristHash ^ keys[2][i + board[i].length * j];
+                        case ROUGE -> zobristHash ^= keys[0][i + board[i].length * j];
+                        case NOIR -> zobristHash  ^= keys[1][i + board[i].length * j];
+                        case BLANC -> zobristHash ^= keys[2][i + board[i].length * j];
                     }
-
                 }
             }
         }

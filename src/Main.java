@@ -16,6 +16,10 @@ public class Main {
         System.out.println(board);
         System.out.println(board.hashCode());
 
+        board.move(new Position(1, 2), Direction.SUD);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
         board.move(new Position(3, 2), Direction.NORD);
         System.out.println(board);
         System.out.println(board.hashCode());

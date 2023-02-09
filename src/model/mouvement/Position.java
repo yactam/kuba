@@ -1,5 +1,5 @@
 package model.mouvement;
-public class Position {
+public class Position implements Cloneable {
 	private final int i;
 	private final int j;
 
@@ -15,6 +15,13 @@ public class Position {
 	public int getJ() {
 		return this.j;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(this == o) return true;
+		if(!(o instanceof Position)) return false;
+		return ((Position) o).i == i && ((Position) o).j == j;
+	}
 	@Override
 	public Object clone(){
 		Position p = null;
@@ -27,6 +34,10 @@ public class Position {
 	}
 	public Position next(Direction dir) {
 		return new Position(i + dir.getI(), j + dir.getJ());
+	}
+
+	public Position prev(Direction dir) {
+		return new Position(i - dir.getI(), j - dir.getJ());
 	}
 
 	public Direction nextDir(Position p) {

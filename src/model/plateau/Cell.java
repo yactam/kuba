@@ -10,7 +10,7 @@ class Cell implements Cloneable {
     }
 
     Bille getBille() {
-        return bille;
+        return (Bille) bille.clone();
     }
 
     boolean estVide() {

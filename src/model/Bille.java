@@ -12,7 +12,7 @@ public class Bille implements Cloneable{
         pos = p;
     }
 
-    public void setPostion(Position p){
+    public void setPosition(Position p){
         this.pos = p;
     }
 
