@@ -18,4 +18,21 @@ public enum Direction {
 	public int getJ() {
 		return this.j;
 	}
+
+	public Direction reverse() {
+		switch (this) {
+			case NORD -> {
+				return SUD;
+			}
+			case SUD -> {
+				return NORD;
+			}
+			case EST -> {
+				return OUEST;
+			}
+			default -> {
+				return EST;
+			}
+		}
+	}
 }
