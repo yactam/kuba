@@ -1,6 +1,6 @@
 package model.mouvement;
 
-public enum Direction {
+public enum Direction{
 	// Placement dans un tableau de tableau 
 	NORD(-1,0),SUD(1,0),OUEST(0,-1),EST(0,1);
 	

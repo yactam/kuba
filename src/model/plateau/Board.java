@@ -4,16 +4,18 @@ import model.Bille;
 import model.Couleur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
-import java.util.Random;
+import java.util.*;
 
 
-public class Board {
+public class Board{
 
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
+    private final Set<Integer> treated_confs;
 
     public Board(int n) {
+        this.treated_confs = new HashSet<>();
         this.n = n;
         int k = 4 * n - 1;
         board = new Cell[k][k];
@@ -77,32 +79,62 @@ public class Board {
         }
     }
 
-    public void bouger(Position pos, Direction dir) {
+    public void move(Position pos, Direction dir) {
         int x = pos.gPosX(), y = pos.gPosY();
         int dx = dir.gDirX(), dy = dir.gDirY();
+
+        Cell[][] saved_board = copyBoard();
 
         while(estDansLimite(x+dx, y+dy) && !board[x][y].estVide()) {
             x += dx;
             y += dy;
         }
-
         if(dx == 0) {
             for(int i = y; i != pos.gPosY(); i -= dy) {
-                board[x][i].setBille(board[x][i-dy].getBille());
+                Bille bille = board[x][i-dy].getBille();
+                bille.setPostion(new Position(x, i));
+                board[x][i].setBille(bille);
                 board[x][i-dy].clear();
             }
         }
         if(dy == 0) {
             for(int i = x; i != pos.gPosX(); i -= dx) {
-                board[i][y].setBille(board[i-dx][y].getBille());
+                Bille bille = board[x-dx][y].getBille();
+                bille.setPostion(new Position(i, y));
+                board[i][y].setBille(bille);
                 board[i-dx][y].clear();
             }
         }
+        int hash_code = hashCode();
+        treated_confs.add(hash_code);
+        if (isTreated(hash_code)) undoMove(saved_board);
 
+    }
+
+    private Cell[][] copyBoard(){
+        Cell[][] cells = new Cell[board.length][board[0].length];
+        for (int i=0;i<board.length;i++){
+            for (int j=0;j<board[i].length;j++){
+                cells[i][j] = (Cell) board[i][j].clone();
+            }
+        }
+        return cells;
+    }
+
+    private void undoMove(Cell[][] saved_board){
+        for (int i=0;i<board.length;i++){
+            for (int j=0;j<board[i].length;j++){
+                board[i][j] = saved_board[i][j];
+            }
+        }
     }
 
     private boolean estDansLimite(int i, int j) {
         return i >= 0 && i < board.length && j >= 0 && j < board[i].length;
+    }
+
+    private boolean isTreated(int conf){
+        return treated_confs.contains(conf);
     }
 
     @Override

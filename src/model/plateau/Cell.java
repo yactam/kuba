@@ -1,7 +1,7 @@
 package model.plateau;
 import model.Bille;
 
-class Cell {
+class Cell implements Cloneable {
 
     private Bille bille;
 
@@ -25,6 +25,18 @@ class Cell {
     public String toString() {
         if(estVide()) return "_";
         return bille.toString();
+    }
+
+    @Override
+    public Object clone(){
+        Cell c = null;
+        try{
+            c = (Cell)super.clone();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        c.bille = (Bille) bille.clone();
+        return c;
     }
 
 }
