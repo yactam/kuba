@@ -9,26 +9,27 @@ public class Position {
 		this.j = j;
 	}
 
-	public int gPosI() {
+	public int getI() {
 		return this.i;
 	}
 
-	public int gPosJ() {
+	public int getJ() {
 		return this.j;
 	}
 
-	public Position next(Direction d) {
-		return new Position(this.i + d.gDirI(), this.j + d.gDirJ());
+	public Position next(Direction dir) {
+		return new Position(i + dir.getI(), j + dir.getJ());
 	}
 
-	public Direction nextDir(Position b) {
-		if (this.i < a.i)
+	public Direction nextDir(Position p) {
+		if(j == p.j && p.i < i)
 			return Direction.NORD;
-		else if (this.i > a.i)
+		else if(j == p.j && p.i > i)
 			return Direction.SUD;
-		else if (this.j < a.j)
+		else if(i == p.i && p.j < j)
 			return Direction.OUEST;
-		else
+		else if(i == p.i && p.j > j)
 			return Direction.EST;
+		return null;
 	}
 }
