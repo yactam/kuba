@@ -92,22 +92,22 @@ public class Board{
         if(dx == 0) {
             for(int i = y; i != pos.gPosY(); i -= dy) {
                 Bille bille = board[x][i-dy].getBille();
-                bille.setPostion(new Position(x, i));
+                if (bille != null) bille.setPostion(new Position(x, i));
                 board[x][i].setBille(bille);
                 board[x][i-dy].clear();
             }
         }
         if(dy == 0) {
             for(int i = x; i != pos.gPosX(); i -= dx) {
-                Bille bille = board[x-dx][y].getBille();
-                bille.setPostion(new Position(i, y));
+                Bille bille = board[i-dx][y].getBille();
+                if (bille != null) bille.setPostion(new Position(i, y));
                 board[i][y].setBille(bille);
                 board[i-dx][y].clear();
             }
         }
         int hash_code = hashCode();
-        treated_confs.add(hash_code);
         if (isTreated(hash_code)) undoMove(saved_board);
+        else treated_confs.add(hash_code);
 
     }
 

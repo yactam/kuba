@@ -35,7 +35,7 @@ class Cell implements Cloneable {
         }catch(Exception e){
             e.printStackTrace();
         }
-        c.bille = (Bille) bille.clone();
+        c.bille = (bille != null) ? (Bille) bille.clone() : null;
         return c;
     }
 
