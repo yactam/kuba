@@ -21,18 +21,10 @@ public enum Direction {
 
 	public Direction reverse() {
 		switch (this) {
-			case NORD -> {
-				return SUD;
-			}
-			case SUD -> {
-				return NORD;
-			}
-			case EST -> {
-				return OUEST;
-			}
-			default -> {
-				return EST;
-			}
+			case NORD : return SUD;
+			case SUD : return NORD;
+			case EST : return OUEST;
+			default : return EST;
 		}
 	}
 }

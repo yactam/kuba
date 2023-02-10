@@ -139,9 +139,9 @@ public class Board{
             for(int j = 0; j < board[i].length; j++) {
                 if(!board[i][j].estVide()) {
                     switch (board[i][j].getBille().getColor()) {
-                        case ROUGE -> zobristHash ^= keys[0][i + board[i].length * j];
-                        case NOIR -> zobristHash  ^= keys[1][i + board[i].length * j];
-                        case BLANC -> zobristHash ^= keys[2][i + board[i].length * j];
+                        case ROUGE : zobristHash ^= keys[0][i + board[i].length * j];
+                        case NOIR : zobristHash  ^= keys[1][i + board[i].length * j];
+                        case BLANC : zobristHash ^= keys[2][i + board[i].length * j];
                     }
                 }
             }
