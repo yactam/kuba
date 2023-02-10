@@ -4,15 +4,19 @@ import model.Bille;
 import model.Couleur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
+import observerpattern.Observer;
+import observerpattern.SubjectObserver;
+
 import java.util.*;
 
 
-public class Board{
+public class Board implements SubjectObserver{
 
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
     private final Set<Integer> treated_confs;
+    private ArrayList<Observer> elementObs;
 
     public Board(int n) {
         this.treated_confs = new HashSet<>();
@@ -21,6 +25,7 @@ public class Board{
         board = new Cell[k][k];
         keys  = new Long[3][k*k];
         initKeys();
+        elementObs=new ArrayList<Observer>();
     }
 
     private static void initKeys() {
@@ -80,7 +85,11 @@ public class Board{
     }
 
     private boolean estVide(Position position) {
-        return board[position.getI()][position.getJ()].estVide();
+        if(position.getI()<board.length && position.getJ()<board[0].length
+           && position.getI()>0 && position.getJ()>0){
+            return board[position.getI()][position.getJ()].estVide();
+        }
+        return true;
     }
 
     private void updatePosition(Position prev, Position next) {
@@ -109,6 +118,8 @@ public class Board{
         } else {
             treated_confs.add(hash_code);
         }
+
+        this.notifyObservers();
     }
 
     private boolean estDansLimite(Position position) {
@@ -154,5 +165,29 @@ public class Board{
         if(o == this) return true;
         if(!(o instanceof Board)) return false;
         return o.hashCode() == this.hashCode();
+    }
+
+    public int getRow(){
+        return board.length;
+    }
+
+    public int getCol(){
+        return board[0].length;
+    }
+
+    public Cell getCell(int i, int j){
+        return board[i][j];
+    }
+
+    @Override
+    public void addObserver(Observer ob) {
+        elementObs.add(ob);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(Observer o : elementObs){
+            o.update(this);
+        }
     }
 }
