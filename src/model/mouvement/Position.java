@@ -37,7 +37,7 @@ public class Position implements Cloneable {
 	}
 
 	public Position prev(Direction dir) {
-		return new Position(i - dir.getI(), j - dir.getJ());
+		return next(dir.reverse());
 	}
 
 	public Direction nextDir(Position p) {

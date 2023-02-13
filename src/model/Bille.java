@@ -28,14 +28,7 @@ public class Bille implements Cloneable{
 
     @Override
     public Object clone(){
-        Bille b = null;
-        try{
-            b = (Bille) super.clone();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        b.pos = (Position) pos.clone();
-        return b;
+        return new Bille(color, (Position) pos.clone());
     }
 
 }

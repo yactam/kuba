@@ -23,6 +23,10 @@ public class Board{
         initKeys();
     }
 
+    Cell get(Position pos) {
+        return null;
+    }
+
     private static void initKeys() {
         for(int i = 0; i < keys.length; i++) {
             for(int j = 0; j < keys[i].length; j++) {
@@ -90,7 +94,7 @@ public class Board{
     }
 
     public void move(Position pos, Direction dir) {
-        if(!estVide(pos.prev(dir))) return; // Mouvement pas valide
+        if(estDansLimite(pos.prev(dir)) &&  !estVide(pos.prev(dir))) return; // Mouvement pas valide
         Position next = pos.next(dir); // Trouver la limite
         while(estDansLimite(next) && !estVide(next)) {
             next = next.next(dir);
