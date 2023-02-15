@@ -1,8 +1,7 @@
-import model.mouvement.Direction;
-import model.mouvement.Position;
+
 import model.plateau.Board;
 
-import java.util.Random;
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,16 +11,11 @@ public class Main {
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        board.bouger(new Position(0, 2), Direction.SUD);
-        System.out.println(board);
-        System.out.println(board.hashCode());
-
-        board.bouger(new Position(3, 2), Direction.NORD);
-        System.out.println(board);
-        System.out.println(board.hashCode());
-
-        board.initBoard();
-        System.out.println(board.hashCode());
-
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.add(board);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 }
