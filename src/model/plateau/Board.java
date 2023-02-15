@@ -43,8 +43,8 @@ public class Board {
     private void initWhite() {
         for(int i = 0; i < n; i++) {
             for(int j = 0; j < n; j++) {
-                board[i][j].setBille(new Bille(Couleur.BLANC, new Position(i, j)));
-                board[board.length-1 - i][board.length-1 - j].setBille(new Bille(Couleur.BLANC, new Position(i, j)));
+                board(i, j).setBille(new Bille(Couleur.BLANC, new Position(i, j)));
+                board(board.length-1 - i, board.length-1 - j).setBille(new Bille(Couleur.BLANC, new Position(i, j)));
             }
         }
     }
@@ -52,8 +52,8 @@ public class Board {
     private void initBlack() {
         for(int i = 0; i < n; i++) {
             for(int j = board[i].length-1; j >= board[i].length-n; j--) {
-                board[i][j].setBille(new Bille(Couleur.NOIR, new Position(i, j)));
-                board[j][i].setBille(new Bille(Couleur.NOIR, new Position(i, j)));
+                board(i, j).setBille(new Bille(Couleur.NOIR, new Position(i, j)));
+                board(j, i).setBille(new Bille(Couleur.NOIR, new Position(i, j)));
             }
         }
     }
@@ -67,7 +67,7 @@ public class Board {
                 spaces = i + 1 - (k/2);
             }
             for(int j = 0; j < count; j++) {
-                board[i][j+spaces].setBille(new Bille(Couleur.ROUGE, new Position(i, j)));
+                board(i, j+spaces).setBille(new Bille(Couleur.ROUGE, new Position(i, j)));
             }
             if(i < k/2) {
                 count += 2;
@@ -77,25 +77,33 @@ public class Board {
         }
     }
 
+    private Cell board(Position pos) {
+        return board[pos.gPosX()][pos.gPosY()];
+    }
+
+    private Cell board(int i, int j) {
+        return board[i][j];
+    }
+
     public void bouger(Position pos, Direction dir) {
         int x = pos.gPosX(), y = pos.gPosY();
         int dx = dir.gDirX(), dy = dir.gDirY();
 
-        while(estDansLimite(x+dx, y+dy) && !board[x][y].estVide()) {
+        while(estDansLimite(x+dx, y+dy) && !board(pos).estVide()) {
             x += dx;
             y += dy;
         }
 
         if(dx == 0) {
             for(int i = y; i != pos.gPosY(); i -= dy) {
-                board[x][i].setBille(board[x][i-dy].getBille());
-                board[x][i-dy].clear();
+                board(x, i).setBille(board(x, i-dy).getBille());
+                board(x, i-dy).clear();
             }
         }
         if(dy == 0) {
             for(int i = x; i != pos.gPosX(); i -= dx) {
-                board[i][y].setBille(board[i-dx][y].getBille());
-                board[i-dx][y].clear();
+                board(i, y).setBille(board(i-dx, y).getBille());
+                board(i-dx, y).clear();
             }
         }
 
@@ -122,13 +130,12 @@ public class Board {
         long zobristHash = 0;
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board[i].length; j++) {
-                if(!board[i][j].estVide()) {
+                if(!board(i, j).estVide()) {
                     switch (board[i][j].getBille().getColor()) {
                         case ROUGE -> zobristHash = zobristHash ^ keys[0][i + board[i].length * j];
                         case NOIR -> zobristHash = zobristHash ^ keys[1][i + board[i].length * j];
                         case BLANC -> zobristHash = zobristHash ^ keys[2][i + board[i].length * j];
                     }
-
                 }
             }
         }
