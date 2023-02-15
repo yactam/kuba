@@ -4,10 +4,13 @@ import model.Bille;
 import model.Couleur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.Random;
 
 
-public class Board {
+public class Board extends JPanel{
 
     private final Cell[][] board;
     private static Long[][] keys;
@@ -19,6 +22,8 @@ public class Board {
         board = new Cell[k][k];
         keys  = new Long[3][k*k];
         initKeys();
+        // Panel
+        setPreferredSize(new Dimension(Bille.width * k, Bille.width * k));
     }
 
     private static void initKeys() {
@@ -43,8 +48,8 @@ public class Board {
     private void initWhite() {
         for(int i = 0; i < n; i++) {
             for(int j = 0; j < n; j++) {
-                board(i, j).setBille(new Bille(Couleur.BLANC, new Position(i, j)));
-                board(board.length-1 - i, board.length-1 - j).setBille(new Bille(Couleur.BLANC, new Position(i, j)));
+                board(i, j).setBille(new Bille(Couleur.BLANC));
+                board(board.length-1 - i, board.length-1 - j).setBille(new Bille(Couleur.BLANC));
             }
         }
     }
@@ -52,8 +57,8 @@ public class Board {
     private void initBlack() {
         for(int i = 0; i < n; i++) {
             for(int j = board[i].length-1; j >= board[i].length-n; j--) {
-                board(i, j).setBille(new Bille(Couleur.NOIR, new Position(i, j)));
-                board(j, i).setBille(new Bille(Couleur.NOIR, new Position(i, j)));
+                board(i, j).setBille(new Bille(Couleur.NOIR));
+                board(j, i).setBille(new Bille(Couleur.NOIR));
             }
         }
     }
@@ -67,7 +72,7 @@ public class Board {
                 spaces = i + 1 - (k/2);
             }
             for(int j = 0; j < count; j++) {
-                board(i, j+spaces).setBille(new Bille(Couleur.ROUGE, new Position(i, j)));
+                board(i, j+spaces).setBille(new Bille(Couleur.ROUGE));
             }
             if(i < k/2) {
                 count += 2;
@@ -148,4 +153,32 @@ public class Board {
         if(!(o instanceof Board)) return false;
         return o.hashCode() == this.hashCode();
     }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        Graphics2D graphics2D = (Graphics2D) g;
+        drawGrid(graphics2D);
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board[i].length; j++) {
+                if(!board(j, i).estVide()) {
+                    int width = Bille.width;
+                    graphics2D.drawImage(board(j, i).getBille().image(), width * i, width * j, width, width, null);
+                }
+            }
+        }
+    }
+
+    private void drawGrid(Graphics2D graphics2D) {
+        graphics2D.setColor(Color.LIGHT_GRAY);
+        graphics2D.fillRect(0, 0, getWidth(), getHeight());
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board[i].length; j++) {
+                if(i != board.length-1 && j != board[i].length-1) {
+                    graphics2D.setColor(Color.BLACK);
+                    graphics2D.drawRect(j * Bille.width + (Bille.width / 2), i * Bille.width + (Bille.width / 2), Bille.width, Bille.width);
+                }
+            }
+        }
+    }
+
 }
