@@ -12,29 +12,15 @@ public class Bille {
 
     public Bille(Couleur c){
         color = c;
-        switch (color) {
-            case NOIR -> {
-                try {
-                    image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/black.png")));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            case BLANC -> {
-                try {
-                    image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/white.png")));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            case ROUGE -> {
-                try {
-                    image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/red.png")));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            default -> image = null;
+        String imageDesc = switch (color) {
+            case NOIR -> "black";
+            case BLANC -> "white";
+            case ROUGE -> "red";
+        };
+        try {
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/" + imageDesc + ".png")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
