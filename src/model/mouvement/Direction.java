@@ -1,21 +1,22 @@
 package model.mouvement;
 
 public enum Direction {
-	// Placement dans un tableau de tableau 
-	NORD(-1,0),SUD(1,0),OUEST(0,-1),EST(0,1);
-	
-	private final int x;
-	private final int y;
-	
-	Direction(int x, int y){
-		this.x = x;
-		this.y = y;
+	NORD(-1, 0), SUD(1, 0), OUEST(0, -1), EST(0, 1);
+	static final Direction[] reverse = {SUD, NORD, OUEST, EST};
+	private final int i;
+	private final int j;
+
+	Direction(int i, int j) {
+		this.i = i;
+		this.j = j;
 	}
-	
-	public int gDirX() {
-		return this.x;
+	public int getI() {
+		return this.i;
 	}
-	public int gDirY() {
-		return this.y;
+	public int getJ() {
+		return this.j;
+	}
+	public Direction reverse() {
+		return reverse[this.ordinal()];
 	}
 }

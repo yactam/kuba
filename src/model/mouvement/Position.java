@@ -1,18 +1,54 @@
 package model.mouvement;
+public class Position implements Cloneable {
+	private final int i;
+	private final int j;
 
-public class Position {
-	private final int x;
-	private final int y;
-	
-	public Position(int x, int y) {
-		this.x = x; 
-		this.y = y;
+	public Position(int i, int j) {
+		this.i = i;
+		this.j = j;
 	}
-	
-	public int gPosX() {
-		return this.x;
+
+	public int getI() {
+		return this.i;
 	}
-	public int gPosY() {
-		return this.y;
+
+	public int getJ() {
+		return this.j;
 	}
-}	
+
+	@Override
+	public boolean equals(Object o) {
+		if(this == o) return true;
+		if(!(o instanceof Position)) return false;
+		return ((Position) o).i == i && ((Position) o).j == j;
+	}
+	@Override
+	public Object clone(){
+		Position p = null;
+		try{	
+			p = (Position) super.clone();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return p;
+	}
+	public Position next(Direction dir) {
+		return new Position(i + dir.getI(), j + dir.getJ());
+	}
+
+	public Position prev(Direction dir) {
+		return next(dir.reverse());
+	}
+
+	public Direction nextDir(Position p) {
+		if(j == p.j && p.i < i)
+			return Direction.NORD;
+		else if(j == p.j && p.i > i)
+			return Direction.SUD;
+		else if(i == p.i && p.j < j)
+			return Direction.OUEST;
+		else if(i == p.i && p.j > j)
+			return Direction.EST;
+		return null;
+	}
+}
