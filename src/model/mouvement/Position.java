@@ -51,4 +51,9 @@ public class Position implements Cloneable {
 			return Direction.EST;
 		return null;
 	}
+
+	@Override
+	public String toString() {
+		return "(i = " + i + ", j = " + j + ")";
+	}
 }

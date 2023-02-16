@@ -111,55 +111,59 @@ public class Board extends JPanel {
 
     public void update(Position pos, Direction dir, Joueur joueur) {
         // Le joueur ne peut bouger que les billes de sa propre couleur
-        if(!ColorAt(pos).equals(joueur.getCouleur())) return;
+        if(!ColorAt(pos).equals(joueur.getCouleur())) {
+            System.out.println("Le joueur ne peut bouger que les billes de sa propre couleur");
+            return;
+        }
 
-        if(estDansLimite(pos.prev(dir)) && !estVide(pos.prev(dir))) return; // Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger
+        // Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger
+        if(estDansLimite(pos.prev(dir)) && !estVide(pos.prev(dir))) {
+            System.out.println(pos.prev(dir));
+            System.out.println("Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger");
+            return;
+        }
 
         Position next = pos.next(dir); // Trouver la limite
         while(estDansLimite(next) && !estVide(next)) { // avec next tant que c'est possible
             next = next.next(dir);
         }
-
+        Position fin = next;  // Pour revenir en arriere si le mouvement n'est pas valid (un curseur backup)
         if(!estDansLimite(next)) { // là, il faut sortir les billes
             Position limit = next.prev(dir); // La limite du tableau
-            moveOut(pos, limit, dir, joueur);
-        } else {
-            Position fin = next; // Pour revenir en arriere si le mouvement n'est pas valid (un curseur backup)
-
-            while (!next.equals(pos)) { // Décaler les pions
-                Position prev = next.prev(dir);
-                updatePosition(prev, next);
-                next = next.prev(dir);
-            }
-
-            int hash_code = hashCode(); // KO
-            if(isTreated(hash_code)) {
-                while (!next.equals(fin)) { // Undo move
-                    Position suiv = next.next(dir);
-                    updatePosition(suiv, next);
-                    next = next.next(dir);
-                }
-            } else {
-                treated_confs.add(hash_code);
-            }
+            moveOut(limit, joueur);
+            fin = limit;
+            next = next.prev(dir);
         }
+
+        while (!next.equals(pos) && board(next).estVide()) { // Décaler les pions
+            Position prev = next.prev(dir);
+            updatePosition(prev, next);
+            next = next.prev(dir);
+        }
+
+        int hash_code = hashCode(); // KO
+        if(isTreated(hash_code)) {
+            while (!next.equals(fin)) { // Undo move
+                Position suiv = next.next(dir);
+                updatePosition(suiv, next);
+                next = next.next(dir);
+            }
+        } else {
+            treated_confs.add(hash_code);
+        }
+        repaint();
     }
 
-    private void moveOut(Position pos, Position limit, Direction dir, Joueur joueur) {
-        Position cursor = (Position) limit.clone();
-        while(!ColorAt(cursor).equals(joueur.getCouleur())) {
-            if(ColorAt(cursor).equals(Couleur.ROUGE)) {
+    private void moveOut(Position limit, Joueur joueur) {
+        if(!ColorAt(limit).equals(joueur.getCouleur())) {
+            if(ColorAt(limit).equals(Couleur.ROUGE)) {
                 joueur.capturerBilleRouge();
             } else {
                 joueur.capturerBilleAdversaire();
             }
-            board(cursor).clear();
-            cursor = cursor.prev(dir);
-        }
-        while(!board(pos).estVide()) {
-            updatePosition(pos, limit);
-            pos = pos.next(dir);
-            limit = limit.prev(dir);
+            board(limit).clear();
+        } else {
+            System.out.println("Le joueur ne peut pas sortir les billes de sa propre couleur");
         }
     }
 

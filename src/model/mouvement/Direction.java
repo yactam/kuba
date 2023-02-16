@@ -2,7 +2,7 @@ package model.mouvement;
 
 public enum Direction {
 	NORD(-1, 0), SUD(1, 0), OUEST(0, -1), EST(0, 1);
-	static final Direction[] reverse = {SUD, NORD, OUEST, EST};
+	static final Direction[] reverse = {SUD, NORD, EST, OUEST};
 	private final int i;
 	private final int j;
 
