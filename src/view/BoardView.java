@@ -1,53 +1,62 @@
 package view;
 import model.*;
-import javax.swing.JPanel;
-import java.awt.*;
-import observerpattern.*;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import observerpattern.*;
+import observerpattern.Observer;
 import model.plateau.Board;
 
 public class BoardView extends JPanel implements Observer{
     private  Board board;
-    private CellView[][] view;
+    public static final int widthBille = 50;
+   
     public BoardView(Board b){
         super();
         this.setLayout(null);
         board = b;
-        // on a une taille d'element de 64px pour le moment 
-        Dimension d = new Dimension(board.getRow()*CellView.TAILLE,board.getCol()*CellView.TAILLE);
-        this.setPreferredSize(d);
-        this.initCellView(board);
+        int k = 4*board.getN()-1;
+        // Panel
+        setPreferredSize(new Dimension(widthBille * k, widthBille * k));
     }
 
-    public void initCellView(Board b){
-        view = new CellView[b.getRow()][b.getCol()];
-        for(int i = 0; i < b.getRow(); ++i) {
-            for(int j = 0; j < b.getCol(); ++j) {
-                int x = (CellView.TAILLE) * j; 
-                int y = (CellView.TAILLE) * i;
-                
-                if(!b.getCell(i, j).estVide()){
-                    Bille toPlace = b.getCell(i, j).getBille();
-                    view[i][j] = new CellView(toPlace,x,y);
-                    view[i][j].setLocation(x, y);
-                    add(view[i][j]);
-                }
-                else {
-                    view[i][j] = new CellView(null,x,y);
-                    view[i][j].setLocation(x, y);
-                    add(view[i][j]);
+    private void drawGrid(Graphics2D graphics2D) {
+        graphics2D.setColor(Color.LIGHT_GRAY);
+        graphics2D.fillRect(0, 0, getWidth(), getHeight());
+        for(int i = 0; i < board.getCellBoard().length; i++) {
+            for(int j = 0; j < board.getCellBoard()[i].length; j++) {
+                if(i != board.getCellBoard().length-1 && j != board.getCellBoard()[i].length-1) {
+                    graphics2D.setColor(Color.BLACK);
+                    graphics2D.drawRect(j * widthBille + (widthBille / 2), i * widthBille + (widthBille / 2), widthBille, widthBille);
                 }
             }
         }
     }
     
     public void paintComponent(Graphics g) {
-        g.setColor(getBackground());
-        g.fillRect(0, 0, getWidth(), getHeight());
-        for(int i = 0; i < board.getRow(); i++) {
-            for(int j = 0; j < board.getCol(); j++) {
-                if(view[i][j] != null){
-                view[i][j].paintComponent(g);
+        Graphics2D graphics2D = (Graphics2D) g;
+        drawGrid(graphics2D);
+        for(int i = 0; i < board.getCellBoard().length; i++) {
+            for(int j = 0; j < board.getCellBoard()[i].length; j++) {
+                if(!board.board(j, i).estVide()) {
+                    int width = widthBille;
+                    String s = "";
+                    switch(board.board(j,i).toString()){
+                        case "R":s="red";break;
+                        case "N":s="black";break;
+                        case "B":s="white";break;
+                    }
+                    try {
+                        BufferedImage image = ImageIO.read(new File("src/resources/"+s+".png"));
+                        graphics2D.drawImage(image, width * i, width * j, width, width, null);
+                    } catch (IOException e) {
+                        System.out.println(" Erreur dans chargement image de board -> "+e.getMessage());
+                    }
                 }
             }
         }
@@ -55,7 +64,7 @@ public class BoardView extends JPanel implements Observer{
 
     @Override
     public void update(SubjectObserver subject) {
-       this.initCellView((Board)subject);
+    	board = (Board)subject;
        this.repaint();
     }
 

@@ -7,8 +7,6 @@ import java.util.Objects;
 
 public class Bille implements Cloneable{
     private final Couleur color;
-    public static final int width = 50;
-    private final BufferedImage image;
 
     public Bille(Couleur c){
         color = c;
@@ -17,18 +15,11 @@ public class Bille implements Cloneable{
             case BLANC -> "white";
             case ROUGE -> "red";
         };
-        try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/" + imageDesc + ".png")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public Couleur getColor() { return color; }
 
-    public BufferedImage image() {
-        return image;
-    }
+  
 
     @Override
     public String toString() {

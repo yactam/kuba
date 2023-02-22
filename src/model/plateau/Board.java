@@ -1,17 +1,14 @@
 package model.plateau;
-
+import java.util.*;
+import observerpattern.*;
+import observerpattern.Observer;
 import model.Bille;
 import model.Couleur;
 import model.Joueur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.*;
-
-
-public class Board extends JPanel {
+public class Board implements SubjectObserver{
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
@@ -24,9 +21,8 @@ public class Board extends JPanel {
         int k = 4 * n - 1;
         board = new Cell[k][k];
         keys  = new Long[3][k*k];
+        elementObs = new ArrayList<Observer>();
         initKeys();
-        // Panel
-        setPreferredSize(new Dimension(Bille.width * k, Bille.width * k));
     }
 
     private static void initKeys() {
@@ -46,6 +42,7 @@ public class Board extends JPanel {
         initWhite();
         initBlack();
         initRed();
+        this.notifyObservers();
     }
 
     private void initWhite() {
@@ -84,11 +81,12 @@ public class Board extends JPanel {
             }
         }
     }
+
     private Cell board(Position pos) {
         return board[pos.getI()][pos.getJ()];
     }
 
-    private Cell board(int i, int j) {
+    public Cell board(int i, int j) {
         return board[i][j];
     }
 
@@ -100,7 +98,7 @@ public class Board extends JPanel {
         return board(i, j).getBille().getColor();
     }
 
-    private boolean estVide(Position position) {
+    public boolean estVide(Position position) {
         return board(position).estVide();
     }
 
@@ -109,6 +107,9 @@ public class Board extends JPanel {
         board(prev).clear();
         board(next).setBille(bille);
     }
+
+
+
 
     public void update(Position pos, Direction dir, Joueur joueur) {
         // Le joueur ne peut bouger que les billes de sa propre couleur
@@ -152,7 +153,8 @@ public class Board extends JPanel {
         } else {
             treated_confs.add(hash_code);
         }
-        repaint();
+
+        notifyObservers();
     }
 
     private void moveOut(Position limit, Joueur joueur) {
@@ -205,6 +207,13 @@ public class Board extends JPanel {
         }
         return (int) zobristHash;
     }
+    
+    public int getN() {
+    	return this.n;
+    }
+    public Cell[][] getCellBoard(){
+    	return this.board;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -214,30 +223,13 @@ public class Board extends JPanel {
     }
 
     @Override
-    public void paintComponent(Graphics g) {
-        Graphics2D graphics2D = (Graphics2D) g;
-        drawGrid(graphics2D);
-        for(int i = 0; i < board.length; i++) {
-            for(int j = 0; j < board[i].length; j++) {
-                if(!board(j, i).estVide()) {
-                    int width = Bille.width;
-                    graphics2D.drawImage(board(j, i).getBille().image(), width * i, width * j, width, width, null);
-                }
-            }
+    public void addObserver(Observer ob){
+        elementObs.add(ob);
+    }
+    @Override 
+    public void notifyObservers(){
+        for(Observer ob : elementObs){
+            ob.update(this);
         }
     }
-
-    private void drawGrid(Graphics2D graphics2D) {
-        graphics2D.setColor(Color.LIGHT_GRAY);
-        graphics2D.fillRect(0, 0, getWidth(), getHeight());
-        for(int i = 0; i < board.length; i++) {
-            for(int j = 0; j < board[i].length; j++) {
-                if(i != board.length-1 && j != board[i].length-1) {
-                    graphics2D.setColor(Color.BLACK);
-                    graphics2D.drawRect(j * Bille.width + (Bille.width / 2), i * Bille.width + (Bille.width / 2), Bille.width, Bille.width);
-                }
-            }
-        }
-    }
-
 }

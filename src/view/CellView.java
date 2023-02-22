@@ -1,6 +1,5 @@
 package view;
 import model.*;
-
 import javax.swing.JPanel;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -44,17 +43,13 @@ public class CellView extends JPanel{
 
     public void initImage(Bille b) {
         if(b==null){    
-        try {
-            image = ImageIO.read(new File("src/resources/bille_vide.jpg"));
-        } catch (IOException e) {
-            System.out.println(" Erreur image CellView null -> "+e.getMessage());
-        } 
+         
         return ;
         }
         try{
-            if(b.toString().equals("B")) image = ImageIO.read(new File("src/resources/bille_blanche.jpg"));
-            else if(b.toString().equals("N")) image = ImageIO.read(new File("src/resources/bille_noir.jpg"));
-            else if(b.toString().equals("R")) image = ImageIO.read(new File("src/resources/bille_rouge.jpg"));
+            if(b.toString().equals("B")) image = ImageIO.read(new File("src/resources/white.png"));
+            else if(b.toString().equals("N")) image = ImageIO.read(new File("src/resources/black.png"));
+            else if(b.toString().equals("R")) image = ImageIO.read(new File("src/resources/red.png"));
         }
         catch(Exception e){ 
             System.out.println("Erreur Image CellView");
