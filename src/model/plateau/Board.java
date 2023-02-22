@@ -16,6 +16,7 @@ public class Board extends JPanel {
     private static Long[][] keys;
     private final int n;
     private final Set<Integer> treated_confs;
+    private ArrayList<Observer> elementObs;
 
     public Board(int n) {
         this.treated_confs = new HashSet<>();
@@ -195,9 +196,9 @@ public class Board extends JPanel {
             for(int j = 0; j < board[i].length; j++) {
                 if(!board(i, j).estVide()) {
                     switch (board[i][j].getBille().getColor()) {
-                        case ROUGE -> zobristHash ^= keys[0][i + board[i].length * j];
-                        case NOIR -> zobristHash  ^= keys[1][i + board[i].length * j];
-                        case BLANC -> zobristHash ^= keys[2][i + board[i].length * j];
+                        case ROUGE : zobristHash ^= keys[0][i + board[i].length * j];
+                        case NOIR : zobristHash  ^= keys[1][i + board[i].length * j];
+                        case BLANC : zobristHash ^= keys[2][i + board[i].length * j];
                     }
                 }
             }
