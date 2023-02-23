@@ -3,9 +3,10 @@ package model;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Bille implements Cloneable{
+public class Bille implements Cloneable, Serializable{
     private final Couleur color;
     public static final int width = 50;
     private final BufferedImage image;

@@ -8,10 +8,11 @@ import model.mouvement.Position;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.*;
 
 
-public class Board extends JPanel {
+public class Board extends JPanel implements Serializable {
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
