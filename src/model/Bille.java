@@ -3,13 +3,15 @@ package model;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Objects;
 
 public class Bille implements Cloneable, Serializable{
-    private final Couleur color;
+    private Couleur color;
     public static final int width = 50;
-    private final BufferedImage image;
+    private transient BufferedImage image;
 
     public Bille(Couleur c){
         color = c;
@@ -41,6 +43,18 @@ public class Bille implements Cloneable, Serializable{
     @Override
     public Object clone(){
         return new Bille(color);
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeObject(color); // how many images are serialized?
+        ImageIO.write(image, "png", out); // png is lossless
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        color = (Couleur) in.readObject();
+        image = ImageIO.read(in);
     }
 
 }
