@@ -4,6 +4,8 @@ import model.Joueur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
 import model.plateau.Board;
+import view.View;
+
 
 import javax.swing.*;
 
@@ -15,14 +17,15 @@ public class Main {
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        JFrame frame = new JFrame();
+        View frame = new View();
+        //JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.add(board);
+        /*frame.add(board);
         frame.pack();
-        frame.setLocationRelativeTo(null);
+        frame.setLocationRelativeTo(null);*/
         frame.setVisible(true);
 
-
+/*
 
         Joueur joueur = new Joueur("EMMA", Couleur.BLANC, 18);
 
@@ -98,7 +101,7 @@ public class Main {
         System.out.println(board);
         System.out.println(board.hashCode());
 
-
+*/
 
     }
 }
