@@ -2,7 +2,6 @@ package model;
 
 import model.plateau.*;
 import model.mouvement.*;
-import model.Couleur;
 
 public class Joueur {
 

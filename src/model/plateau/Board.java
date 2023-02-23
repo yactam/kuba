@@ -8,7 +8,12 @@ import model.Joueur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
 
-public class Board implements SubjectObserver{
+import javax.swing.*;
+import java.awt.*;
+import java.util.*;
+
+
+public class Board {
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
@@ -82,6 +87,9 @@ public class Board implements SubjectObserver{
         }
     }
 
+    public int size() {
+        return board.length;
+    }
     private Cell board(Position pos) {
         return board[pos.getI()][pos.getJ()];
     }
@@ -153,8 +161,6 @@ public class Board implements SubjectObserver{
         } else {
             treated_confs.add(hash_code);
         }
-
-        notifyObservers();
     }
 
     private void moveOut(Position limit, Joueur joueur) {
@@ -220,16 +226,5 @@ public class Board implements SubjectObserver{
         if(o == this) return true;
         if(!(o instanceof Board)) return false;
         return o.hashCode() == this.hashCode();
-    }
-
-    @Override
-    public void addObserver(Observer ob){
-        elementObs.add(ob);
-    }
-    @Override 
-    public void notifyObservers(){
-        for(Observer ob : elementObs){
-            ob.update(this);
-        }
     }
 }

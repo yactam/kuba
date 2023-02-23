@@ -1,10 +1,5 @@
 package model;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
-
 public class Bille implements Cloneable{
     private final Couleur color;
 
