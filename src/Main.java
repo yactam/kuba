@@ -8,12 +8,12 @@ import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        //Board board = new Board(3);
-        Board board = Board.load("./board1");
+        Board board = new Board(3);
+        //Board board = Board.load("./board1");
 
-       /*  board.initBoard();
+        board.initBoard();
         System.out.println(board);
-        System.out.println(board.hashCode());*/
+        System.out.println(board.hashCode());
 
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -21,8 +21,6 @@ public class Main {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-
-/* 
 
         Joueur joueur = new Joueur("EMMA", Couleur.BLANC, 18);
 
@@ -99,6 +97,5 @@ public class Main {
         System.out.println(board.hashCode());
         board.save("./board1");
 
-*/
     }
 }
