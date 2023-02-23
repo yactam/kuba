@@ -1,3 +1,4 @@
+## Pour pouvoir exécuter le jeu lancez le script exec.sh 
 
 # Kuba
 

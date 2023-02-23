@@ -5,9 +5,16 @@ public class Bille implements Cloneable{
 
     public Bille(Couleur c){
         color = c;
+        String imageDesc = switch (color) {
+            case NOIR -> "black";
+            case BLANC -> "white";
+            case ROUGE -> "red";
+        };
     }
 
     public Couleur getColor() { return color; }
+
+  
 
     @Override
     public String toString() {

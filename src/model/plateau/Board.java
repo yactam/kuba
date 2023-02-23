@@ -1,5 +1,7 @@
 package model.plateau;
-
+import java.util.*;
+import observerpattern.*;
+import observerpattern.Observer;
 import model.Bille;
 import model.Couleur;
 import model.Joueur;
@@ -16,6 +18,7 @@ public class Board {
     private static Long[][] keys;
     private final int n;
     private final Set<Integer> treated_confs;
+    private ArrayList<Observer> elementObs;
 
     public Board(int n) {
         this.treated_confs = new HashSet<>();
@@ -23,6 +26,7 @@ public class Board {
         int k = 4 * n - 1;
         board = new Cell[k][k];
         keys  = new Long[3][k*k];
+        elementObs = new ArrayList<Observer>();
         initKeys();
     }
 
@@ -43,6 +47,7 @@ public class Board {
         initWhite();
         initBlack();
         initRed();
+        this.notifyObservers();
     }
 
     private void initWhite() {
@@ -101,7 +106,7 @@ public class Board {
         return board(i, j).getBille().getColor();
     }
 
-    private boolean estVide(Position position) {
+    public boolean estVide(Position position) {
         return board(position).estVide();
     }
 
@@ -110,6 +115,9 @@ public class Board {
         board(prev).clear();
         board(next).setBille(bille);
     }
+
+
+
 
     public void update(Position pos, Direction dir, Joueur joueur) {
         // Le joueur ne peut bouger que les billes de sa propre couleur
@@ -196,14 +204,21 @@ public class Board {
             for(int j = 0; j < board[i].length; j++) {
                 if(!board(i, j).estVide()) {
                     switch (board[i][j].getBille().getColor()) {
-                        case ROUGE -> zobristHash ^= keys[0][i + board[i].length * j];
-                        case NOIR -> zobristHash  ^= keys[1][i + board[i].length * j];
-                        case BLANC -> zobristHash ^= keys[2][i + board[i].length * j];
+                        case ROUGE : zobristHash ^= keys[0][i + board[i].length * j];
+                        case NOIR : zobristHash  ^= keys[1][i + board[i].length * j];
+                        case BLANC : zobristHash ^= keys[2][i + board[i].length * j];
                     }
                 }
             }
         }
         return (int) zobristHash;
+    }
+    
+    public int getN() {
+    	return this.n;
+    }
+    public Cell[][] getCellBoard(){
+    	return this.board;
     }
 
     @Override

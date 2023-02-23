@@ -1,7 +1,7 @@
 package model.plateau;
 import model.Bille;
 
-public class Cell implements Cloneable {
+public class Cell implements Cloneable{
 
     private Bille bille;
 
