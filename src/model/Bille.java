@@ -47,8 +47,8 @@ public class Bille implements Cloneable, Serializable{
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
-        out.writeObject(color); // how many images are serialized?
-        ImageIO.write(image, "png", out); // png is lossless
+        out.writeObject(color); 
+        ImageIO.write(image, "png", out); 
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
