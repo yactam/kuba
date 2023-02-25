@@ -1,5 +1,4 @@
 package observerpattern;
-
-public interface Observer {
-    void update(SubjectObserver subject);
+public interface Observer<T>{
+    void update(T data);
 }

@@ -1,19 +1,23 @@
 package model.plateau;
-import java.util.*;
-import observerpattern.*;
 import observerpattern.Observer;
+import observerpattern.BoardChangedEvent;
+import observerpattern.Observable;
+import java.util.*;
+
 import model.Bille;
 import model.Couleur;
 import model.Joueur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
 
-public class Board implements SubjectObserver{
+
+public class Board implements Observable<BoardChangedEvent>{
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
     private final Set<Integer> treated_confs;
-    private ArrayList<Observer> elementObs;
+    private ArrayList<Observer<BoardChangedEvent>> elementObs;
+    private BoardChangedEvent change;
 
     public Board(int n) {
         this.treated_confs = new HashSet<>();
@@ -21,7 +25,7 @@ public class Board implements SubjectObserver{
         int k = 4 * n - 1;
         board = new Cell[k][k];
         keys  = new Long[3][k*k];
-        elementObs = new ArrayList<Observer>();
+        elementObs = new ArrayList<Observer<BoardChangedEvent>>();
         initKeys();
     }
 
@@ -42,6 +46,7 @@ public class Board implements SubjectObserver{
         initWhite();
         initBlack();
         initRed();
+        change = new BoardChangedEvent(board,board);
         this.notifyObservers();
     }
 
@@ -85,7 +90,7 @@ public class Board implements SubjectObserver{
     public int size() {
         return board.length;
     }
-    private Cell board(Position pos) {
+    public Cell board(Position pos) {
         return board[pos.getI()][pos.getJ()];
     }
 
@@ -93,7 +98,8 @@ public class Board implements SubjectObserver{
         return board[i][j];
     }
 
-    public Couleur ColorAt(Position pos) {
+    public Couleur ColorAt(Position pos) throws NullPointerException{
+        if(pos==null) throw new NullPointerException("Pos est null");
         return board(pos).getBille().getColor();
     }
 
@@ -111,10 +117,9 @@ public class Board implements SubjectObserver{
         board(next).setBille(bille);
     }
 
-
-
-
     public void update(Position pos, Direction dir, Joueur joueur) {
+        if(pos==null || dir==null || joueur==null)return;
+
         // Le joueur ne peut bouger que les billes de sa propre couleur
         if(!ColorAt(pos).equals(joueur.getCouleur())) {
             System.out.println("Le joueur ne peut bouger que les billes de sa propre couleur");
@@ -157,6 +162,7 @@ public class Board implements SubjectObserver{
             treated_confs.add(hash_code);
         }
 
+        change = new BoardChangedEvent(board,board);
         this.notifyObservers();
     }
 
@@ -218,15 +224,16 @@ public class Board implements SubjectObserver{
     	return this.board;
     }
 
+
     @Override
-    public void addObserver(Observer o) {
+    public void addObserver(Observer<BoardChangedEvent> o) {
         elementObs.add(o);
     }
 
     @Override
     public void notifyObservers(){
-        for(Observer o : elementObs) {
-            o.update(this);
+        for(Observer<BoardChangedEvent> o : elementObs) {
+            o.update(change);
         }
     }
 

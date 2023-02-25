@@ -7,19 +7,19 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import observerpattern.*;
-import observerpattern.Observer;
-import model.plateau.Board;
+import model.plateau.*;
 import model.Bille;
 
-public class BoardView extends JPanel implements Observer{
-    private Board board;
+public class BoardView extends JPanel implements Observer<BoardChangedEvent>{
+    private Cell[][] board;
     public static final int billeWidth = 50;
     private BufferedImage red, black, white;
 
     public BoardView(Board board) {
-        this.board = board;
+        this.board = board.getCellBoard();
         initBille();
         setPreferredSize(new Dimension(billeWidth * board.size(), billeWidth * board.size()));
+        this.board = new Cell[board.getN()*4- 1][board.getN()*4- 1];
     }
 
     private void initBille() {
@@ -36,19 +36,15 @@ public class BoardView extends JPanel implements Observer{
         }
     }
 
-    public void updateBoard(Board board) {
-        this.board = board;
-    }
-
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D graphics2D = (Graphics2D) g;
         super.paintComponent(g);
         drawGrid(graphics2D);
-        for(int i = 0; i < board.size(); i++) {
-            for(int j = 0; j < board.size(); j++) {
-                if(!board.board(j, i).estVide()) {
-                    Bille bille = board.board(j, i).getBille();
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board.length; j++) {
+                if(!board[j][i].estVide()) {
+                    Bille bille = board[j][i].getBille();
                     BufferedImage image = switch (bille.getColor()) {
                         case NOIR -> black;
                         case ROUGE -> red;
@@ -63,9 +59,9 @@ public class BoardView extends JPanel implements Observer{
     private void drawGrid(Graphics2D graphics2D) {
         graphics2D.setColor(Color.LIGHT_GRAY);
         graphics2D.fillRect(0, 0, getWidth(), getHeight());
-        for(int i = 0; i < board.size(); i++) {
-            for(int j = 0; j < board.size(); j++) {
-                if(i != board.size()-1 && j != board.size()-1) {
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board.length; j++) {
+                if(i != board.length-1 && j != board.length-1) {
                     graphics2D.setColor(Color.BLACK);
                     graphics2D.drawRect(j * billeWidth + (billeWidth / 2), i * billeWidth + (billeWidth / 2), billeWidth, billeWidth);
                 }
@@ -74,10 +70,8 @@ public class BoardView extends JPanel implements Observer{
     }
 
     @Override
-    public void update(SubjectObserver o) {
-        board = (Board) o;
+    public void update(BoardChangedEvent e){
+        board = e.getNewcells();
         this.repaint();
     }
-
-
 }

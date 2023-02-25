@@ -9,7 +9,7 @@ public class Cell implements Cloneable{
         this.bille = bille;
     }
 
-    public Bille getBille() {
+    public Bille getBille() throws NullPointerException{
         return (Bille) bille.clone();
     }
 
