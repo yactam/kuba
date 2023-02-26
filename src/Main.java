@@ -4,12 +4,12 @@ import model.Joueur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
 import model.plateau.Board;
-
 import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
         Board board = new Board(3);
+        //Board board = Board.load("./board1");
 
         board.initBoard();
         System.out.println(board);
@@ -21,8 +21,6 @@ public class Main {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-
-
 
         Joueur joueur = new Joueur("EMMA", Couleur.BLANC, 18);
 
@@ -97,8 +95,7 @@ public class Main {
         joueur.move(board, new Position(6, 10), Direction.EST);
         System.out.println(board);
         System.out.println(board.hashCode());
-
-
+        board.save("./board1");
 
     }
 }

@@ -8,10 +8,15 @@ import model.mouvement.Position;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.*;
 
 
-public class Board extends JPanel {
+public class Board extends JPanel implements Serializable {
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
@@ -237,6 +242,35 @@ public class Board extends JPanel {
                 }
             }
         }
+    }
+
+    public void save(String path){
+        try{
+        FileOutputStream fileOutputStream
+            = new FileOutputStream(path);
+        ObjectOutputStream objectOutputStream 
+        = new ObjectOutputStream(fileOutputStream);
+        objectOutputStream.writeObject(this);
+        objectOutputStream.flush();
+        objectOutputStream.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static Board load(String path){
+        try{
+            FileInputStream fileInputStream
+                = new FileInputStream(path);
+            ObjectInputStream objectInputStream
+                = new ObjectInputStream(fileInputStream);
+            Board b = (Board) objectInputStream.readObject();
+            objectInputStream.close();
+            return b;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
