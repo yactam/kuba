@@ -11,7 +11,7 @@ import java.awt.*;
 import java.util.*;
 
 
-public class Board extends JPanel {
+public class Board {
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
@@ -24,8 +24,6 @@ public class Board extends JPanel {
         board = new Cell[k][k];
         keys  = new Long[3][k*k];
         initKeys();
-        // Panel
-        setPreferredSize(new Dimension(Bille.width * k, Bille.width * k));
     }
 
     private static void initKeys() {
@@ -83,11 +81,15 @@ public class Board extends JPanel {
             }
         }
     }
+
+    public int size() {
+        return board.length;
+    }
     private Cell board(Position pos) {
         return board[pos.getI()][pos.getJ()];
     }
 
-    private Cell board(int i, int j) {
+    public Cell board(int i, int j) {
         return board[i][j];
     }
 
@@ -151,7 +153,6 @@ public class Board extends JPanel {
         } else {
             treated_confs.add(hash_code);
         }
-        repaint();
     }
 
     private void moveOut(Position limit, Joueur joueur) {
@@ -211,32 +212,4 @@ public class Board extends JPanel {
         if(!(o instanceof Board)) return false;
         return o.hashCode() == this.hashCode();
     }
-
-    @Override
-    public void paintComponent(Graphics g) {
-        Graphics2D graphics2D = (Graphics2D) g;
-        drawGrid(graphics2D);
-        for(int i = 0; i < board.length; i++) {
-            for(int j = 0; j < board[i].length; j++) {
-                if(!board(j, i).estVide()) {
-                    int width = Bille.width;
-                    graphics2D.drawImage(board(j, i).getBille().image(), width * i, width * j, width, width, null);
-                }
-            }
-        }
-    }
-
-    private void drawGrid(Graphics2D graphics2D) {
-        graphics2D.setColor(Color.LIGHT_GRAY);
-        graphics2D.fillRect(0, 0, getWidth(), getHeight());
-        for(int i = 0; i < board.length; i++) {
-            for(int j = 0; j < board[i].length; j++) {
-                if(i != board.length-1 && j != board[i].length-1) {
-                    graphics2D.setColor(Color.BLACK);
-                    graphics2D.drawRect(j * Bille.width + (Bille.width / 2), i * Bille.width + (Bille.width / 2), Bille.width, Bille.width);
-                }
-            }
-        }
-    }
-
 }

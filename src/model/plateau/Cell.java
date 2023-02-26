@@ -1,7 +1,7 @@
 package model.plateau;
 import model.Bille;
 
-class Cell implements Cloneable {
+public class Cell implements Cloneable {
 
     private Bille bille;
 
@@ -9,11 +9,11 @@ class Cell implements Cloneable {
         this.bille = bille;
     }
 
-    Bille getBille() {
+    public Bille getBille() {
         return (Bille) bille.clone();
     }
 
-    boolean estVide() {
+    public boolean estVide() {
         return bille == null;
     }
 
