@@ -43,7 +43,7 @@ public class StandardBoardEvaluator implements BoardEvaluator {
                 if(!board.board(i, j).estVide() && board.board(i, j).getBille().getColor() == Couleur.ROUGE) {
                     ret -= GET_OUT_RED;
                 }
-                ret += board.getAllPossibleMoves(Couleur.NOIR).size(); // More moves is good
+                ret += board.getAllPossibleMoves(Couleur.NOIR).size() * BONUS_MOVE; // More moves is good
             }
         }
         return ret;
