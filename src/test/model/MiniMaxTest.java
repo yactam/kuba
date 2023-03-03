@@ -7,7 +7,6 @@ import com.kuba.model.plateau.Bille;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.ai.MiniMax;
-import com.kuba.model.player.ai.StandardBoardEvaluator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
