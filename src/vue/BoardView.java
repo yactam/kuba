@@ -1,9 +1,8 @@
 package vue;
 
 
-import model.Bille;
+import model.plateau.Bille;
 import model.plateau.Board;
-import model.plateau.Cell;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,8 +10,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class BoardView extends JPanel {
 

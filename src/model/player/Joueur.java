@@ -1,5 +1,6 @@
-package model;
+package model.player;
 
+import model.plateau.Couleur;
 import model.plateau.*;
 import model.mouvement.*;
 
@@ -45,7 +46,7 @@ public class Joueur {
     }
 
     public void move(Board board, Position pos, Direction dir){
-        board.update(pos, dir, this);
+        board.update(new Mouvement(pos, dir), this);
     }
 }
 

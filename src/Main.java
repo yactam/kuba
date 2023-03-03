@@ -1,6 +1,6 @@
 
-import model.Couleur;
-import model.Joueur;
+import model.plateau.Couleur;
+import model.player.Joueur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
 import model.plateau.Board;
