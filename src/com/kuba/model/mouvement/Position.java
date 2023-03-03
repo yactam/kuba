@@ -1,4 +1,4 @@
-package model.mouvement;
+package com.kuba.model.mouvement;
 public class Position implements Cloneable {
 	private final int i;
 	private final int j;

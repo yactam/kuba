@@ -1,4 +1,5 @@
 
+import model.mouvement.Mouvement;
 import model.plateau.Couleur;
 import model.player.Joueur;
 import model.mouvement.Direction;
@@ -7,10 +8,11 @@ import model.plateau.Board;
 import vue.BoardView;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        Board board = new Board(3);
+        Board board = new Board(2);
         BoardView boardView = new BoardView(board);
 
         board.initBoard();
@@ -18,7 +20,10 @@ public class Main {
         System.out.println(board.hashCode());
         boardView.updateBoard(board);
 
-        JFrame frame = new JFrame();
+        ArrayList<Mouvement> mouvements = (ArrayList<Mouvement>) board.getAllPossibleMoves();
+        System.out.println(mouvements);
+
+        /*JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.add(boardView);
         frame.pack();
@@ -115,7 +120,7 @@ public class Main {
         joueur.move(board, new Position(6, 10), Direction.EST);
         boardView.updateBoard(board);
         System.out.println(board);
-        System.out.println(board.hashCode());
+        System.out.println(board.hashCode());*/
 
 
 

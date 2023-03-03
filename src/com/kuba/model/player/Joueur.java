@@ -46,7 +46,7 @@ public class Joueur {
     }
 
     public void move(Board board, Position pos, Direction dir){
-        board.update(new Mouvement(pos, dir), this);
+        board.update(new Mouvement(pos, dir), this.couleur);
     }
 }
 

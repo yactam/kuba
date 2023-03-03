@@ -2,9 +2,10 @@ package model.player.ai;
 
 import model.mouvement.Mouvement;
 import model.plateau.Board;
-import model.player.Joueur;
+import model.plateau.Couleur;
+
 
 public interface MoveStrategy {
 
-    Mouvement execute(Board board, Joueur joueur);
+    Mouvement execute(Board board, Couleur joueur);
 }

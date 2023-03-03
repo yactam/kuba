@@ -17,7 +17,7 @@ public class MiniMax implements MoveStrategy {
         this.depthSearch = depthSearch;
     }
     @Override
-    public Mouvement execute(Board board, Joueur joueur) {
+    public Mouvement execute(Board board, Couleur joueur) {
         final long startTime = System.currentTimeMillis();
         Mouvement bestMove = null;
         int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
@@ -28,13 +28,13 @@ public class MiniMax implements MoveStrategy {
         for(Mouvement mouvement : board.getAllPossibleMoves()) {
             System.out.println("\t testing movement " + (++i));
             Board transitionBoard = board.update(mouvement, joueur);
-            currentValue = board.currentPlayer().getCouleur().equals(Couleur.BLANC) ?
+            currentValue = board.currentPlayer().equals(Couleur.BLANC) ?
                            min(transitionBoard, joueur, depthSearch-1) : max(transitionBoard, joueur, depthSearch-1);
 
-            if(currentValue > max && board.currentPlayer().getCouleur().equals(Couleur.BLANC)) {
+            if(currentValue > max && board.currentPlayer().equals(Couleur.BLANC)) {
                 max = currentValue;
                 bestMove = mouvement;
-            } else if(currentValue < min && board.currentPlayer().getCouleur().equals(Couleur.NOIR)) {
+            } else if(currentValue < min && board.currentPlayer().equals(Couleur.NOIR)) {
                 min = currentValue;
                 bestMove = mouvement;
             }
@@ -48,15 +48,15 @@ public class MiniMax implements MoveStrategy {
 
     }
 
-    public int min(Board board, Joueur joueur, int depth) {
+    public int min(Board board, Couleur joueur, int depth) {
         if(depth == 0 || board.gameOver()) {
             return this.boardEvaluator.evaluate(board);
         }
 
         int min = Integer.MAX_VALUE;
-        // TODO get all possible moves of the actual player
+        //TODO get all possible moves of the actual player
         for(Mouvement move : board.getAllPossibleMoves()) {
-            Board boardTransition = board.update(move, joueur);
+            Board boardTransition = board.update(move, board.currentPlayer());
             int currentValue = max(boardTransition, joueur, depth-1);
             if(currentValue < min) min = currentValue;
         }
@@ -64,15 +64,15 @@ public class MiniMax implements MoveStrategy {
         return min;
     }
 
-    public int max(Board board, Joueur joueur, int depth) {
+    public int max(Board board, Couleur joueur, int depth) {
         if(depth == 0 || board.gameOver()) {
             return this.boardEvaluator.evaluate(board);
         }
 
         int max = Integer.MIN_VALUE;
-        // TODO get all possible moves of the actual player
+        //TODO get all possible moves of the actual player
         for(Mouvement move : board.getAllPossibleMoves()) {
-            Board boardTransition = board.update(move, joueur);
+            Board boardTransition = board.update(move, board.currentPlayer());
             int currentValue = min(boardTransition, joueur, depth-1);
             if(currentValue > max) max = currentValue;
         }

@@ -109,20 +109,19 @@ public class Board {
         board(next).setBille(bille);
     }
 
-    public Board update(Mouvement mouvement, Joueur joueur) {
-        currentPlayer = joueur.getCouleur();
+    public Board update(Mouvement mouvement, Couleur joueur) {
         Position pos = mouvement.getPosition();
         Direction dir = mouvement.getDirection();
         // Le joueur ne peut bouger que les billes de sa propre couleur
-        if(!ColorAt(pos).equals(joueur.getCouleur())) {
-            System.out.println("Le joueur ne peut bouger que les billes de sa propre couleur");
+        if(!ColorAt(pos).equals(joueur)) {
+            //System.out.println("Le joueur ne peut bouger que les billes de sa propre couleur");
             return this;
         }
 
         // Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger
         if(estDansLimite(pos.prev(dir)) && !estVide(pos.prev(dir))) {
-            System.out.println(pos.prev(dir));
-            System.out.println("Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger");
+            //System.out.println(pos.prev(dir));
+            //System.out.println("Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger");
             return this;
         }
 
@@ -150,6 +149,7 @@ public class Board {
             return this;
         } else {
             treated_configs.add(hash_code);
+            currentPlayer = currentPlayer.opposite();
             return transitionBoard;
         }
     }
@@ -158,22 +158,24 @@ public class Board {
         Board res = new Board(this.n);
         for (int i=0;i<board.length;i++){
             for (int j=0;j<board[i].length;j++){
-                res.board(i, j).setBille(board[i][j].getBille());
+                res.board[i][j] = new Cell();
+                if(board(i, j).estVide()) res.board(i, j).clear();
+                else res.board(i, j).setBille(board[i][j].getBille());
             }
         }
         return res;
     }
 
-    private void moveOut(Position limit, Joueur joueur) {
-        if(!ColorAt(limit).equals(joueur.getCouleur())) {
+    private void moveOut(Position limit, Couleur joueur) {
+        if(!ColorAt(limit).equals(joueur)) {
             if(ColorAt(limit).equals(Couleur.ROUGE)) {
-                joueur.capturerBilleRouge();
+                //TODO notify capture billes rouges
             } else {
-                joueur.capturerBilleAdversaire();
+                //TODO notify capture billes de l'adversaire
             }
             board(limit).clear();
         } else {
-            System.out.println("Le joueur ne peut pas sortir les billes de sa propre couleur");
+            //System.out.println("Le joueur ne peut pas sortir les billes de sa propre couleur");
         }
     }
 
@@ -226,10 +228,12 @@ public class Board {
         int red = 0, black = 0, white = 0;
         for (Cell[] cells : board) {
             for (Cell cell : cells) {
-                switch (cell.getBille().getColor()) {
-                    case BLANC -> white++;
-                    case NOIR -> black++;
-                    case ROUGE -> red++;
+                if(!cell.estVide()) {
+                    switch (cell.getBille().getColor()) {
+                        case BLANC -> white++;
+                        case NOIR -> black++;
+                        case ROUGE -> red++;
+                    }
                 }
             }
         }
@@ -240,17 +244,29 @@ public class Board {
         List<Mouvement> allMoves = new ArrayList<>();
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board.length; j++) {
-                Mouvement mouvement1 = new Mouvement(new Position(i, j), Direction.EST);
-                Mouvement mouvement2 = new Mouvement(new Position(i, j), Direction.OUEST);
-                Mouvement mouvement3 = new Mouvement(new Position(i, j), Direction.NORD);
-                Mouvement mouvement4 = new Mouvement(new Position(i, j), Direction.SUD);
-                Board transitionBoard = this.update(mouvement1, currentPlayer());
+                if(!board(i, j).estVide()) {
+                    Couleur couleur = board(i, j).getBille().getColor();
+                    if(couleur != Couleur.ROUGE) {
+                        Mouvement mouvement1 = new Mouvement(new Position(i, j), Direction.EST);
+                        Mouvement mouvement2 = new Mouvement(new Position(i, j), Direction.OUEST);
+                        Mouvement mouvement3 = new Mouvement(new Position(i, j), Direction.NORD);
+                        Mouvement mouvement4 = new Mouvement(new Position(i, j), Direction.SUD);
+                        Board transitionBoard = this.update(mouvement1, couleur);
+                        if(!transitionBoard.equals(this)) allMoves.add(mouvement1);
+                        transitionBoard = this.update(mouvement2, couleur);
+                        if(!transitionBoard.equals(this)) allMoves.add(mouvement2);
+                        transitionBoard = this.update(mouvement3, couleur);
+                        if(!transitionBoard.equals(this)) allMoves.add(mouvement3);
+                        transitionBoard = this.update(mouvement4, couleur);
+                        if(!transitionBoard.equals(this)) allMoves.add(mouvement4);
+                    }
+                }
             }
         }
         return allMoves;
     }
 
-    public Joueur currentPlayer() {
-        return null;
+    public Couleur currentPlayer() {
+        return currentPlayer;
     }
 }

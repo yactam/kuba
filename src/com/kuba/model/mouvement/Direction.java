@@ -1,4 +1,4 @@
-package model.mouvement;
+package com.kuba.model.mouvement;
 
 public enum Direction {
 	NORD(-1, 0), SUD(1, 0), OUEST(0, -1), EST(0, 1);
@@ -18,5 +18,15 @@ public enum Direction {
 	}
 	public Direction reverse() {
 		return reverse[this.ordinal()];
+	}
+
+	@Override
+	public String toString() {
+		return switch (this) {
+			case OUEST -> "OUEST";
+			case SUD -> "SUD";
+			case NORD -> "NORD";
+			case EST -> "EST";
+		};
 	}
 }

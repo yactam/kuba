@@ -5,7 +5,8 @@ public class Cell implements Cloneable {
     private Bille bille;
 
     void setBille(Bille bille) {
-        this.bille = bille;
+        if(this.bille == null) this.bille = new Bille(bille.getColor());
+        else this.bille = bille;
     }
 
     public Bille getBille() {
