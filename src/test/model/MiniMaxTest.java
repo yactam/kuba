@@ -77,4 +77,25 @@ class MiniMaxTest {
         assertEquals(mouvement, new Mouvement(new Position(0, 6), Direction.SUD));
     }
 
+    @Test
+    public void testCase5() {
+        Board board = new Board(2);
+        for(int i = 0; i < board.size(); i++) {
+            for(int j = 0; j < board.size(); j++) {
+                board.initCell(i, j);
+            }
+        }
+        board.board(0, 6).setBille(new Bille(Couleur.ROUGE));
+        board.board(1, 6).setBille(new Bille(Couleur.ROUGE));
+        board.board(2, 6).setBille(new Bille(Couleur.ROUGE));
+        board.board(3, 6).setBille(new Bille(Couleur.BLANC));
+        board.board(2, 2).setBille(new Bille(Couleur.BLANC));
+        board.board(3, 2).setBille(new Bille(Couleur.BLANC));
+        board.board(6, 6).setBille(new Bille(Couleur.NOIR));
+
+        MiniMax miniMax = new MiniMax(4);
+        Mouvement mouvement = miniMax.execute(board, Couleur.BLANC);
+        assertEquals(mouvement, new Mouvement(new Position(3, 6), Direction.NORD));
+    }
+
 }
