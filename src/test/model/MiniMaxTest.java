@@ -32,4 +32,50 @@ class MiniMaxTest {
         assertEquals(mouvement, new Mouvement(new Position(3, 6), Direction.NORD));
     }
 
+    @Test
+    public void testCase2() {
+        Board board = new Board(2);
+        for(int i = 0; i < board.size(); i++) {
+            for(int j = 0; j < board.size(); j++) {
+                board.initCell(i, j);
+            }
+        }
+        board.board(0, 6).setBille(new Bille(Couleur.NOIR));
+        board.board(1, 6).setBille(new Bille(Couleur.ROUGE));
+        board.board(2, 6).setBille(new Bille(Couleur.ROUGE));
+        board.board(3, 6).setBille(new Bille(Couleur.BLANC));
+
+        MiniMax miniMax = new MiniMax(4);
+        Mouvement mouvement = miniMax.execute(board, Couleur.NOIR);
+        assertEquals(mouvement, new Mouvement(new Position(0, 6), Direction.SUD));
+    }
+
+    @Test
+    public void testCase3() {
+        Board board = new Board(2);
+        board.initBoard();
+
+        MiniMax miniMax = new MiniMax(4);
+        Mouvement mouvement = miniMax.execute(board, Couleur.BLANC);
+        assertEquals(mouvement, new Mouvement(new Position(0, 0), Direction.SUD));
+    }
+
+    @Test
+    public void testCase4() {
+        Board board = new Board(2);
+        for(int i = 0; i < board.size(); i++) {
+            for(int j = 0; j < board.size(); j++) {
+                board.initCell(i, j);
+            }
+        }
+        board.board(0, 6).setBille(new Bille(Couleur.NOIR));
+        board.board(1, 6).setBille(new Bille(Couleur.ROUGE));
+        board.board(2, 6).setBille(new Bille(Couleur.ROUGE));
+        board.board(3, 6).setBille(new Bille(Couleur.BLANC));
+
+        MiniMax miniMax = new MiniMax(4);
+        Mouvement mouvement = miniMax.execute(board, Couleur.NOIR);
+        assertEquals(mouvement, new Mouvement(new Position(0, 6), Direction.SUD));
+    }
+
 }
