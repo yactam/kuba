@@ -1,5 +1,4 @@
 package model.plateau;
-import model.Bille;
 
 public class Cell implements Cloneable {
 
