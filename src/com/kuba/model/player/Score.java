@@ -1,4 +1,4 @@
-package model.player;
+package com.kuba.model.player;
 
 public class Score {
 

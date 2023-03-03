@@ -1,8 +1,8 @@
-package model.player;
+package com.kuba.model.player;
 
-import model.plateau.Couleur;
-import model.plateau.*;
-import model.mouvement.*;
+import com.kuba.model.plateau.Couleur;
+import com.kuba.model.plateau.*;
+import com.kuba.model.mouvement.*;
 
 public class Joueur {
 

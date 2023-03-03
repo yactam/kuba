@@ -1,10 +1,10 @@
-package model.plateau;
+package com.kuba.model.plateau;
 
 public class Cell implements Cloneable {
 
     private Bille bille;
 
-    void setBille(Bille bille) {
+    public void setBille(Bille bille) {
         if(this.bille == null) this.bille = new Bille(bille.getColor());
         else this.bille = bille;
     }
@@ -35,6 +35,7 @@ public class Cell implements Cloneable {
         }catch(Exception e){
             e.printStackTrace();
         }
+        assert c != null;
         c.bille = (bille != null) ? (Bille) bille.clone() : null;
         return c;
     }

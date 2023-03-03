@@ -1,13 +1,9 @@
+package com.kuba;
 
-import model.mouvement.Mouvement;
-import model.plateau.Couleur;
-import model.player.Joueur;
-import model.mouvement.Direction;
-import model.mouvement.Position;
-import model.plateau.Board;
-import vue.BoardView;
+import com.kuba.model.mouvement.Mouvement;
+import com.kuba.model.plateau.Board;
+import com.kuba.vue.BoardView;
 
-import javax.swing.*;
 import java.util.ArrayList;
 
 public class Main {

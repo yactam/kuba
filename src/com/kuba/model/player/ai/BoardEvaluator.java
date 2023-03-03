@@ -1,7 +1,9 @@
-package model.player.ai;
+package com.kuba.model.player.ai;
 
-import model.plateau.Board;
+import com.kuba.model.plateau.Board;
+import com.kuba.model.plateau.Couleur;
+
 
 public interface BoardEvaluator {
-    int evaluate(Board board);
+    int evaluate(Board board, Couleur joueur);
 }

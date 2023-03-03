@@ -1,4 +1,4 @@
-package model.plateau;
+package com.kuba.model.plateau;
 
 public class Bille implements Cloneable{
     private final Couleur color;

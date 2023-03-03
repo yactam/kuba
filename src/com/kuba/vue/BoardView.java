@@ -1,8 +1,8 @@
-package vue;
+package com.kuba.vue;
 
 
-import model.plateau.Bille;
-import model.plateau.Board;
+import com.kuba.model.plateau.Bille;
+import com.kuba.model.plateau.Board;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

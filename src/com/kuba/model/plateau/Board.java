@@ -1,9 +1,8 @@
-package model.plateau;
+package com.kuba.model.plateau;
 
-import model.mouvement.Mouvement;
-import model.player.Joueur;
-import model.mouvement.Direction;
-import model.mouvement.Position;
+import com.kuba.model.mouvement.Mouvement;
+import com.kuba.model.mouvement.Direction;
+import com.kuba.model.mouvement.Position;
 
 import java.util.*;
 
@@ -86,6 +85,10 @@ public class Board {
     private Cell board(Position pos) {
         return board[pos.getI()][pos.getJ()];
     }
+    //TODO remove after testing
+    public void initCell(int i, int j) {
+        board[i][j] = new Cell();
+    }
 
     public Cell board(int i, int j) {
         return board[i][j];
@@ -130,15 +133,15 @@ public class Board {
             next = next.next(dir);
         }
         Board transitionBoard = this.copyBoard();
-        Position fin = next;  // Pour revenir en arriere si le mouvement n'est pas valid (un curseur backup)
-        if(!estDansLimite(next)) { // là, il faut sortir les billes
+        //Position fin = next;  // Pour revenir en arriere si le mouvement n'est pas valid (un curseur backup)
+        if(!transitionBoard.estDansLimite(next)) { // là, il faut sortir les billes
             Position limit = next.prev(dir); // La limite du tableau
             transitionBoard.moveOut(limit, joueur);
-            fin = limit;
+            //fin = limit;
             next = next.prev(dir);
         }
 
-        while (!next.equals(pos) && board(next).estVide()) { // Décaler les pions
+        while (!next.equals(pos) && transitionBoard.board(next).estVide()) { // Décaler les pions
             Position prev = next.prev(dir);
             transitionBoard.updatePosition(prev, next);
             next = next.prev(dir);
@@ -181,6 +184,10 @@ public class Board {
 
     private boolean estDansLimite(Position position) {
         int i = position.getI(), j = position.getJ();
+        return i >= 0 && i < board.length && j >= 0 && j < board[i].length;
+    }
+
+    private boolean estDansLimite(int i, int j) {
         return i >= 0 && i < board.length && j >= 0 && j < board[i].length;
     }
 
@@ -240,25 +247,27 @@ public class Board {
         return red == 0 || black == 0 || white == 0;
     }
 
-    public Collection<Mouvement> getAllPossibleMoves() {
+    public Collection<Mouvement> getAllPossibleMoves(Couleur... couleurs) {
         List<Mouvement> allMoves = new ArrayList<>();
-        for(int i = 0; i < board.length; i++) {
-            for(int j = 0; j < board.length; j++) {
-                if(!board(i, j).estVide()) {
-                    Couleur couleur = board(i, j).getBille().getColor();
-                    if(couleur != Couleur.ROUGE) {
-                        Mouvement mouvement1 = new Mouvement(new Position(i, j), Direction.EST);
-                        Mouvement mouvement2 = new Mouvement(new Position(i, j), Direction.OUEST);
-                        Mouvement mouvement3 = new Mouvement(new Position(i, j), Direction.NORD);
-                        Mouvement mouvement4 = new Mouvement(new Position(i, j), Direction.SUD);
-                        Board transitionBoard = this.update(mouvement1, couleur);
-                        if(!transitionBoard.equals(this)) allMoves.add(mouvement1);
-                        transitionBoard = this.update(mouvement2, couleur);
-                        if(!transitionBoard.equals(this)) allMoves.add(mouvement2);
-                        transitionBoard = this.update(mouvement3, couleur);
-                        if(!transitionBoard.equals(this)) allMoves.add(mouvement3);
-                        transitionBoard = this.update(mouvement4, couleur);
-                        if(!transitionBoard.equals(this)) allMoves.add(mouvement4);
+        for(Couleur couleur : couleurs) {
+            for(int i = 0; i < board.length; i++) {
+                for(int j = 0; j < board.length; j++) {
+                    if(!board(i, j).estVide()) {
+                        Couleur c = board(i, j).getBille().getColor();
+                        if(couleur == c) {
+                            Mouvement mouvement1 = new Mouvement(new Position(i, j), Direction.EST);
+                            Mouvement mouvement2 = new Mouvement(new Position(i, j), Direction.OUEST);
+                            Mouvement mouvement3 = new Mouvement(new Position(i, j), Direction.NORD);
+                            Mouvement mouvement4 = new Mouvement(new Position(i, j), Direction.SUD);
+                            Board transitionBoard = this.update(mouvement1, couleur);
+                            if(!transitionBoard.equals(this)) allMoves.add(mouvement1);
+                            transitionBoard = this.update(mouvement2, couleur);
+                            if(!transitionBoard.equals(this)) allMoves.add(mouvement2);
+                            transitionBoard = this.update(mouvement3, couleur);
+                            if(!transitionBoard.equals(this)) allMoves.add(mouvement3);
+                            transitionBoard = this.update(mouvement4, couleur);
+                            if(!transitionBoard.equals(this)) allMoves.add(mouvement4);
+                        }
                     }
                 }
             }
@@ -268,5 +277,23 @@ public class Board {
 
     public Couleur currentPlayer() {
         return currentPlayer;
+    }
+
+    public boolean isFrontier(int i, int j) {
+        assert(!board(i ,j).estVide() && board(i, j).getBille().getColor() != Couleur.ROUGE);
+        if(estDansLimite(i-1, j) && board(i-1, j).estVide()) return true;
+        if(estDansLimite(i, j-1) && board(i, j-1).estVide()) return true;
+        if(estDansLimite(i+1, j) && board(i+1, j).estVide()) return true;
+        if(estDansLimite(i, j+1) && board(i, j+1).estVide()) return true;
+        return false;
+    }
+
+    public boolean inFrontOfRed(int i, int j) {
+        assert(!board(i ,j).estVide() && board(i, j).getBille().getColor() != Couleur.ROUGE);
+        if(estDansLimite(i-1, j) && !board(i-1, j).estVide() && board(i-1, j).getBille().getColor() == Couleur.ROUGE) return true;
+        if(estDansLimite(i, j-1) && !board(i, j-1).estVide() && board(i, j-1).getBille().getColor() == Couleur.ROUGE) return true;
+        if(estDansLimite(i+1, j) && !board(i+1, j).estVide() && board(i+1, j).getBille().getColor() == Couleur.ROUGE) return true;
+        if(estDansLimite(i, j+1) && !board(i, j+1).estVide() && board(i, j+1).getBille().getColor() == Couleur.ROUGE) return true;
+        return false;
     }
 }

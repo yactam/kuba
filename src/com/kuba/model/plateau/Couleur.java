@@ -1,4 +1,4 @@
-package model.plateau;
+package com.kuba.model.plateau;
 
 public enum Couleur {
     BLANC {
