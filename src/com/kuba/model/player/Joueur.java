@@ -45,8 +45,8 @@ public class Joueur {
         return score.getRouges();
     }
 
-    public void move(Board board, Position pos, Direction dir){
-        board.update(new Mouvement(pos, dir), this.couleur);
+    public Board move(Board board, Position pos, Direction dir){
+        return board.update(new Mouvement(pos, dir), this.couleur);
     }
 }
 

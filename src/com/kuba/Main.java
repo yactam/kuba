@@ -1,14 +1,19 @@
 package com.kuba;
 
+import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Mouvement;
+import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Board;
+import com.kuba.model.plateau.Couleur;
+import com.kuba.model.player.Joueur;
 import com.kuba.vue.BoardView;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        Board board = new Board(2);
+        Board board = new Board(3);
         BoardView boardView = new BoardView(board);
 
         board.initBoard();
@@ -19,7 +24,7 @@ public class Main {
         ArrayList<Mouvement> mouvements = (ArrayList<Mouvement>) board.getAllPossibleMoves();
         System.out.println(mouvements);
 
-        /*JFrame frame = new JFrame();
+        JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.add(boardView);
         frame.pack();
@@ -28,82 +33,82 @@ public class Main {
 
         Joueur joueur = new Joueur("EMMA", Couleur.BLANC, 18);
 
-        joueur.move(board ,new Position(0, 2), Direction.SUD);
+        board = joueur.move(board ,new Position(0, 2), Direction.SUD);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(1, 2), Direction.SUD);
+        board =joueur.move(board, new Position(1, 2), Direction.SUD);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(2, 2), Direction.SUD);
+        board = joueur.move(board, new Position(2, 2), Direction.SUD);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(3, 2), Direction.SUD);
+        board = joueur.move(board, new Position(3, 2), Direction.SUD);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(4, 2), Direction.SUD);
+        board = joueur.move(board, new Position(4, 2), Direction.SUD);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(5, 2), Direction.SUD);
+        board = joueur.move(board, new Position(5, 2), Direction.SUD);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(6, 2), Direction.EST);
+        board = joueur.move(board, new Position(6, 2), Direction.EST);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(7, 2), Direction.SUD);
+        board = joueur.move(board, new Position(7, 2), Direction.SUD);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(8, 2), Direction.SUD);
+        board = joueur.move(board, new Position(8, 2), Direction.SUD);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(9, 2), Direction.SUD);
+        board = joueur.move(board, new Position(9, 2), Direction.SUD);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(6, 3), Direction.EST);
+        board = joueur.move(board, new Position(6, 3), Direction.EST);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(6, 4), Direction.EST);
+        board = joueur.move(board, new Position(6, 4), Direction.EST);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(6, 5), Direction.EST);
+        board = joueur.move(board, new Position(6, 5), Direction.EST);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(6, 6), Direction.EST);
+        board = joueur.move(board, new Position(6, 6), Direction.EST);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(6, 7), Direction.EST);
+        board = joueur.move(board, new Position(6, 7), Direction.EST);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        joueur.move(board, new Position(6, 8), Direction.EST);
+        board = joueur.move(board, new Position(6, 8), Direction.EST);
         boardView.updateBoard(board);
         System.out.println(board);
         System.out.println(board.hashCode());
@@ -116,7 +121,7 @@ public class Main {
         joueur.move(board, new Position(6, 10), Direction.EST);
         boardView.updateBoard(board);
         System.out.println(board);
-        System.out.println(board.hashCode());*/
+        System.out.println(board.hashCode());
 
 
 

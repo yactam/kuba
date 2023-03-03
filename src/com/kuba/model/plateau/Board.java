@@ -115,6 +115,7 @@ public class Board {
     public Board update(Mouvement mouvement, Couleur joueur) {
         Position pos = mouvement.getPosition();
         Direction dir = mouvement.getDirection();
+        if(!estDansLimite(pos) || estVide(pos)) return this;
         // Le joueur ne peut bouger que les billes de sa propre couleur
         if(!ColorAt(pos).equals(joueur)) {
             //System.out.println("Le joueur ne peut bouger que les billes de sa propre couleur");
