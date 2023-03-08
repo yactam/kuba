@@ -59,6 +59,11 @@ public class Board extends JPanel implements SubjectObserver {
         initWhite();
         initBlack();
         initRed();
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board[i].length; j++) {
+                add(board(i,j));
+            }
+        }
         this.notifyObservers();
     }
 
@@ -287,9 +292,7 @@ public class Board extends JPanel implements SubjectObserver {
         drawGrid(graphics2D);
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board[i].length; j++) {
-                if(!board(j, i).estVide()) {
-                    add(board(i, j).getBille());
-                }
+                
             }
         }
     }

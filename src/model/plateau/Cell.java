@@ -1,14 +1,18 @@
 package model.plateau;
-import java.io.Serializable;
 
+import java.awt.Dimension;
+
+import javax.swing.JLabel;
 import model.Bille;
 
-class Cell implements Cloneable, Serializable {
+class Cell extends JLabel implements Cloneable {
 
     private Bille bille;
 
     void setBille(Bille bille) {
         this.bille = bille;
+        setIcon(bille.getIcon());
+        setPreferredSize(new Dimension(Bille.width, Bille.width));
     }
 
     public Bille getBille() {

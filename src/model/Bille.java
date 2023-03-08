@@ -2,8 +2,6 @@ package model;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,7 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Bille extends JLabel implements Cloneable{
+public class Bille implements Cloneable, Serializable{
     private Couleur color;
     public static final int width = 50;
     private transient ImageIcon image;
@@ -28,7 +26,10 @@ public class Bille extends JLabel implements Cloneable{
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        setIcon(image);
+    }
+
+    public ImageIcon getIcon(){
+        return image;
     }
 
     public Couleur getColor() { return color; }
