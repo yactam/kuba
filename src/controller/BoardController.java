@@ -15,7 +15,7 @@ import javax.swing.JFrame;
 public class BoardController extends JFrame{
     private Board boardModel;
     private BoardView boardView;
-    private boolean in;
+    private boolean in , controllPlayer;
     private Position coordinates;
     private Position coordinates2;
     private ArrayList<Joueur> joueurs;
@@ -79,11 +79,15 @@ public class BoardController extends JFrame{
                      try{
                      if(d!=null && coordinates!=null){ 
                         boardModel.update(coordinates, d, currentJoueur);
-                        changePlayer();
+                        controllPlayer=boardModel.move;
+                        if(controllPlayer){
+                            changePlayer();
+                        }
                         }
                     }
                     catch(Exception exception){
                         System.out.print("_");
+
                     }
                 }
             }

@@ -1,6 +1,6 @@
 package model.plateau;
 import observerpattern.Observer;
-import observerpattern.BoardChangedEvent;
+import observerpattern.Data;
 import observerpattern.Observable;
 import java.util.*;
 
@@ -11,13 +11,14 @@ import model.mouvement.Direction;
 import model.mouvement.Position;
 
 
-public class Board implements Observable<BoardChangedEvent>{
+public class Board implements Observable<Data>,Data{
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
     private final Set<Integer> treated_confs;
-    private ArrayList<Observer<BoardChangedEvent>> elementObs;
-    private BoardChangedEvent change;
+    private ArrayList<Observer<Data>> elementObs;
+    private Data dataBoard;
+    public boolean move,moveS;
 
     public Board(int n) {
         this.treated_confs = new HashSet<>();
@@ -25,7 +26,8 @@ public class Board implements Observable<BoardChangedEvent>{
         int k = 4 * n - 1;
         board = new Cell[k][k];
         keys  = new Long[3][k*k];
-        elementObs = new ArrayList<Observer<BoardChangedEvent>>();
+        elementObs = new ArrayList<Observer<Data>>();
+        dataBoard=this;
         initKeys();
     }
 
@@ -46,7 +48,6 @@ public class Board implements Observable<BoardChangedEvent>{
         initWhite();
         initBlack();
         initRed();
-        change = new BoardChangedEvent(board,board);
         this.notifyObservers();
     }
 
@@ -87,13 +88,16 @@ public class Board implements Observable<BoardChangedEvent>{
         }
     }
 
+    @Override
     public int size() {
         return board.length;
     }
+
     public Cell board(Position pos) {
         return board[pos.getI()][pos.getJ()];
     }
-
+    
+    @Override
     public Cell board(int i, int j) {
         return board[i][j];
     }
@@ -118,11 +122,14 @@ public class Board implements Observable<BoardChangedEvent>{
     }
 
     public void update(Position pos, Direction dir, Joueur joueur) {
-        if(pos==null || dir==null || joueur==null)return;
-
+        if(pos==null || dir==null || joueur==null){
+            move=false;
+            return;
+        }
         // Le joueur ne peut bouger que les billes de sa propre couleur
         if(!ColorAt(pos).equals(joueur.getCouleur())) {
             System.out.println("Le joueur ne peut bouger que les billes de sa propre couleur");
+            move=false;
             return;
         }
 
@@ -130,6 +137,7 @@ public class Board implements Observable<BoardChangedEvent>{
         if(estDansLimite(pos.prev(dir)) && !estVide(pos.prev(dir))) {
             System.out.println(pos.prev(dir));
             System.out.println("Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger");
+            move=false;
             return;
         }
 
@@ -143,6 +151,10 @@ public class Board implements Observable<BoardChangedEvent>{
             moveOut(limit, joueur);
             fin = limit;
             next = next.prev(dir);
+            moveS=true;
+        }
+        else{
+            moveS=false;
         }
 
         while (!next.equals(pos) && board(next).estVide()) { // Décaler les pions
@@ -159,10 +171,11 @@ public class Board implements Observable<BoardChangedEvent>{
                 next = next.next(dir);
             }
         } else {
+            if(moveS){move=false;}
+            else{move=true;}
             treated_confs.add(hash_code);
         }
-
-        change = new BoardChangedEvent(board,board);
+        dataBoard=this;
         this.notifyObservers();
     }
 
@@ -220,21 +233,27 @@ public class Board implements Observable<BoardChangedEvent>{
     public int getN() {
     	return this.n;
     }
+
+    @Override
     public Cell[][] getCellBoard(){
     	return this.board;
     }
 
 
     @Override
-    public void addObserver(Observer<BoardChangedEvent> o) {
+    public void addObserver(Observer<Data> o) {
         elementObs.add(o);
     }
 
     @Override
     public void notifyObservers(){
-        for(Observer<BoardChangedEvent> o : elementObs) {
-            o.update(change);
+        for(Observer<Data> o : elementObs) {
+            o.update(dataBoard);
         }
+    }
+
+    public Data getData(){
+        return this.dataBoard;
     }
 
     @Override

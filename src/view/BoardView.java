@@ -7,19 +7,17 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import observerpattern.*;
-import model.plateau.*;
 import model.Bille;
 
-public class BoardView extends JPanel implements Observer<BoardChangedEvent>{
-    private Cell[][] board;
+public class BoardView extends JPanel implements Observer<Data>{
+    private Data board;
     public static final int billeWidth = 50;
     private BufferedImage red, black, white;
 
-    public BoardView(Board board) {
-        this.board = board.getCellBoard();
+    public BoardView(Data board){
+        this.board = board;
         initBille();
         setPreferredSize(new Dimension(billeWidth * board.size(), billeWidth * board.size()));
-        this.board = new Cell[board.getN()*4- 1][board.getN()*4- 1];
     }
 
     private void initBille() {
@@ -41,10 +39,10 @@ public class BoardView extends JPanel implements Observer<BoardChangedEvent>{
         Graphics2D graphics2D = (Graphics2D) g;
         super.paintComponent(g);
         drawGrid(graphics2D);
-        for(int i = 0; i < board.length; i++) {
-            for(int j = 0; j < board.length; j++) {
-                if(!board[j][i].estVide()) {
-                    Bille bille = board[j][i].getBille();
+        for(int i = 0; i < board.getCellBoard().length; i++) {
+            for(int j = 0; j < board.getCellBoard().length; j++) {
+                if(!board.board(j, i).estVide()) {
+                    Bille bille = board.board(j, i).getBille();
                     BufferedImage image = switch (bille.getColor()) {
                         case NOIR -> black;
                         case ROUGE -> red;
@@ -59,9 +57,9 @@ public class BoardView extends JPanel implements Observer<BoardChangedEvent>{
     private void drawGrid(Graphics2D graphics2D) {
         graphics2D.setColor(Color.LIGHT_GRAY);
         graphics2D.fillRect(0, 0, getWidth(), getHeight());
-        for(int i = 0; i < board.length; i++) {
-            for(int j = 0; j < board.length; j++) {
-                if(i != board.length-1 && j != board.length-1) {
+        for(int i = 0; i < board.getCellBoard().length; i++) {
+            for(int j = 0; j < board.getCellBoard().length; j++) {
+                if(i != board.getCellBoard().length-1 && j != board.getCellBoard().length-1) {
                     graphics2D.setColor(Color.BLACK);
                     graphics2D.drawRect(j * billeWidth + (billeWidth / 2), i * billeWidth + (billeWidth / 2), billeWidth, billeWidth);
                 }
@@ -70,8 +68,8 @@ public class BoardView extends JPanel implements Observer<BoardChangedEvent>{
     }
 
     @Override
-    public void update(BoardChangedEvent e){
-        board = e.getNewcells();
+    public void update(Data e){
+        board = e;
         this.repaint();
     }
 }
