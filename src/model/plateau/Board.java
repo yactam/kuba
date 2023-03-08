@@ -54,16 +54,12 @@ public class Board extends JPanel implements SubjectObserver {
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board[i].length; j++) {
                 board[i][j] = new Cell();
+                add(board(i,j));
             }
         }
         initWhite();
         initBlack();
         initRed();
-        for(int i = 0; i < board.length; i++) {
-            for(int j = 0; j < board[i].length; j++) {
-                add(board(i,j));
-            }
-        }
         this.notifyObservers();
     }
 

@@ -1,6 +1,9 @@
 package model.plateau;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import javax.swing.JLabel;
 import model.Bille;
@@ -10,8 +13,8 @@ class Cell extends JLabel implements Cloneable {
     private Bille bille;
 
     void setBille(Bille bille) {
+        setBackground(Color.LIGHT_GRAY);
         this.bille = bille;
-        setIcon(bille.getIcon());
         setPreferredSize(new Dimension(Bille.width, Bille.width));
     }
 
@@ -43,6 +46,14 @@ class Cell extends JLabel implements Cloneable {
         }
         c.bille = (bille != null) ? (Bille) bille.clone() : null;
         return c;
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        if (!estVide()){
+            Graphics2D graphics2D = (Graphics2D) g;
+            graphics2D.drawImage(bille.image(), 0, 0, Bille.width, Bille.width, null);
+        }
     }
 
 }

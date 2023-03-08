@@ -1,7 +1,6 @@
 package model;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,7 +11,7 @@ import java.util.Objects;
 public class Bille implements Cloneable, Serializable{
     private Couleur color;
     public static final int width = 50;
-    private transient ImageIcon image;
+    private transient BufferedImage image;
 
     public Bille(Couleur c){
         color = c;
@@ -22,19 +21,15 @@ public class Bille implements Cloneable, Serializable{
             case ROUGE -> "red";
         };
         try {
-            image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/resources/" + imageDesc + ".png")));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/" + imageDesc + ".png")));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public ImageIcon getIcon(){
-        return image;
-    }
-
     public Couleur getColor() { return color; }
 
-    public ImageIcon image() {
+    public BufferedImage image() {
         return image;
     }
 
@@ -53,13 +48,13 @@ public class Bille implements Cloneable, Serializable{
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         out.writeObject(color); 
-        ImageIO.write((BufferedImage)image.getImage(), "png", out); 
+        ImageIO.write(image, "png", out); 
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         color = (Couleur) in.readObject();
-        image = new ImageIcon(ImageIO.read(in));
+        image = ImageIO.read(in);
     }
 
 }
