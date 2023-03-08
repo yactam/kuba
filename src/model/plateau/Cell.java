@@ -1,21 +1,29 @@
 package model.plateau;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JLabel;
 import model.Bille;
 
-class Cell extends JLabel implements Cloneable {
+class Cell extends JLabel implements Cloneable, MouseMotionListener, MouseListener{
 
     private Bille bille;
+    private int i=0,j=0;
+    private int clickedX, clickedY;
+
+    public Cell(){
+        addMouseMotionListener(this);
+        addMouseListener(this);
+    }
 
     void setBille(Bille bille) {
-        setBackground(Color.LIGHT_GRAY);
+        setBackground(Color.red);
         this.bille = bille;
-        setPreferredSize(new Dimension(Bille.width, Bille.width));
     }
 
     public Bille getBille() {
@@ -52,8 +60,49 @@ class Cell extends JLabel implements Cloneable {
     public void paintComponent(Graphics g) {
         if (!estVide()){
             Graphics2D graphics2D = (Graphics2D) g;
-            graphics2D.drawImage(bille.image(), 0, 0, Bille.width, Bille.width, null);
+            graphics2D.drawImage(bille.image(), i, j,
+                                                 Bille.width, Bille.width, null);
         }
+    }
+   
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        this.i = (e.getX() - clickedX);
+        this.j = (e.getY() - clickedY);
+        repaint();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        return;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+       return;
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        System.out.println("aa");
+        clickedX = e.getX();
+        clickedY = e.getY();
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        return;
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        return;
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        return;
     }
 
 }

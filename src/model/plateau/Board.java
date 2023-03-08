@@ -9,7 +9,6 @@ import model.Joueur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
 import javax.swing.*;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
