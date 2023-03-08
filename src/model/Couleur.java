@@ -1,8 +1,6 @@
 package model;
 
-import java.io.Serializable;
-
-public enum Couleur implements Serializable {
+public enum Couleur {
     BLANC,
     NOIR,
     ROUGE

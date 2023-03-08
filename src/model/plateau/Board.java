@@ -7,18 +7,14 @@ import model.Couleur;
 import model.Joueur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
-
 import javax.swing.*;
-import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.*;
 
 
-public class Board extends JPanel implements Serializable {
+public class Board extends JPanel implements SubjectObserver {
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
@@ -31,16 +27,8 @@ public class Board extends JPanel implements Serializable {
         int k = 4 * n - 1;
         board = new Cell[k][k];
         keys  = new Long[3][k*k];
-        elementObs = new ArrayList<Observer>();
+        elementObs = new ArrayList<>();
         initKeys();
-    }
-
-    public int lenght(){
-        return board.length;
-    }
-
-    public int height(){
-        return board[0].length;
     }
 
     private static void initKeys() {
@@ -100,9 +88,7 @@ public class Board extends JPanel implements Serializable {
         }
     }
 
-    public int size() {
-        return board.length;
-    }
+    
     private Cell board(Position pos) {
         return board[pos.getI()][pos.getJ()];
     }
@@ -253,6 +239,35 @@ public class Board extends JPanel implements Serializable {
         if(o == this) return true;
         if(!(o instanceof Board)) return false;
         return o.hashCode() == this.hashCode();
+    }
+
+    public void save(String path){
+        try{
+        FileOutputStream fileOutputStream
+            = new FileOutputStream(path);
+        ObjectOutputStream objectOutputStream 
+        = new ObjectOutputStream(fileOutputStream);
+        objectOutputStream.writeObject(this);
+        objectOutputStream.flush();
+        objectOutputStream.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static Board load(String path){
+        try{
+            FileInputStream fileInputStream
+                = new FileInputStream(path);
+            ObjectInputStream objectInputStream
+                = new ObjectInputStream(fileInputStream);
+            Board b = (Board) objectInputStream.readObject();
+            objectInputStream.close();
+            return b;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
