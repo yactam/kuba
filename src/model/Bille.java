@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Bille implements Cloneable, Serializable{
     private Couleur color;
@@ -14,9 +15,23 @@ public class Bille implements Cloneable, Serializable{
 
     public Bille(Couleur c){
         color = c;
+        String imageDesc = switch (color) {
+            case NOIR -> "black";
+            case BLANC -> "white";
+            case ROUGE -> "red";
+        };
+        try {
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/" + imageDesc + ".png")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Couleur getColor() { return color; }
+
+    public BufferedImage image() {
+        return image;
+    }
 
     @Override
     public String toString() {

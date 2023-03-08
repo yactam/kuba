@@ -1,4 +1,5 @@
 package model.plateau;
+
 import java.util.*;
 import observerpattern.*;
 import observerpattern.Observer;
@@ -8,6 +9,11 @@ import model.Joueur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
 import javax.swing.*;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -20,8 +26,10 @@ public class Board extends JPanel implements SubjectObserver {
     private final int n;
     private final Set<Integer> treated_confs;
     private ArrayList<Observer> elementObs;
+    private static int size = 50;
 
     public Board(int n) {
+        setBackground(Color.red);
         this.treated_confs = new HashSet<>();
         this.n = n;
         int k = 4 * n - 1;
@@ -29,6 +37,7 @@ public class Board extends JPanel implements SubjectObserver {
         keys  = new Long[3][k*k];
         elementObs = new ArrayList<>();
         initKeys();
+        setPreferredSize(new Dimension(k*size, k*size));
     }
 
     private static void initKeys() {
@@ -243,13 +252,13 @@ public class Board extends JPanel implements SubjectObserver {
 
     public void save(String path){
         try{
-        FileOutputStream fileOutputStream
-            = new FileOutputStream(path);
-        ObjectOutputStream objectOutputStream 
-        = new ObjectOutputStream(fileOutputStream);
-        objectOutputStream.writeObject(this);
-        objectOutputStream.flush();
-        objectOutputStream.close();
+            FileOutputStream fileOutputStream
+                = new FileOutputStream(path);
+            ObjectOutputStream objectOutputStream 
+            = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(this);
+            objectOutputStream.flush();
+            objectOutputStream.close();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -268,6 +277,33 @@ public class Board extends JPanel implements SubjectObserver {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        Graphics2D graphics2D = (Graphics2D) g;
+        drawGrid(graphics2D);
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board[i].length; j++) {
+                if(!board(j, i).estVide()) {
+                    int width = Bille.width;
+                    graphics2D.drawImage(board(j, i).getBille().image(), width * i, width * j, width, width, null);
+                }
+            }
+        }
+    }
+
+    private void drawGrid(Graphics2D graphics2D) {
+        graphics2D.setColor(Color.LIGHT_GRAY);
+        graphics2D.fillRect(0, 0, getWidth(), getHeight());
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board[i].length; j++) {
+                if(i != board.length-1 && j != board[i].length-1) {
+                    graphics2D.setColor(Color.BLACK);
+                    graphics2D.drawRect(j * Bille.width + (Bille.width / 2), i * Bille.width + (Bille.width / 2), Bille.width, Bille.width);
+                }
+            }
+        }
     }
 
 }
