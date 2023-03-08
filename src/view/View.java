@@ -16,12 +16,13 @@ public class View extends JFrame {
     JTextField playerOne = new JTextField("Joueur 1");
     JTextField playerTwo = new JTextField("Joueur 2");
     JButton start;
+    JPanel menu, match;
     
     public View(){
         this.setSize(1200,900);
         this.setTitle("Kuba");
         accessor = this;
-        JPanel menu = new JPanel(null);
+        menu = new JPanel(null);
         
         Integer[] choices = {1, 2, 3, 4, 5};
         boardSizes = new JComboBox<Integer>(choices);
@@ -31,7 +32,7 @@ public class View extends JFrame {
         start.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int N = boardSizes.getSelectedIndex()+1;
-                JPanel match = new MatchView(N,
+                match = new MatchView(N,
                 new Joueur(playerOne.getText(), Couleur.BLANC, N*N*2),
                 new Joueur(playerTwo.getText(), Couleur.NOIR, N*N*2));
                 JFrame frame = View.accessor;
@@ -52,6 +53,10 @@ public class View extends JFrame {
         menu.add(playerTwo);
         menu.add(start);
 
+        this.setContentPane(menu);
+    }
+
+    public void restart(){
         this.setContentPane(menu);
     }
 }
