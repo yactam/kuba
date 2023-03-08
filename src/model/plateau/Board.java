@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -38,6 +39,7 @@ public class Board extends JPanel implements SubjectObserver {
         elementObs = new ArrayList<>();
         initKeys();
         setPreferredSize(new Dimension(k*size, k*size));
+        setLayout(new GridLayout(k, k));
     }
 
     private static void initKeys() {
@@ -286,8 +288,7 @@ public class Board extends JPanel implements SubjectObserver {
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board[i].length; j++) {
                 if(!board(j, i).estVide()) {
-                    int width = Bille.width;
-                    graphics2D.drawImage(board(j, i).getBille().image(), width * i, width * j, width, width, null);
+                    add(board(i, j).getBille());
                 }
             }
         }
