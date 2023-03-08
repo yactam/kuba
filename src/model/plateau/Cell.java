@@ -1,7 +1,9 @@
 package model.plateau;
+import java.io.Serializable;
+
 import model.Bille;
 
-public class Cell implements Cloneable{
+class Cell implements Cloneable, Serializable {
 
     private Bille bille;
 

@@ -5,40 +5,81 @@ import model.Joueur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
 import model.plateau.Board;
-import view.BoardView;
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
         Board board = new Board(3);
-        BoardView b = new BoardView(board);
-        board.addObserver(b);
         board.initBoard();
         System.out.println(board);
         System.out.println(board.hashCode());
-        
-        JFrame f = new JFrame();
-        f.add(b);
-        f.pack();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.show();
-       
-        Joueur a = new Joueur("test",Couleur.BLANC,16);
-        
-        a.move(board,new Position(0, 2), Direction.SUD);
+
+        Joueur joueur = new Joueur("EMMA", Couleur.BLANC, 18);
+
+        joueur.move(board ,new Position(0, 2), Direction.SUD);
         System.out.println(board);
         //System.out.println(board.hashCode());
 
-        a.move(board,new Position(1, 2), Direction.SUD);
+        joueur.move(board, new Position(3, 2), Direction.SUD);
         System.out.println(board);
         System.out.println(board.hashCode());
 
-        a.move(board,new Position(3, 2), Direction.NORD);
+        joueur.move(board, new Position(4, 2), Direction.SUD);
         System.out.println(board);
-        //System.out.println(board.hashCode());
+        System.out.println(board.hashCode());
 
-        //board.initBoard();
-        //System.out.println(board);
-        //System.out.println(board.hashCode());
-        
+        joueur.move(board, new Position(5, 2), Direction.SUD);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        joueur.move(board, new Position(6, 2), Direction.EST);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        joueur.move(board, new Position(7, 2), Direction.SUD);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        joueur.move(board, new Position(8, 2), Direction.SUD);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        joueur.move(board, new Position(9, 2), Direction.SUD);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        joueur.move(board, new Position(6, 3), Direction.EST);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        joueur.move(board, new Position(6, 4), Direction.EST);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        joueur.move(board, new Position(6, 5), Direction.EST);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        joueur.move(board, new Position(6, 6), Direction.EST);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        joueur.move(board, new Position(6, 7), Direction.EST);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        joueur.move(board, new Position(6, 8), Direction.EST);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        joueur.move(board, new Position(6, 9), Direction.EST);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        joueur.move(board, new Position(6, 10), Direction.EST);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+        board.save("./board1");
+
     }
 }

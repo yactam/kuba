@@ -8,7 +8,17 @@ import model.Joueur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
 
-public class Board implements SubjectObserver{
+import javax.swing.*;
+import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.*;
+
+
+public class Board extends JPanel implements Serializable {
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
@@ -23,6 +33,14 @@ public class Board implements SubjectObserver{
         keys  = new Long[3][k*k];
         elementObs = new ArrayList<Observer>();
         initKeys();
+    }
+
+    public int lenght(){
+        return board.length;
+    }
+
+    public int height(){
+        return board[0].length;
     }
 
     private static void initKeys() {
@@ -236,4 +254,5 @@ public class Board implements SubjectObserver{
         if(!(o instanceof Board)) return false;
         return o.hashCode() == this.hashCode();
     }
+
 }
