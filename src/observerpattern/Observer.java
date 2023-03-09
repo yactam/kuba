@@ -1,5 +1,7 @@
 package observerpattern;
 
+
 public interface Observer {
-    void update(SubjectObserver subject);
+    void update();
+    void notifySubject(Observer b);
 }

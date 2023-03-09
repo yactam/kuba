@@ -1,9 +1,10 @@
 package model;
 
 import model.plateau.*;
+import observerpattern.Observer;
 import model.mouvement.*;
 
-public class Joueur {
+public class Joueur implements Observer{
 
     private final String nom;
     private Score score;
@@ -46,6 +47,20 @@ public class Joueur {
 
     public void move(Board board, Position pos, Direction dir){
         board.update(pos, dir, this);
+    }
+
+    @Override
+    public void update() {
+        return;
+    }
+
+    @Override
+    public void notifySubject(Observer b) {
+        return;
+    }
+
+    public void notify(Cell c, Board b){
+        move(b, c.getPos(), c.getMoveDirection());
     }
 }
 

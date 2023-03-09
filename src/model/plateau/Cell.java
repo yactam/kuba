@@ -6,19 +6,47 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
 import javax.swing.JLabel;
 import model.Bille;
+import model.Joueur;
+import model.mouvement.Direction;
+import model.mouvement.Position;
+import observerpattern.Observer;
 
-class Cell extends JLabel implements Cloneable, MouseMotionListener, MouseListener{
+public class Cell extends JLabel implements Cloneable, MouseMotionListener, MouseListener, Observer{
 
+    private Board board;
+    private Joueur currentJoueur;
     private Bille bille;
     private int i=0,j=0;
     private int clickedX, clickedY;
+    private int x,y;
 
-    public Cell(){
+    public Cell(Board board, int x, int y){
+        this.board = board;
+        this.x = x;
+        this.y = y;
         addMouseMotionListener(this);
         addMouseListener(this);
+    }
+
+    public void setJoueur(Joueur joueur){
+        this.currentJoueur = joueur;
+    }
+
+    public int getX(){
+        return x;
+    }
+
+    public int getY(){
+        return y;
+    }
+
+    public Direction getMoveDirection(){
+        if (i>0) return Direction.EST;
+        else if (i<0) return Direction.OUEST;
+        else if (j>0) return Direction.SUD;
+        else return Direction.NORD;
     }
 
     void setBille(Bille bille) {
@@ -71,6 +99,7 @@ class Cell extends JLabel implements Cloneable, MouseMotionListener, MouseListen
         this.i = (e.getX() - clickedX);
         this.j = (e.getY() - clickedY);
         repaint();
+        notifySubject(currentJoueur);
     }
 
     @Override
@@ -85,7 +114,6 @@ class Cell extends JLabel implements Cloneable, MouseMotionListener, MouseListen
 
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println("aa");
         clickedX = e.getX();
         clickedY = e.getY();
     }
@@ -103,6 +131,22 @@ class Cell extends JLabel implements Cloneable, MouseMotionListener, MouseListen
     @Override
     public void mouseExited(MouseEvent e) {
         return;
+    }
+
+    @Override
+    public void update() {
+        this.i = 0;
+        this.j = 0;    
+    }
+
+    @Override
+    public void notifySubject(Observer ob) {
+        Joueur joueur = (Joueur) ob;
+        joueur.notify(this, board);
+    }
+
+    public Position getPos(){
+        return new Position(i, j);
     }
 
 }

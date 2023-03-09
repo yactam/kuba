@@ -1,13 +1,14 @@
 package model.plateau;
 
 import java.util.*;
-import observerpattern.*;
-import observerpattern.Observer;
 import model.Bille;
 import model.Couleur;
 import model.Joueur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
+import observerpattern.Observer;
+import observerpattern.SubjectObserver;
+
 import javax.swing.*;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,22 +21,21 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 
-public class Board extends JPanel implements SubjectObserver {
+public class Board extends JPanel implements SubjectObserver{
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
     private final Set<Integer> treated_confs;
-    private ArrayList<Observer> elementObs;
     private static int size = 50;
+    private ArrayList<Observer> observers;
 
     public Board(int n) {
-        setBackground(Color.red);
+        observers = new ArrayList<>();
         this.treated_confs = new HashSet<>();
         this.n = n;
         int k = 4 * n - 1;
         board = new Cell[k][k];
         keys  = new Long[3][k*k];
-        elementObs = new ArrayList<>();
         initKeys();
         setPreferredSize(new Dimension(k*size, k*size));
         setLayout(new GridLayout(k, k));
@@ -52,14 +52,13 @@ public class Board extends JPanel implements SubjectObserver {
     public void initBoard() {
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board[i].length; j++) {
-                board[i][j] = new Cell();
+                board[i][j] = new Cell(this, i, j);
                 add(board(i,j));
             }
         }
         initWhite();
         initBlack();
         initRed();
-        this.notifyObservers();
     }
 
     private void initWhite() {
@@ -171,8 +170,6 @@ public class Board extends JPanel implements SubjectObserver {
         } else {
             treated_confs.add(hash_code);
         }
-
-        this.notifyObservers();
     }
 
     private void moveOut(Position limit, Joueur joueur) {
@@ -234,18 +231,6 @@ public class Board extends JPanel implements SubjectObserver {
     }
 
     @Override
-    public void addObserver(Observer o) {
-        elementObs.add(o);
-    }
-
-    @Override
-    public void notifyObservers(){
-        for(Observer o : elementObs) {
-            o.update(this);
-        }
-    }
-
-    @Override
     public boolean equals(Object o) {
         if(o == this) return true;
         if(!(o instanceof Board)) return false;
@@ -285,11 +270,6 @@ public class Board extends JPanel implements SubjectObserver {
     public void paintComponent(Graphics g) {
         Graphics2D graphics2D = (Graphics2D) g;
         drawGrid(graphics2D);
-        for(int i = 0; i < board.length; i++) {
-            for(int j = 0; j < board[i].length; j++) {
-                
-            }
-        }
     }
 
     private void drawGrid(Graphics2D graphics2D) {
@@ -302,6 +282,18 @@ public class Board extends JPanel implements SubjectObserver {
                     graphics2D.drawRect(j * Bille.width + (Bille.width / 2), i * Bille.width + (Bille.width / 2), Bille.width, Bille.width);
                 }
             }
+        }
+    }
+
+    @Override
+    public void addObserver(Observer ob) {
+        observers.add(ob);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer o:observers){
+            o.update();
         }
     }
 
