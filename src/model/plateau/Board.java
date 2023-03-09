@@ -10,13 +10,12 @@ import model.Joueur;
 import model.mouvement.Direction;
 import model.mouvement.Position;
 
-
 public class Board implements Observable<Data>,Data{
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
     private final Set<Integer> treated_confs;
-    private ArrayList<Observer<Data>> elementObs;
+    public ArrayList<Observer<Data>> elementObs;
     private Data dataBoard;
     public boolean move,moveS;
 

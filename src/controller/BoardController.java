@@ -10,12 +10,10 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import model.Joueur;
 import model.Couleur;
-import javax.swing.JFrame;
-
-public class BoardController extends JFrame{
+import javax.swing.*;
+public class BoardController {
     private Board boardModel;
-    private BoardView boardView;
-    private boolean in , controllPlayer;
+    private boolean controllPlayer;
     private Position coordinates;
     private Position coordinates2;
     private ArrayList<Joueur> joueurs;
@@ -23,9 +21,6 @@ public class BoardController extends JFrame{
   
     public BoardController(Board board){
         this.boardModel = board;
-        this.boardView = new BoardView(boardModel);
-        initController();
-        link();
         initJoueur();
         testEnterPanel();
     }
@@ -37,42 +32,22 @@ public class BoardController extends JFrame{
         currentJoueur = joueurs.get(0);
     }
 
-    public void initController(){
-        this.setTitle("Plateau Kuba");
-        this.add(boardView);
-        this.pack();
-        this.show();
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-    public void link(){
-        boardModel.addObserver(boardView);
-        boardModel.initBoard();
-    }
+    public JPanel getObserver(){
+        return (JPanel)boardModel.elementObs.get(0);
+    } 
 
     public void testEnterPanel(){
-        boardView.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                if (boardView.contains(e.getPoint())) {
-                    in=true;
-                }
-            }
-            @Override
-            public void mouseExited(MouseEvent e) {
-                in=false;
-            }
-        
+        this.getObserver().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(in){
+                if(getObserver().contains(e.getPoint())){
                     coordinates = positionConvert(e.getPoint()); 
                 }
             }
             
             @Override
             public void mouseReleased(MouseEvent e) {
-                if(in){
+                if(getObserver().contains(e.getPoint())){
                    coordinates2 = positionConvert(e.getPoint());
                      if(coordinates!=null){
                      Direction d = coordinates.nextDir(coordinates2);
@@ -87,7 +62,6 @@ public class BoardController extends JFrame{
                     }
                     catch(Exception exception){
                         System.out.print("_");
-
                     }
                 }
             }

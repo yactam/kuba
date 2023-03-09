@@ -66,7 +66,7 @@ public class BoardView extends JPanel implements Observer<Data>{
             }
         }
     }
-
+    
     @Override
     public void update(Data e){
         board = e;
