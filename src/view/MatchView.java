@@ -3,7 +3,6 @@ package view;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import model.plateau.Board;
 import model.Joueur;
 
@@ -16,6 +15,8 @@ public class MatchView extends JPanel{
         plateau = new Board(N);
         plateau.initBoard();
         System.out.println(plateau);
+        plateau.addJoueur(j1);
+        plateau.addJoueur(j2);
         plateau.setBorder(new EmptyBorder(0, 0, getHeight(), getHeight()));
         p1 = new PlayerView(j1);
         p2 = new PlayerView(j2);

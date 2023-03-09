@@ -8,18 +8,18 @@ import model.mouvement.Direction;
 import model.mouvement.Position;
 import observerpattern.Observer;
 import observerpattern.SubjectObserver;
-
 import javax.swing.*;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 
 public class Board extends JPanel implements SubjectObserver{
     private final Cell[][] board;
@@ -28,8 +28,11 @@ public class Board extends JPanel implements SubjectObserver{
     private final Set<Integer> treated_confs;
     private static int size = 50;
     private ArrayList<Observer> observers;
+    private ArrayList<Joueur> joueurs;
+    private int currentPlayer;
 
     public Board(int n) {
+        joueurs = new ArrayList<>();
         observers = new ArrayList<>();
         this.treated_confs = new HashSet<>();
         this.n = n;
@@ -37,8 +40,28 @@ public class Board extends JPanel implements SubjectObserver{
         board = new Cell[k][k];
         keys  = new Long[3][k*k];
         initKeys();
-        setPreferredSize(new Dimension(k*size, k*size));
         setLayout(new GridLayout(k, k));
+        setPreferredSize(new Dimension(k*size, k*size));
+        addListenner();
+    }
+
+    public void addListenner(){
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent event){
+                System.out.println("key pressed");
+                notifyObservers(event.getKeyCode());
+            }
+        });
+    }
+
+    public void addJoueur(Joueur j){
+        joueurs.add(j);
+        observers.add(j);
+    }
+
+    public Joueur getJoueur(){
+        return this.joueurs.get(currentPlayer);
     }
 
     private static void initKeys() {
@@ -53,7 +76,8 @@ public class Board extends JPanel implements SubjectObserver{
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board[i].length; j++) {
                 board[i][j] = new Cell(this, i, j);
-                add(board(i,j));
+                add(board(i, j));
+                addObserver(board(i, j));
             }
         }
         initWhite();
@@ -270,6 +294,14 @@ public class Board extends JPanel implements SubjectObserver{
     public void paintComponent(Graphics g) {
         Graphics2D graphics2D = (Graphics2D) g;
         drawGrid(graphics2D);
+        for (int i=0;i<board.length;i++){
+            for (int j=0;j<board.length;j++){
+                if (!board(i,j).estVide()){
+                    graphics2D.drawImage(board(i, j).getBille().image(), i*Bille.width, j*Bille.width,
+                                                         Bille.width, Bille.width, null);
+                }
+            }
+        }
     }
 
     private void drawGrid(Graphics2D graphics2D) {
@@ -291,10 +323,14 @@ public class Board extends JPanel implements SubjectObserver{
     }
 
     @Override
-    public void notifyObservers() {
+    public void notifyObservers(Object obj) {
         for (Observer o:observers){
-            o.update();
+            o.update(obj);
         }
+    }
+
+    public void nextPlayer(){
+        currentPlayer = (1+currentPlayer)%joueurs.size();
     }
 
 }
