@@ -16,7 +16,6 @@ public class Board implements Observable<Data>,Data{
     private final int n;
     private final Set<Integer> treated_confs;
     public ArrayList<Observer<Data>> elementObs;
-    private Data dataBoard;
     public boolean move,moveS;
 
     public Board(int n) {
@@ -26,7 +25,6 @@ public class Board implements Observable<Data>,Data{
         board = new Cell[k][k];
         keys  = new Long[3][k*k];
         elementObs = new ArrayList<Observer<Data>>();
-        dataBoard=this;
         initKeys();
     }
 
@@ -174,7 +172,6 @@ public class Board implements Observable<Data>,Data{
             else{move=true;}
             treated_confs.add(hash_code);
         }
-        dataBoard=this;
         this.notifyObservers();
     }
 
@@ -233,13 +230,6 @@ public class Board implements Observable<Data>,Data{
     	return this.n;
     }
 
-    @Override
-    public Cell[][] getCellBoard(){
-    	return this.board;
-    }
-
-
-    @Override
     public void addObserver(Observer<Data> o) {
         elementObs.add(o);
     }
@@ -247,14 +237,22 @@ public class Board implements Observable<Data>,Data{
     @Override
     public void notifyObservers(){
         for(Observer<Data> o : elementObs) {
-            o.update(dataBoard);
+            o.update(this);
         }
     }
 
     public Data getData(){
-        return this.dataBoard;
+        return this;
     }
 
+    @Override
+    public boolean libre(int i,int j){
+        return board[i][j].estVide();
+    }
+    @Override
+    public Bille obtenirBille(int i, int j){
+        return board[i][j].getBille();
+    }
     @Override
     public boolean equals(Object o) {
         if(o == this) return true;
