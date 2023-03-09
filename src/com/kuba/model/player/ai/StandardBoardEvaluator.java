@@ -5,7 +5,7 @@ import com.kuba.model.plateau.Couleur;
 
 public class StandardBoardEvaluator implements BoardEvaluator {
     private static final int BONUS_FRONTIER = 0; // It's good to be free in one side to move
-    private static final int BONUS_RED = 20; // It's good to be next to red discs
+    private static final int BONUS_RED = 0; // It's good to be next to red discs
     private static final int BONUS_PIECE = 30; // It's good to have pieces
     private static final int GET_OUT_RED = 100; // In order to force the AI to get out the red discs
     private static final int BONUS_MOVE = 10; // It's good to have more moves

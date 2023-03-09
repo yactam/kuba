@@ -16,7 +16,7 @@ import static java.lang.Thread.sleep;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        Board board = new Board(3);
+        Board board = new Board(2);
         BoardView boardView = new BoardView(board);
 
         board.initBoard();
@@ -72,19 +72,17 @@ public class Main {
         System.out.println(board.hashCode());*/
 
 
-        MiniMax miniMax = new MiniMax(10); // Blanc
-        MiniMax miniMax0 = new MiniMax(10); // Noir
+        MiniMax miniMax = new MiniMax(3); // Blanc
+        MiniMax miniMax0 = new MiniMax(3); // Noir
 
         while(!board.gameOver()) {
             Mouvement m1 = miniMax.execute(board, Couleur.BLANC);
             board = board.update(m1, Couleur.BLANC);
             boardView.updateBoard(board);
-            sleep(500);
             Mouvement m2 = miniMax0.execute(board, Couleur.NOIR);
             System.out.println("\t" + m2);
             board = board.update(m2, Couleur.NOIR);
             boardView.updateBoard(board);
-            sleep(500);
         }
 
         /*Joueur joueur = new Joueur("EMMA", Couleur.BLANC, 18);

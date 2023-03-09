@@ -61,7 +61,7 @@ public class MiniMax implements MoveStrategy {
         }
 
         int min = Integer.MAX_VALUE;
-        for(Mouvement move : board.getAllPossibleMoves()) {
+        for(Mouvement move : board.getAllPossibleMoves(joueur)) {
             Board boardTransition = board.update(move, board.currentPlayer());
             int currentValue = max(boardTransition, joueur, depth-1);
             if(currentValue < min) min = currentValue;
@@ -78,7 +78,7 @@ public class MiniMax implements MoveStrategy {
         }
 
         int max = Integer.MIN_VALUE;
-        for(Mouvement move : board.getAllPossibleMoves()) {
+        for(Mouvement move : board.getAllPossibleMoves(joueur)) {
             Board boardTransition = board.update(move, board.currentPlayer());
             int currentValue = min(boardTransition, joueur, depth-1);
             if(currentValue > max) max = currentValue;
