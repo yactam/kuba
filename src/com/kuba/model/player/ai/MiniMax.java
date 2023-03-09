@@ -24,17 +24,18 @@ public class MiniMax implements MoveStrategy {
         System.out.println("************************************************************************\n");
         System.out.println(joueur + " is THINKING with depth = " + depthSearch + " ...");
         int i = 0;
+        Board tmp = board.copyBoard();
         for(Mouvement mouvement : board.getAllPossibleMoves(joueur)) {
             System.out.println("\t testing movement " + (++i));
-            Board transitionBoard = board.update(mouvement, joueur);
-            currentValue = board.currentPlayer().equals(Couleur.BLANC) ?
+            Board transitionBoard = tmp.update(mouvement, joueur);
+            currentValue = tmp.currentPlayer().equals(Couleur.BLANC) ?
                            min(transitionBoard, joueur, depthSearch-1) : max(transitionBoard, joueur, depthSearch-1);
-            if(!transitionBoard.equals(board)) { // Their was a valid mouvement
-                if(currentValue > max && board.currentPlayer().equals(Couleur.BLANC)) {
+            if(!transitionBoard.equals(tmp)) { // Their was a valid mouvement
+                if(currentValue > max && tmp.currentPlayer().equals(Couleur.BLANC)) {
                     max = currentValue;
                     System.out.println("\t\tNew Best move found");
                     bestMove = mouvement;
-                } else if(currentValue < min && board.currentPlayer().equals(Couleur.NOIR)) {
+                } else if(currentValue < min && tmp.currentPlayer().equals(Couleur.NOIR)) {
                     min = currentValue;
                     System.out.println("\t\tNew Best move found");
                     bestMove = mouvement;
@@ -45,6 +46,7 @@ public class MiniMax implements MoveStrategy {
         final long executionTime = System.currentTimeMillis() - startTime;
 
         System.out.println("Search ended for the player " + joueur + " after " + executionTime + "ms");
+        System.out.println(board.hashCode());
         System.out.println("\n************************************************************************\n");
 
         return bestMove;

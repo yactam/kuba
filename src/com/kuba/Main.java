@@ -1,6 +1,5 @@
 package com.kuba;
 
-import com.kuba.controller.Controller;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.Position;
@@ -25,7 +24,6 @@ public class Main {
         System.out.println(board.hashCode());
         boardView.updateBoard(board);
 
-
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.add(boardView);
@@ -33,26 +31,60 @@ public class Main {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        /*board = board.update(new Mouvement(new Position(0,0), Direction.SUD), Couleur.BLANC);
+        /*board = board.update(new Mouvement(new Position(0, 0), Direction.SUD), Couleur.BLANC);
+        boardView.updateBoard(board);
         System.out.println(board);
+        System.out.println(board.hashCode());
 
-        System.out.println(board.getAllPossibleMoves(Couleur.NOIR));*/
+        board = board.update(new Mouvement(new Position(0, 2), Direction.SUD), Couleur.NOIR);
+        boardView.updateBoard(board);
+        System.out.println(board);
+        System.out.println(board.hashCode());
 
-        MiniMax miniMax = new MiniMax(100); // Blanc
-        MiniMax miniMax0 = new MiniMax(100); // Noir
+        board = board.update(new Mouvement(new Position(1, 0), Direction.SUD), Couleur.BLANC);
+        boardView.updateBoard(board);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        board = board.update(new Mouvement(new Position(1, 2), Direction.SUD), Couleur.NOIR);
+        boardView.updateBoard(board);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        board = board.update(new Mouvement(new Position(0, 2), Direction.NORD), Couleur.BLANC);
+        boardView.updateBoard(board);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        board = board.update(new Mouvement(new Position(2, 2), Direction.NORD), Couleur.NOIR);
+        boardView.updateBoard(board);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        board = board.update(new Mouvement(new Position(1, 0), Direction.SUD), Couleur.BLANC);
+        boardView.updateBoard(board);
+        System.out.println(board);
+        System.out.println(board.hashCode());
+
+        board = board.update(new Mouvement(new Position(1, 2), Direction.SUD), Couleur.NOIR);
+        boardView.updateBoard(board);
+        System.out.println(board);
+        System.out.println(board.hashCode());*/
+
+
+        MiniMax miniMax = new MiniMax(10); // Blanc
+        MiniMax miniMax0 = new MiniMax(10); // Noir
 
         while(!board.gameOver()) {
             Mouvement m1 = miniMax.execute(board, Couleur.BLANC);
             board = board.update(m1, Couleur.BLANC);
             boardView.updateBoard(board);
-            System.out.println(board.hashCode());
-            sleep(3000);
+            sleep(500);
             Mouvement m2 = miniMax0.execute(board, Couleur.NOIR);
             System.out.println("\t" + m2);
             board = board.update(m2, Couleur.NOIR);
             boardView.updateBoard(board);
-            sleep(3000);
-            System.out.println(board.hashCode());
+            sleep(500);
         }
 
         /*Joueur joueur = new Joueur("EMMA", Couleur.BLANC, 18);
