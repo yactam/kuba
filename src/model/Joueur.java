@@ -58,8 +58,8 @@ public class Joueur implements Observer{
     @Override
     public void update(Object obj) {
         int code = (int) obj;
-        int i = chosedCell.getPos().getI(), j = chosedCell.getPos().getJ();
         if (chosedCell != null){
+            int i = chosedCell.getPos().getI(), j = chosedCell.getPos().getJ();
             System.out.println("moving cell at x="+i+
                         ",y="+j);  
             switch(code){
@@ -77,7 +77,7 @@ public class Joueur implements Observer{
                 break;
                 case 40:
                     if (move(board, chosedCell.getPos(), Direction.SUD))
-                        chosedCell = board.board(+1, j);
+                        chosedCell = board.board(i+1, j);
                 break;
                 default:return;
             }
