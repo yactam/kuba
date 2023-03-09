@@ -73,10 +73,11 @@ public class Joueur implements Observer{
                 break;
                 case 39:
                     if (move(board, chosedCell.getPos(), Direction.EST))
-                        chosedCell = board.board(i, j)
+                        chosedCell = board.board(i, j+1);
                 break;
                 case 40:
-                    move(board, chosedCell.getPos(), Direction.SUD);
+                    if (move(board, chosedCell.getPos(), Direction.SUD))
+                        chosedCell = board.board(+1, j);
                 break;
                 default:return;
             }
