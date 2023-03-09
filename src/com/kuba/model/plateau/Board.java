@@ -3,15 +3,16 @@ package com.kuba.model.plateau;
 import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Position;
+import com.kuba.vue.BoardView;
 
 import java.util.*;
 
 
 public class Board {
     private final Cell[][] board;
-    private static Long[][] keys;
+    public static Long[][] keys;
     private final int n;
-    private final Set<Integer> treated_configs;
+    private Set<Integer> treated_configs;
     private Couleur currentPlayer = Couleur.BLANC;
 
     public Board(int n) {
@@ -19,14 +20,16 @@ public class Board {
         this.n = n;
         int k = 4 * n - 1;
         board = new Cell[k][k];
-        keys  = new Long[3][k*k];
-        initKeys();
+        if(keys == null) initKeys();
     }
 
-    private static void initKeys() {
+    private void initKeys() {
+        int k = this.size();
+        keys  = new Long[3][k*k];
+        Random random = new Random();
         for(int i = 0; i < keys.length; i++) {
             for(int j = 0; j < keys[i].length; j++) {
-                keys[i][j] = new Random().nextLong();
+                keys[i][j] = random.nextLong();
             }
         }
     }
@@ -118,14 +121,14 @@ public class Board {
         if(!estDansLimite(pos) || estVide(pos)) return this;
         // Le joueur ne peut bouger que les billes de sa propre couleur
         if(!ColorAt(pos).equals(joueur)) {
-            //System.out.println("Le joueur ne peut bouger que les billes de sa propre couleur");
+            System.out.println("Le joueur ne peut bouger que les billes de sa propre couleur");
             return this;
         }
 
         // Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger
         if(estDansLimite(pos.prev(dir)) && !estVide(pos.prev(dir))) {
             //System.out.println(pos.prev(dir));
-            //System.out.println("Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger");
+            System.out.println("Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger");
             return this;
         }
 
@@ -134,11 +137,9 @@ public class Board {
             next = next.next(dir);
         }
         Board transitionBoard = this.copyBoard();
-        //Position fin = next;  // Pour revenir en arriere si le mouvement n'est pas valid (un curseur backup)
         if(!transitionBoard.estDansLimite(next)) { // là, il faut sortir les billes
             Position limit = next.prev(dir); // La limite du tableau
             transitionBoard.moveOut(limit, joueur);
-            //fin = limit;
             next = next.prev(dir);
         }
 
@@ -148,18 +149,20 @@ public class Board {
             next = next.prev(dir);
         }
 
-        int hash_code = hashCode(); // KO
+        int hash_code = transitionBoard.hashCode(); // KO
         if(isTreated(hash_code)) {
+            System.out.println("KO");
             return this;
         } else {
-            treated_configs.add(hash_code);
+            transitionBoard.treated_configs.add(hash_code);
             currentPlayer = currentPlayer.opposite();
             return transitionBoard;
         }
     }
 
-    private Board copyBoard() {
+    public Board copyBoard() {
         Board res = new Board(this.n);
+        res.treated_configs = new HashSet<>(treated_configs);
         for (int i=0;i<board.length;i++){
             for (int j=0;j<board[i].length;j++){
                 res.board[i][j] = new Cell();
@@ -210,7 +213,7 @@ public class Board {
 
     @Override
     public int hashCode() {
-        long zobristHash = 0;
+        int zobristHash = 0;
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board[i].length; j++) {
                 if(!board(i, j).estVide()) {
@@ -222,14 +225,14 @@ public class Board {
                 }
             }
         }
-        return (int) zobristHash;
+        return zobristHash;
     }
 
     @Override
     public boolean equals(Object o) {
         if(o == this) return true;
-        if(!(o instanceof Board)) return false;
-        return o.hashCode() == this.hashCode();
+        if(!(o instanceof Board b)) return false;
+        return b.hashCode() == this.hashCode();
     }
 
     public boolean gameOver() {
@@ -250,6 +253,7 @@ public class Board {
 
     public Collection<Mouvement> getAllPossibleMoves(Couleur... couleurs) {
         List<Mouvement> allMoves = new ArrayList<>();
+        Board tmp = copyBoard();
         for(Couleur couleur : couleurs) {
             for(int i = 0; i < board.length; i++) {
                 for(int j = 0; j < board.length; j++) {
@@ -260,14 +264,18 @@ public class Board {
                             Mouvement mouvement2 = new Mouvement(new Position(i, j), Direction.OUEST);
                             Mouvement mouvement3 = new Mouvement(new Position(i, j), Direction.NORD);
                             Mouvement mouvement4 = new Mouvement(new Position(i, j), Direction.SUD);
-                            Board transitionBoard = this.update(mouvement1, couleur);
-                            if(!transitionBoard.equals(this)) allMoves.add(mouvement1);
-                            transitionBoard = this.update(mouvement2, couleur);
-                            if(!transitionBoard.equals(this)) allMoves.add(mouvement2);
-                            transitionBoard = this.update(mouvement3, couleur);
-                            if(!transitionBoard.equals(this)) allMoves.add(mouvement3);
-                            transitionBoard = this.update(mouvement4, couleur);
-                            if(!transitionBoard.equals(this)) allMoves.add(mouvement4);
+                            Board transitionBoard = tmp.update(mouvement1, couleur);
+                            if(!transitionBoard.equals(tmp) && !isTreated(transitionBoard.hashCode()))
+                                allMoves.add(mouvement1);
+                            transitionBoard = tmp.update(mouvement2, couleur);
+                            if(!transitionBoard.equals(tmp) && !isTreated(transitionBoard.hashCode()))
+                                allMoves.add(mouvement2);
+                            transitionBoard = tmp.update(mouvement3, couleur);
+                            if(!transitionBoard.equals(tmp) && !isTreated(transitionBoard.hashCode()))
+                                allMoves.add(mouvement3);
+                            transitionBoard = tmp.update(mouvement4, couleur);
+                            if(!transitionBoard.equals(tmp) && !isTreated(transitionBoard.hashCode()))
+                                allMoves.add(mouvement4);
                         }
                     }
                 }

@@ -1,18 +1,22 @@
 package com.kuba;
 
+import com.kuba.controller.Controller;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
+import com.kuba.model.player.ai.MiniMax;
 import com.kuba.vue.BoardView;
 
 import javax.swing.*;
 import java.util.ArrayList;
 
+import static java.lang.Thread.sleep;
+
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Board board = new Board(3);
         BoardView boardView = new BoardView(board);
 
@@ -21,8 +25,6 @@ public class Main {
         System.out.println(board.hashCode());
         boardView.updateBoard(board);
 
-        ArrayList<Mouvement> mouvements = (ArrayList<Mouvement>) board.getAllPossibleMoves();
-        System.out.println(mouvements);
 
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -31,7 +33,29 @@ public class Main {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        Joueur joueur = new Joueur("EMMA", Couleur.BLANC, 18);
+        /*board = board.update(new Mouvement(new Position(0,0), Direction.SUD), Couleur.BLANC);
+        System.out.println(board);
+
+        System.out.println(board.getAllPossibleMoves(Couleur.NOIR));*/
+
+        MiniMax miniMax = new MiniMax(100); // Blanc
+        MiniMax miniMax0 = new MiniMax(100); // Noir
+
+        while(!board.gameOver()) {
+            Mouvement m1 = miniMax.execute(board, Couleur.BLANC);
+            board = board.update(m1, Couleur.BLANC);
+            boardView.updateBoard(board);
+            System.out.println(board.hashCode());
+            sleep(3000);
+            Mouvement m2 = miniMax0.execute(board, Couleur.NOIR);
+            System.out.println("\t" + m2);
+            board = board.update(m2, Couleur.NOIR);
+            boardView.updateBoard(board);
+            sleep(3000);
+            System.out.println(board.hashCode());
+        }
+
+        /*Joueur joueur = new Joueur("EMMA", Couleur.BLANC, 18);
 
         board = joueur.move(board ,new Position(0, 2), Direction.SUD);
         boardView.updateBoard(board);
@@ -121,7 +145,9 @@ public class Main {
         joueur.move(board, new Position(6, 10), Direction.EST);
         boardView.updateBoard(board);
         System.out.println(board);
-        System.out.println(board.hashCode());
+        System.out.println(board.hashCode());*/
+
+        //Controller controller = new Controller(board);
 
 
 

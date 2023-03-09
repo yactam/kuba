@@ -46,6 +46,7 @@ public class BoardView extends JPanel {
 
     public void updateBoard(Board board) {
         this.board = board;
+        repaint();
     }
 
     @Override

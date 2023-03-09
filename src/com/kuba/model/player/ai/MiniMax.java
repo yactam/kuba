@@ -52,7 +52,9 @@ public class MiniMax implements MoveStrategy {
     }
 
     public int min(Board board, Couleur joueur, int depth) {
+        System.out.println("min");
         if(depth == 0 || board.gameOver()) {
+            System.out.println("game over");
             return this.boardEvaluator.evaluate(board, joueur);
         }
 
@@ -67,7 +69,9 @@ public class MiniMax implements MoveStrategy {
     }
 
     public int max(Board board, Couleur joueur, int depth) {
+        System.out.println("max");
         if(depth == 0 || board.gameOver()) {
+            System.out.println("game over");
             return this.boardEvaluator.evaluate(board, joueur);
         }
 
