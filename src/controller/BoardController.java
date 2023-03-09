@@ -2,8 +2,8 @@ package controller;
 import model.plateau.Board;
 import model.mouvement.*;
 import view.BoardView;
-
-import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -15,12 +15,13 @@ public class BoardController {
     private Board boardModel;
     private boolean controllPlayer;
     private Position coordinates;
-    private Position coordinates2;
     private ArrayList<Joueur> joueurs;
     private Joueur currentJoueur;
-  
+    private KeyHandler key;
+
     public BoardController(Board board){
         this.boardModel = board;
+        key = new KeyHandler();
         initJoueur();
         testEnterPanel();
     }
@@ -36,35 +37,15 @@ public class BoardController {
         return (JPanel)boardModel.elementObs.get(0);
     } 
 
+
     public void testEnterPanel(){
         this.getObserver().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                System.out.println("Click ");
                 if(getObserver().contains(e.getPoint())){
                     coordinates = positionConvert(e.getPoint()); 
                 }
-            }
-            
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if(getObserver().contains(e.getPoint())){
-                   coordinates2 = positionConvert(e.getPoint());
-                     if(coordinates!=null){
-                     Direction d = coordinates.nextDir(coordinates2);
-                     try{
-                     if(d!=null && coordinates!=null){ 
-                        boardModel.update(coordinates, d, currentJoueur);
-                        controllPlayer=boardModel.move;
-                        if(controllPlayer){
-                            changePlayer();
-                        }
-                        }
-                    }
-                    catch(Exception exception){
-                        System.out.print("_");
-                    }
-                }
-            }
             }
         });
     }
@@ -83,4 +64,58 @@ public class BoardController {
             currentJoueur = joueurs.get(0);
         }
     }
+
+    public void deplacement(Direction d){
+        try{
+            if(d!=null && coordinates!=null){ 
+                boardModel.update(coordinates, d, currentJoueur);
+                controllPlayer=boardModel.move;
+                if(controllPlayer){
+                    changePlayer();
+                }
+            }
+        }
+        catch(Exception e){
+            System.out.println("_");
+        }
+    }
+
+    public class KeyHandler implements KeyListener{
+		@Override
+	    public void keyTyped(KeyEvent e) {}
+		@Override
+		public void keyPressed(KeyEvent e) {
+            try{
+            Direction d;
+			switch(e.getKeyCode()) {
+			case KeyEvent.VK_UP :  
+                d=Direction.NORD; 
+                deplacement(d);
+			break;
+			case KeyEvent.VK_LEFT :  
+                d= Direction.OUEST;
+                deplacement(d);
+                break;
+			case KeyEvent.VK_RIGHT:  
+			    d= Direction.EST;
+                deplacement(d);
+			    break;
+			case KeyEvent.VK_DOWN :  
+                d= Direction.SUD;
+                deplacement(d); 
+			    break;
+            }
+            }catch(Exception ex){
+                System.out.println("^");
+         	}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {}
+}
+
+    public KeyHandler getKey(){
+        return key;
+    }
+
 }

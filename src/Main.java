@@ -11,7 +11,9 @@ public class Main {
         BoardView v = new BoardView(mod);
         mod.addObserver(v);
         BoardController c = new BoardController(mod);
-        c.testEnterPanel();
+        
+        v.addKeyListener(c.getKey());
+        v.setFocusable(true);
 
         JFrame frame = new JFrame();
         frame.setTitle("Plateau Kuba"); 
