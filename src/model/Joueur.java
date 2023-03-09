@@ -13,7 +13,7 @@ public class Joueur {
 
     public Joueur(String nom, Couleur couleur, int nbBille) {
         this.nom = nom;
-        this.score = new Score(0, nbBille);
+        this.score = new Joueur.Score(0, nbBille);
         this.couleur = couleur;
     }
 
@@ -48,5 +48,34 @@ public class Joueur {
     public void move(Board board, Position pos, Direction dir){
         board.update(pos, dir, this);
     }
+
+
+ static class Score {
+
+    private int nbBillesRouges;
+    private int nbBillesAdversaire;
+
+    public Score(int nbBillesRouges, int nbBillesAdversaire) {
+        this.nbBillesRouges = nbBillesRouges;
+        this.nbBillesAdversaire = nbBillesAdversaire;
+    }
+
+    public void updateRouges() {
+        nbBillesRouges++;
+    }
+
+    public void updateAdversaire() {
+        nbBillesAdversaire++;
+    }
+
+    public int getRouges() {
+        return nbBillesRouges;
+    }
+
+    public int getAdversaire() {
+        return nbBillesAdversaire;
+    }
+}
+
 }
 
