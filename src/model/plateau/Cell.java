@@ -34,7 +34,8 @@ public class Cell extends JLabel implements Cloneable, MouseListener, Observer{
     }
 
     public Bille getBille() {
-        return (Bille) bille.clone();
+        if (bille != null) return (Bille) bille.clone();
+        else return null;
     }
 
     public boolean estVide() {
@@ -70,7 +71,6 @@ public class Cell extends JLabel implements Cloneable, MouseListener, Observer{
 
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println("player notified");
         notifySubject(board.getJoueur());
     }
 

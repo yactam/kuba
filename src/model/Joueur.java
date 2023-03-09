@@ -2,10 +2,6 @@ package model;
 
 import model.plateau.*;
 import observerpattern.Observer;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
 import model.mouvement.*;
 
 public class Joueur implements Observer{
@@ -55,24 +51,29 @@ public class Joueur implements Observer{
         return score.getRouges();
     }
 
-    public void move(Board board, Position pos, Direction dir){
-        board.update(pos, dir, this);
+    public boolean move(Board board, Position pos, Direction dir){
+        return board.update(pos, dir, this);
     }
 
     @Override
     public void update(Object obj) {
         int code = (int) obj;
+        int i = chosedCell.getPos().getI(), j = chosedCell.getPos().getJ();
         if (chosedCell != null){
-            System.out.println("code : "+code);
+            System.out.println("moving cell at x="+i+
+                        ",y="+j);  
             switch(code){
                 case 37:
-                    move(board, chosedCell.getPos(), Direction.OUEST);
+                    if (move(board, chosedCell.getPos(), Direction.OUEST)) 
+                        chosedCell = board.board(i, j-1);
                 break;
                 case 38:
-                    move(board, chosedCell.getPos(), Direction.NORD);
+                    if (move(board, chosedCell.getPos(), Direction.NORD))
+                        chosedCell = board.board(i-1, j);
                 break;
                 case 39:
-                    move(board, chosedCell.getPos(), Direction.EST);
+                    if (move(board, chosedCell.getPos(), Direction.EST))
+                        chosedCell = board.board(i, j)
                 break;
                 case 40:
                     move(board, chosedCell.getPos(), Direction.SUD);
@@ -80,7 +81,6 @@ public class Joueur implements Observer{
                 default:return;
             }
         }
-        chosedCell = null;
     }
 
     @Override

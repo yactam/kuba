@@ -13,6 +13,8 @@ public class MatchView extends JPanel{
 
     public MatchView(int N, Joueur j1, Joueur j2){
         plateau = new Board(N);
+        j1.setBoard(plateau);
+        j2.setBoard(plateau);
         plateau.initBoard();
         System.out.println(plateau);
         plateau.addJoueur(j1);
@@ -25,6 +27,10 @@ public class MatchView extends JPanel{
         players.add(p2);
         this.add(plateau, BorderLayout.WEST);
         this.add(players);
+    }
+
+    public void keyPressed(int code){
+        plateau.keyPressed(code);
     }
 
     public void update(){

@@ -13,8 +13,17 @@ public class View extends JFrame {
     JTextField playerOne = new JTextField("Joueur 1");
     JTextField playerTwo = new JTextField("Joueur 2");
     JButton start;
+    MatchView match;
     
     public View(){
+        setFocusable(true);
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent event){
+                System.out.println("key pressed");
+                if (match != null) match.keyPressed(event.getKeyCode());
+            }
+        });
         this.setSize(1200,900);
         this.setTitle("Kuba");
         accessor = this;
@@ -28,7 +37,7 @@ public class View extends JFrame {
         start.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int N = boardSizes.getSelectedIndex()+1;
-                JPanel match = new MatchView(N,
+                match = new MatchView(N,
                 new Joueur(playerOne.getText(), Couleur.BLANC, N*N*2),
                 new Joueur(playerTwo.getText(), Couleur.NOIR, N*N*2));
                 JFrame frame = View.accessor;

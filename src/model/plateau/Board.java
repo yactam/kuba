@@ -14,8 +14,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -42,17 +40,6 @@ public class Board extends JPanel implements SubjectObserver{
         initKeys();
         setLayout(new GridLayout(k, k));
         setPreferredSize(new Dimension(k*size, k*size));
-        addListenner();
-    }
-
-    public void addListenner(){
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent event){
-                System.out.println("key pressed");
-                notifyObservers(event.getKeyCode());
-            }
-        });
     }
 
     public void addJoueur(Joueur j){
@@ -62,6 +49,10 @@ public class Board extends JPanel implements SubjectObserver{
 
     public Joueur getJoueur(){
         return this.joueurs.get(currentPlayer);
+    }
+
+    public void keyPressed(int code){
+        notifyObservers(code);
     }
 
     private static void initKeys() {
@@ -152,18 +143,18 @@ public class Board extends JPanel implements SubjectObserver{
 
 
 
-    public void update(Position pos, Direction dir, Joueur joueur) {
+    public boolean update(Position pos, Direction dir, Joueur joueur) {
         // Le joueur ne peut bouger que les billes de sa propre couleur
         if(!ColorAt(pos).equals(joueur.getCouleur())) {
             System.out.println("Le joueur ne peut bouger que les billes de sa propre couleur");
-            return;
+            return false;
         }
 
         // Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger
         if(estDansLimite(pos.prev(dir)) && !estVide(pos.prev(dir))) {
             System.out.println(pos.prev(dir));
             System.out.println("Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger");
-            return;
+            return false;
         }
 
         Position next = pos.next(dir); // Trouver la limite
@@ -191,9 +182,12 @@ public class Board extends JPanel implements SubjectObserver{
                 updatePosition(suiv, next);
                 next = next.next(dir);
             }
+            return false;
         } else {
+            repaint();
             treated_confs.add(hash_code);
         }
+        return true;
     }
 
     private void moveOut(Position limit, Joueur joueur) {
@@ -296,8 +290,8 @@ public class Board extends JPanel implements SubjectObserver{
         drawGrid(graphics2D);
         for (int i=0;i<board.length;i++){
             for (int j=0;j<board.length;j++){
-                if (!board(i,j).estVide()){
-                    graphics2D.drawImage(board(i, j).getBille().image(), i*Bille.width, j*Bille.width,
+                if (!board(j, i).estVide()){
+                    graphics2D.drawImage(board(j, i).getBille().image(), i*Bille.width, j*Bille.width,
                                                          Bille.width, Bille.width, null);
                 }
             }
