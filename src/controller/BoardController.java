@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import model.Joueur;
 import model.Couleur;
 import javax.swing.*;
+
 public class BoardController {
     private Board boardModel;
     private boolean controllPlayer;
@@ -18,7 +19,6 @@ public class BoardController {
     private ArrayList<Joueur> joueurs;
     private Joueur currentJoueur;
     private KeyHandler key;
-
     public BoardController(Board board){
         this.boardModel = board;
         key = new KeyHandler();
@@ -37,12 +37,10 @@ public class BoardController {
         return (JPanel)boardModel.elementObs.get(0);
     } 
 
-
     public void testEnterPanel(){
         this.getObserver().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("Click ");
                 if(getObserver().contains(e.getPoint())){
                     coordinates = positionConvert(e.getPoint()); 
                 }
@@ -73,10 +71,15 @@ public class BoardController {
                 if(controllPlayer){
                     changePlayer();
                 }
+                else{
+                    coordinates=coordinates.next(d);
+                }
             }
         }
         catch(Exception e){
-            System.out.println("_");
+            e.printStackTrace();
+            System.out.println("--------------------------");
+
         }
     }
 
