@@ -1,12 +1,13 @@
 package view;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.*;
-import java.io.File;
+import java.io.IOException;
+
 import javax.swing.*;
 
 import model.Couleur;
-import model.plateau.Board;
 import model.Joueur;
 
 public class View extends JFrame {
@@ -14,27 +15,42 @@ public class View extends JFrame {
     JComboBox<String> boardSizes;
     JTextField playerOne = new JTextField("Joueur 1");
     JTextField playerTwo = new JTextField("Joueur 2");
+    JCheckBox botOne, botTwo;
     JButton start;
-    JPanel menu, match;
-    JLabel title, background;
+    JLabel menu, game;
+    JPanel match;
     
-    public View(){
-        setSize(1200,900);
+    public View() throws IOException {
+        setSize(1000,735);
         setTitle("Kuba");
         setLayout(null);
-        accessor = this;
-        menu = new JPanel(null);
-        menu.setSize(1200,900);
         
-        ImageIcon img1 = new ImageIcon("../resources/main_title.png");
-        title = new JLabel(img1, JLabel.CENTER);
-        ImageIcon img2 = new ImageIcon("../resources/background.png");
-        background = new JLabel(img2, JLabel.CENTER);
+        accessor = this;
+        menu = new JLabel("",new ImageIcon("src/resources/main_title.png"), JLabel.CENTER);
+        game = new JLabel("",new ImageIcon("src/resources/background.png"), JLabel.CENTER);
+        
 
         String[] choices = {"3x3", "7x7", "11x11", "15x15", "19x19"};
         boardSizes = new JComboBox<String>(choices);
         boardSizes.setSelectedIndex(1);
-        
+
+        botOne = new JCheckBox("Utiliser un bot");
+        botOne.setForeground(Color.WHITE);
+        botOne.setBackground(new Color(0,0,0,100));
+        botTwo = new JCheckBox("Utiliser un bot");
+        botTwo.setForeground(Color.WHITE);
+        botTwo.setBackground(new Color(0,0,0,100));
+
+        playerOne.setBackground(new Color(255,255,255,70));
+        playerOne.setFont(new Font("Arial", Font.BOLD, 18));
+        playerTwo.setBackground(new Color(255,255,255,70));
+        playerTwo.setFont(new Font("Arial", Font.BOLD, 18));
+
+        JLabel text = new JLabel("Taille du plateau");
+        text.setFont(new Font("Arial", Font.BOLD, 18));
+        text.setForeground(Color.white);
+        text.setBackground(new Color(0,0,0,70));
+;        
         start = new JButton("Lancer");
         start.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -43,32 +59,38 @@ public class View extends JFrame {
                 new Joueur(playerOne.getText(), Couleur.BLANC, N*N*2),
                 new Joueur(playerTwo.getText(), Couleur.NOIR, N*N*2));
                 JFrame frame = View.accessor;
-                frame.remove(match);
-                frame.add(match);
+                match.setBounds(50,50,930,630);
+                game.add(match);
+                frame.setContentPane(game);
+                frame.invalidate();
+                frame.validate();
             } 
             
         });
 
-        title.setBounds(0,0,1200,900);
-        background.setBounds(0,0,1200,900);
-
-        playerOne.setBounds(180,200,200,50);
-        playerTwo.setBounds(820,200,200,50);
-        start.setBounds(500,325,200,100);
-        boardSizes.setBounds(560,250,80,50);
+        playerOne.setBounds(125,375,200,50);
+        playerTwo.setBounds(675,375,200,50);
+        botOne.setBounds(130, 430, 130, 30);
+        botTwo.setBounds(680, 430, 130, 30);
+        start.setBounds(450,575,130,60);
+        text.setBounds(375, 510, 175, 30);
+        boardSizes.setBounds(575,500,80,50);
         
-        menu.add(title);
         menu.add(playerOne);
         menu.add(boardSizes);
         menu.add(playerTwo);
         menu.add(start);
+        menu.add(botOne);
+        menu.add(botTwo);
+        menu.add(text);
 
         setContentPane(menu);
 
     }
 
     public void restart(){
-        this.remove(match);
-        this.add(menu);
+        this.setContentPane(menu);
+        game = new JLabel("",new ImageIcon("src/resources/background.png"), JLabel.CENTER);
+        match = null;
     }
 }
