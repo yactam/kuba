@@ -15,17 +15,18 @@ public class Board extends JPanel {
     private final Cell[][] board;
     private static Long[][] keys;
     private final int n;
+    private final int k;
     private final Set<Integer> treated_confs;
 
     public Board(int n) {
         this.treated_confs = new HashSet<>();
         this.n = n;
-        int k = 4 * n - 1;
+        k = 4 * n - 1;
         board = new Cell[k][k];
         keys  = new Long[3][k*k];
         initKeys();
         // Panel
-        setPreferredSize(new Dimension(Bille.width * k, Bille.width * k));
+        setPreferredSize(new Dimension(600, 600));
     }
 
     private static void initKeys() {
@@ -219,8 +220,9 @@ public class Board extends JPanel {
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board[i].length; j++) {
                 if(!board(j, i).estVide()) {
-                    int width = Bille.width;
-                    graphics2D.drawImage(board(j, i).getBille().image(), width * i, width * j, width, width, null);
+                    int width = 598/k;
+                    Image img = board(j, i).getBille().image().getScaledInstance(width, width, Image.SCALE_SMOOTH);
+                    graphics2D.drawImage(img, width * i, width * j, width, width, null);
                 }
             }
         }
@@ -228,12 +230,13 @@ public class Board extends JPanel {
 
     private void drawGrid(Graphics2D graphics2D) {
         graphics2D.setColor(Color.LIGHT_GRAY);
-        graphics2D.fillRect(0, 0, getWidth(), getHeight());
+        graphics2D.fillRect(0, 0, 598, 598);
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board[i].length; j++) {
                 if(i != board.length-1 && j != board[i].length-1) {
                     graphics2D.setColor(Color.BLACK);
-                    graphics2D.drawRect(j * Bille.width + (Bille.width / 2), i * Bille.width + (Bille.width / 2), Bille.width, Bille.width);
+                    int width = 598/k;
+                    graphics2D.drawRect(j * width + (width / 2), i * width + (width / 2), width, width);
                 }
             }
         }

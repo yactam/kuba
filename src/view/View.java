@@ -72,7 +72,7 @@ public class View extends JFrame {
         playerTwo.setBounds(675,375,200,50);
         botOne.setBounds(130, 430, 130, 30);
         botTwo.setBounds(680, 430, 130, 30);
-        start.setBounds(450,575,130,60);
+        start.setBounds(445,575,130,60);
         text.setBounds(375, 510, 175, 30);
         boardSizes.setBounds(575,500,80,50);
         
