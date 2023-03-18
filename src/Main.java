@@ -15,6 +15,8 @@ public class Main {
         v.addKeyListener(c.getKey());
         v.setFocusable(true);
 
+        c.testEnterPanel();
+
         JFrame frame = new JFrame();
         frame.setTitle("Plateau Kuba"); 
         frame.add(v);

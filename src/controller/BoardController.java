@@ -16,14 +16,23 @@ public class BoardController {
     private Board boardModel;
     private boolean controllPlayer;
     private Position coordinates;
+    private Position coordinates2;
+    
+    private int startX;
+    private int startY;
+    private boolean verif;
+
     private ArrayList<Joueur> joueurs;
     private Joueur currentJoueur;
+
+    // Les éléments de controlle
     private KeyHandler key;
+    private MouseAdapter mouse;
+
     public BoardController(Board board){
         this.boardModel = board;
         key = new KeyHandler();
         initJoueur();
-        testEnterPanel();
     }
 
     public void initJoueur(){
@@ -38,14 +47,39 @@ public class BoardController {
     } 
 
     public void testEnterPanel(){
-        this.getObserver().addMouseListener(new MouseAdapter() {
+        mouse = new MouseAdapter(){
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 if(getObserver().contains(e.getPoint())){
                     coordinates = positionConvert(e.getPoint()); 
+                    verif=true;
                 }
             }
-        });
+
+            @Override
+            public void mouseReleased(MouseEvent e) {   
+                if(getObserver().contains(e.getPoint())){
+                   coordinates2 = positionConvert(e.getPoint());
+                    if(coordinates!=null){
+                    Direction d = coordinates.nextDir(coordinates2);
+                    try{
+                     if(d!=null && coordinates!=null){ 
+                        boardModel.update(coordinates, d, currentJoueur);
+                        controllPlayer=boardModel.move;
+                        if(controllPlayer){
+                            changePlayer();
+                        }
+                    }
+                    }
+                    catch(Exception exception){
+                        System.out.print("_");
+                    }
+                }
+            }
+            }
+        };
+
+        this.getObserver().addMouseListener(mouse);
     }
 
     public Position positionConvert(Point a){
@@ -77,9 +111,7 @@ public class BoardController {
             }
         }
         catch(Exception e){
-            e.printStackTrace();
             System.out.println("--------------------------");
-
         }
     }
 
@@ -112,10 +144,16 @@ public class BoardController {
                 System.out.println("^");
          	}
 		}
-
 		@Override
 		public void keyReleased(KeyEvent e) {}
-}
+    }
+
+    public void removeKey(BoardView bv){
+        bv.removeKeyListener(key);
+    }
+    public void removeMouse(BoardView bv){
+        bv.removeMouseListener(mouse);
+    }
 
     public KeyHandler getKey(){
         return key;
