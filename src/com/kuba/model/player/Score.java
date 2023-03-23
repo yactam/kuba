@@ -21,8 +21,14 @@ public class Score {
     public int getRouges() {
         return nbBillesRouges;
     }
+    public void setRouges(int r) {
+        this.nbBillesRouges = r;
+    }
 
     public int getAdversaire() {
         return nbBillesAdversaire;
+    }
+    public void setAdversaire(int a) {
+        this.nbBillesAdversaire = a;
     }
 }
