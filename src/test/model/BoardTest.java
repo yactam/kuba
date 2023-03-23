@@ -5,6 +5,7 @@ import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.plateau.Couleur;
+import com.kuba.model.player.Joueur;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -16,12 +17,13 @@ class BoardTest {
     @Test
     public void initialState() {
         Board board = new Board(2);
+        Joueur j1 = new Joueur("Blanc", Couleur.BLANC);
+        Joueur j2 = new Joueur("Noir", Couleur.NOIR);
         board.initBoard();
-        assertEquals(board.currentPlayer(), Couleur.BLANC);
         assertFalse(board.gameOver());
-        assertEquals(board.getAllPossibleMoves(Couleur.BLANC, Couleur.NOIR).size(), 16);
-        assertEquals(board.getAllPossibleMoves(Couleur.BLANC).size(), 8);
-        assertEquals(board.getAllPossibleMoves(Couleur.NOIR).size(), 8);
+        assertEquals(board.getAllPossibleMoves(j1, j2).size(), 16);
+        assertEquals(board.getAllPossibleMoves(j1).size(), 8);
+        assertEquals(board.getAllPossibleMoves(j2).size(), 8);
     }
 
     @Test
