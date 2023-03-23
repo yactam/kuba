@@ -3,17 +3,16 @@ package com.kuba.model.plateau;
 import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Position;
-import com.kuba.vue.BoardView;
+import com.kuba.model.player.Joueur;
 
 import java.util.*;
 
 
 public class Board {
-    private final Cell[][] board;
+    private Cell[][] board;
     public static Long[][] keys;
     private final int n;
     private Set<Integer> treated_configs;
-    private Couleur currentPlayer = Couleur.BLANC;
 
     public Board(int n) {
         this.treated_configs = new HashSet<>();
@@ -115,21 +114,21 @@ public class Board {
         board(next).setBille(bille);
     }
 
-    public Board update(Mouvement mouvement, Couleur joueur) {
+    public boolean update(Mouvement mouvement, Joueur joueur, boolean execute) {
         Position pos = mouvement.getPosition();
         Direction dir = mouvement.getDirection();
-        if(!estDansLimite(pos) || estVide(pos)) return this;
+        if(!estDansLimite(pos) || estVide(pos)) return false;
         // Le joueur ne peut bouger que les billes de sa propre couleur
-        if(!ColorAt(pos).equals(joueur)) {
-            System.out.println("Le joueur ne peut bouger que les billes de sa propre couleur");
-            return this;
+        if(!ColorAt(pos).equals(joueur.getCouleur())) {
+            //System.out.println("Le joueur ne peut bouger que les billes de sa propre couleur");
+            return false;
         }
 
         // Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger
         if(estDansLimite(pos.prev(dir)) && !estVide(pos.prev(dir))) {
             //System.out.println(pos.prev(dir));
-            System.out.println("Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger");
-            return this;
+            //System.out.println("Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger");
+            return false;
         }
 
         Position next = pos.next(dir); // Trouver la limite
@@ -139,7 +138,8 @@ public class Board {
         Board transitionBoard = this.copyBoard();
         if(!transitionBoard.estDansLimite(next)) { // là, il faut sortir les billes
             Position limit = next.prev(dir); // La limite du tableau
-            transitionBoard.moveOut(limit, joueur);
+            boolean legal = transitionBoard.moveOut(limit, joueur, execute);
+            if(!legal) return false;
             next = next.prev(dir);
         }
 
@@ -151,13 +151,20 @@ public class Board {
 
         int hash_code = transitionBoard.hashCode(); // KO
         if(isTreated(hash_code)) {
-            System.out.println("KO");
-            return this;
+            //System.out.println("KO");
+            return false;
         } else {
             transitionBoard.treated_configs.add(hash_code);
-            currentPlayer = currentPlayer.opposite();
-            return transitionBoard;
+            if(execute) {
+                this.board = transitionBoard.board;
+                this.treated_configs = transitionBoard.treated_configs;
+            }
+            return true;
         }
+    }
+
+    public boolean update(Mouvement mouvement, Joueur joueur) {
+        return update(mouvement, joueur, true);
     }
 
     public Board copyBoard() {
@@ -173,17 +180,19 @@ public class Board {
         return res;
     }
 
-    private void moveOut(Position limit, Couleur joueur) {
-        if(!ColorAt(limit).equals(joueur)) {
-            if(ColorAt(limit).equals(Couleur.ROUGE)) {
-                //TODO notify capture billes rouges
-            } else {
-                //TODO notify capture billes de l'adversaire
+    private boolean moveOut(Position limit, Joueur joueur, boolean execute) {
+        if(!ColorAt(limit).equals(joueur.getCouleur())) {
+            if(ColorAt(limit).equals(Couleur.ROUGE) && execute) {
+                joueur.capturerBilleRouge();
+            } else if(execute) {
+                joueur.capturerBilleAdversaire();
             }
             board(limit).clear();
         } else {
             //System.out.println("Le joueur ne peut pas sortir les billes de sa propre couleur");
+            return false;
         }
+        return true;
     }
 
     private boolean estDansLimite(Position position) {
@@ -251,30 +260,29 @@ public class Board {
         return red == 0 || black == 0 || white == 0;
     }
 
-    public Collection<Mouvement> getAllPossibleMoves(Couleur... couleurs) {
+    public Collection<Mouvement> getAllPossibleMoves(Joueur... joueurs) {
         List<Mouvement> allMoves = new ArrayList<>();
-        Board tmp = copyBoard();
-        for(Couleur couleur : couleurs) {
+        for(Joueur joueur : joueurs) {
             for(int i = 0; i < board.length; i++) {
                 for(int j = 0; j < board.length; j++) {
                     if(!board(i, j).estVide()) {
                         Couleur c = board(i, j).getBille().getColor();
-                        if(couleur == c) {
+                        if(joueur.getCouleur() == c) {
                             Mouvement mouvement1 = new Mouvement(new Position(i, j), Direction.EST);
                             Mouvement mouvement2 = new Mouvement(new Position(i, j), Direction.OUEST);
                             Mouvement mouvement3 = new Mouvement(new Position(i, j), Direction.NORD);
                             Mouvement mouvement4 = new Mouvement(new Position(i, j), Direction.SUD);
-                            Board transitionBoard = tmp.update(mouvement1, couleur);
-                            if(!transitionBoard.equals(tmp) && !isTreated(transitionBoard.hashCode()))
+                            boolean isLegal = this.update(mouvement1, joueur, false);
+                            if(isLegal)
                                 allMoves.add(mouvement1);
-                            transitionBoard = tmp.update(mouvement2, couleur);
-                            if(!transitionBoard.equals(tmp) && !isTreated(transitionBoard.hashCode()))
+                            isLegal = this.update(mouvement2, joueur, false);
+                            if(isLegal)
                                 allMoves.add(mouvement2);
-                            transitionBoard = tmp.update(mouvement3, couleur);
-                            if(!transitionBoard.equals(tmp) && !isTreated(transitionBoard.hashCode()))
+                            isLegal = this.update(mouvement3, joueur, false);
+                            if(isLegal)
                                 allMoves.add(mouvement3);
-                            transitionBoard = tmp.update(mouvement4, couleur);
-                            if(!transitionBoard.equals(tmp) && !isTreated(transitionBoard.hashCode()))
+                            isLegal = this.update(mouvement4, joueur, false);
+                            if(isLegal)
                                 allMoves.add(mouvement4);
                         }
                     }
@@ -282,10 +290,6 @@ public class Board {
             }
         }
         return allMoves;
-    }
-
-    public Couleur currentPlayer() {
-        return currentPlayer;
     }
 
     public boolean isFrontier(int i, int j) {
