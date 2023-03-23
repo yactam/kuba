@@ -7,5 +7,5 @@ import com.kuba.model.plateau.Couleur;
 
 public interface MoveStrategy {
 
-    Mouvement execute(Board board, Couleur joueur);
+    Mouvement execute(Board board);
 }

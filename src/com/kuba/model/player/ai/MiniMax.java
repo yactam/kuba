@@ -4,86 +4,119 @@ package com.kuba.model.player.ai;
 import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.plateau.Couleur;
+import com.kuba.model.player.Joueur;
 
 
 public class MiniMax implements MoveStrategy {
 
     private final BoardEvaluator boardEvaluator;
     private final int depthSearch;
+    private Joueur currentPlayer;
+    private Joueur opponent;
+    private Mouvement bestMove;
 
-    public MiniMax(int depthSearch) {
+    public MiniMax(int depthSearch, Joueur currentPlayer, Joueur opponent) {
         this.boardEvaluator = new StandardBoardEvaluator();
         this.depthSearch = depthSearch;
+        this.currentPlayer = currentPlayer;
+        this.opponent = opponent;
     }
     @Override
-    public Mouvement execute(Board board, Couleur joueur) {
-        final long startTime = System.currentTimeMillis();
-        Mouvement bestMove = null;
-        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
-        int currentValue = 0;
-        System.out.println("************************************************************************\n");
-        System.out.println(joueur + " is THINKING with depth = " + depthSearch + " ...");
-        int i = 0;
-        Board tmp = board.copyBoard();
-        for(Mouvement mouvement : board.getAllPossibleMoves(joueur)) {
-            System.out.println("\t testing movement " + (++i));
-            Board transitionBoard = tmp.update(mouvement, joueur);
-            currentValue = tmp.currentPlayer().equals(Couleur.BLANC) ?
-                           min(transitionBoard, joueur, depthSearch-1) : max(transitionBoard, joueur, depthSearch-1);
-            if(!transitionBoard.equals(tmp)) { // Their was a valid mouvement
-                if(currentValue > max && tmp.currentPlayer().equals(Couleur.BLANC)) {
-                    max = currentValue;
-                    System.out.println("\t\tNew Best move found");
-                    bestMove = mouvement;
-                } else if(currentValue < min && tmp.currentPlayer().equals(Couleur.NOIR)) {
-                    min = currentValue;
-                    System.out.println("\t\tNew Best move found");
-                    bestMove = mouvement;
-                }
+    public Mouvement execute(Board board) {
+        int sr1 = currentPlayer.getNbBilleRougeCapturee(), sa1 = currentPlayer.getNbAdversaireCapturee();
+        int sr2 = opponent.getNbBilleRougeCapturee(), sa2 = opponent.getNbAdversaireCapturee();
+        max(board, currentPlayer, depthSearch, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        currentPlayer.setNbRougesCapturee(sr1);
+        currentPlayer.setNbAdversaireCapturee(sa1);
+        opponent.setNbAdversaireCapturee(sa2);
+        opponent.setNbRougesCapturee(sr2);
+        return bestMove;
+    }
+
+    public int min(Board board, Joueur joueur, int depth, int alpha, int beta) {
+
+        if(depth == 0 || gameOver(board, joueur, opponent)) {
+            if(gameOver(board, joueur, opponent)) {
+                System.out.println("game over");
+                if(getWinner(board, joueur, opponent).equals(joueur))
+                    return Integer.MIN_VALUE;
+                else
+                    return Integer.MAX_VALUE;
+            }
+            return this.boardEvaluator.evaluate(board, opponent, joueur);
+        }
+
+        for(Mouvement move : board.getAllPossibleMoves(joueur)) {
+            Board tmp = board.copyBoard();
+            tmp.update(move, joueur);
+            switchPlayers();
+            int currentValue = max(tmp, currentPlayer, depth-1, alpha, beta);
+            switchPlayers();
+            if(currentValue <= beta) {
+                beta = currentValue;
+            }
+            if(alpha >= beta) {
+                return beta;
             }
         }
 
-        final long executionTime = System.currentTimeMillis() - startTime;
-
-        System.out.println("Search ended for the player " + joueur + " after " + executionTime + "ms");
-        System.out.println(board.hashCode());
-        System.out.println("\n************************************************************************\n");
-
-        return bestMove;
-
+        return beta;
     }
 
-    public int min(Board board, Couleur joueur, int depth) {
-        System.out.println("min");
-        if(depth == 0 || board.gameOver()) {
-            System.out.println("game over");
-            return this.boardEvaluator.evaluate(board, joueur);
+    public int max(Board board, Joueur joueur, int depth, int alpha, int beta) {
+        if(depth == 0 || gameOver(board, joueur, opponent)) {
+            if(gameOver(board, joueur, opponent)) {
+                System.out.println("game over");
+                if(getWinner(board, joueur, opponent).equals(joueur))
+                    return Integer.MAX_VALUE;
+                else
+                    return Integer.MIN_VALUE;
+            }
+            return this.boardEvaluator.evaluate(board, joueur, opponent);
         }
 
-        int min = Integer.MAX_VALUE;
         for(Mouvement move : board.getAllPossibleMoves(joueur)) {
-            Board boardTransition = board.update(move, board.currentPlayer());
-            int currentValue = max(boardTransition, joueur, depth-1);
-            if(currentValue < min) min = currentValue;
+            Board tmp = board.copyBoard();
+            tmp.update(move, joueur);
+            switchPlayers();
+            int currentValue = min(tmp, currentPlayer, depth-1, alpha, beta);
+            switchPlayers();
+            if(currentValue >= alpha) {
+                alpha = currentValue;
+                if(depth == depthSearch)
+                    bestMove = move;
+            }
+            if(alpha >= beta) {
+                return alpha;
+            }
         }
 
-        return min;
+        return alpha;
     }
 
-    public int max(Board board, Couleur joueur, int depth) {
-        System.out.println("max");
-        if(depth == 0 || board.gameOver()) {
-            System.out.println("game over");
-            return this.boardEvaluator.evaluate(board, joueur);
-        }
+    private void switchPlayers() {
+        Joueur tmp = currentPlayer;
+        currentPlayer = opponent;
+        opponent = tmp;
+    }
 
-        int max = Integer.MIN_VALUE;
-        for(Mouvement move : board.getAllPossibleMoves(joueur)) {
-            Board boardTransition = board.update(move, board.currentPlayer());
-            int currentValue = min(boardTransition, joueur, depth-1);
-            if(currentValue > max) max = currentValue;
-        }
+    private boolean gameOver(Board board, Joueur player, Joueur opponent) {
+        int n = (board.size() + 1) / 4;
+        int nbBillesRouges = 8 * n * n - 12 * n + 5;
+        if(player.getNbBilleRougeCapturee() > nbBillesRouges/2) return true;
+        if(opponent.getNbBilleRougeCapturee() > nbBillesRouges/2) return true;
+        if(player.getNbAdversaireCapturee() == 2 * n * n) return true;
+        if(opponent.getNbAdversaireCapturee() == 2 * n * n) return true;
+        return false;
+    }
 
-        return max;
+    private Joueur getWinner(Board board, Joueur player, Joueur opponent) {
+        int n = (board.size() + 1) / 4;
+        int nbBillesRouges = 8 * n * n - 12 * n + 5;
+        if(player.getNbBilleRougeCapturee() > nbBillesRouges/2) return player;
+        if(opponent.getNbBilleRougeCapturee() > nbBillesRouges/2) return opponent;
+        if(player.getNbAdversaireCapturee() == 2 * n * n) return player;
+        if(opponent.getNbAdversaireCapturee() == 2 * n * n) return opponent;
+        return null;
     }
 }
