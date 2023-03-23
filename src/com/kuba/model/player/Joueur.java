@@ -11,9 +11,9 @@ public class Joueur {
     private final Couleur couleur;
 
 
-    public Joueur(String nom, Couleur couleur, int nbBille) {
+    public Joueur(String nom, Couleur couleur) {
         this.nom = nom;
-        this.score = new Score(0, nbBille);
+        this.score = new Score(0, 0);
         this.couleur = couleur;
     }
 
@@ -37,16 +37,38 @@ public class Joueur {
     public Couleur getCouleur() {
         return couleur;
     }
-    public int getNbAdversaireCapture() {
+    public int getNbAdversaireCapturee() {
         return score.getAdversaire();
     }
+    public void setNbAdversaireCapturee(int a) {
+        score.setAdversaire(a);
+    }
 
-    public int getNbBilleRougeCapturer() {
+    public void setNbRougesCapturee(int r) {
+        score.setRouges(r);
+    }
+
+    public int getNbBilleRougeCapturee() {
         return score.getRouges();
     }
 
-    public Board move(Board board, Position pos, Direction dir){
-        return board.update(new Mouvement(pos, dir), this.couleur);
+    public int getScore() {
+        return 2 * getNbBilleRougeCapturee() + getNbAdversaireCapturee();
+    }
+
+    public void move(Board board, Position pos, Direction dir){
+        board.update(new Mouvement(pos, dir), this);
+    }
+
+    public void move(Board board, Mouvement mouvement) {
+        board.update(mouvement, this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == this) return true;
+        if(!(o instanceof Joueur joueur)) return false;
+        return this.nom.equals(joueur.nom) && this.getNbBilleRougeCapturee() == joueur.getNbBilleRougeCapturee() && this.getNbAdversaireCapturee() == joueur.getNbAdversaireCapturee();
     }
 }
 
