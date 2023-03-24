@@ -1,19 +1,12 @@
 package com.kuba;
 
-import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Mouvement;
-import com.kuba.model.mouvement.Position;
-import com.kuba.model.plateau.Bille;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
 import com.kuba.model.player.ai.MiniMax;
 import com.kuba.vue.BoardView;
-
 import javax.swing.*;
-import java.util.ArrayList;
-
-import static java.lang.Thread.sleep;
 
 public class Main {
     public static void main(String[] args) {
@@ -44,11 +37,14 @@ public class Main {
 
         Board board = new Board(2);
         BoardView boardView = new BoardView(board);
-
         board.initBoard();
-        System.out.println(board);
-        System.out.println(board.hashCode());
-        boardView.updateBoard(board);
+        board.addObserver(boardView);
+
+        /*Joueur j1 = new Joueur("j1", Couleur.BLANC);
+        Joueur j2 = new Joueur("j2" , Couleur.NOIR);
+
+        GameController boardController = new GameController(board, j1, j2);*/
+
 
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

@@ -1,6 +1,6 @@
 package com.kuba.model.plateau;
 
-public class Cell implements Cloneable {
+public class Cell implements Cloneable{
 
     private Bille bille;
 
@@ -9,7 +9,7 @@ public class Cell implements Cloneable {
         else this.bille = bille;
     }
 
-    public Bille getBille() {
+    public Bille getBille() throws NullPointerException{
         return (Bille) bille.clone();
     }
 

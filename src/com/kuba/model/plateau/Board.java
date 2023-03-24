@@ -1,24 +1,30 @@
 package com.kuba.model.plateau;
 
+import com.kuba.model.mouvement.MoveStatus;
+import com.kuba.observerpattern.*;
+import com.kuba.observerpattern.Observable;
+import com.kuba.observerpattern.Observer;
 import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Position;
 import com.kuba.model.player.Joueur;
 
+import javax.swing.*;
 import java.util.*;
 
 
-public class Board {
+public class Board implements Observable<Data>,Data {
     private Cell[][] board;
     public static Long[][] keys;
     private final int n;
     private Set<Integer> treated_configs;
-
+    private final ArrayList<Observer<Data>> elementObs;
     public Board(int n) {
         this.treated_configs = new HashSet<>();
         this.n = n;
         int k = 4 * n - 1;
         board = new Cell[k][k];
+        elementObs = new ArrayList<Observer<Data>>();
         if(keys == null) initKeys();
     }
 
@@ -31,6 +37,7 @@ public class Board {
                 keys[i][j] = random.nextLong();
             }
         }
+        this.notifyObservers();
     }
 
     public void initBoard() {
@@ -114,21 +121,21 @@ public class Board {
         board(next).setBille(bille);
     }
 
-    public boolean update(Mouvement mouvement, Joueur joueur, boolean execute) {
+    public MoveStatus update(Mouvement mouvement, Joueur joueur, boolean execute) {
         Position pos = mouvement.getPosition();
         Direction dir = mouvement.getDirection();
-        if(!estDansLimite(pos) || estVide(pos)) return false;
+        if(!estDansLimite(pos) || estVide(pos)) return MoveStatus.INVALID_MOVE;
         // Le joueur ne peut bouger que les billes de sa propre couleur
         if(!ColorAt(pos).equals(joueur.getCouleur())) {
             //System.out.println("Le joueur ne peut bouger que les billes de sa propre couleur");
-            return false;
+            return MoveStatus.INVALID_MOVE;
         }
 
         // Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger
         if(estDansLimite(pos.prev(dir)) && !estVide(pos.prev(dir))) {
             //System.out.println(pos.prev(dir));
             //System.out.println("Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger");
-            return false;
+            return MoveStatus.INVALID_MOVE;
         }
 
         Position next = pos.next(dir); // Trouver la limite
@@ -136,11 +143,13 @@ public class Board {
             next = next.next(dir);
         }
         Board transitionBoard = this.copyBoard();
+        boolean move_out = false;
         if(!transitionBoard.estDansLimite(next)) { // là, il faut sortir les billes
             Position limit = next.prev(dir); // La limite du tableau
             boolean legal = transitionBoard.moveOut(limit, joueur, execute);
-            if(!legal) return false;
+            if(!legal) return MoveStatus.INVALID_MOVE;
             next = next.prev(dir);
+            move_out = true;
         }
 
         while (!next.equals(pos) && transitionBoard.board(next).estVide()) { // Décaler les pions
@@ -152,18 +161,20 @@ public class Board {
         int hash_code = transitionBoard.hashCode(); // KO
         if(isTreated(hash_code)) {
             //System.out.println("KO");
-            return false;
+            return MoveStatus.INVALID_MOVE;
         } else {
             transitionBoard.treated_configs.add(hash_code);
             if(execute) {
                 this.board = transitionBoard.board;
                 this.treated_configs = transitionBoard.treated_configs;
             }
-            return true;
+            notifyObservers();
+            if(move_out) return MoveStatus.MOVE_OUT;
+            return MoveStatus.BASIC_MOVE;
         }
     }
 
-    public boolean update(Mouvement mouvement, Joueur joueur) {
+    public MoveStatus update(Mouvement mouvement, Joueur joueur) {
         return update(mouvement, joueur, true);
     }
 
@@ -207,6 +218,39 @@ public class Board {
     private boolean isTreated(int conf){
         return treated_configs.contains(conf);
     }
+
+    public int getN() {
+    	return this.n;
+    }
+
+    public void addObserver(Observer<Data> o) {
+        elementObs.add(o);
+    }
+
+    @Override
+    public void notifyObservers(){
+        for(Observer<Data> o : elementObs) {
+            o.update(this);
+        }
+    }
+
+    public Data getData(){
+        return this;
+    }
+
+    @Override
+    public boolean libre(int i,int j){
+        return board[i][j].estVide();
+    }
+    @Override
+    public Bille obtenirBille(int i, int j){
+        return board[i][j].getBille();
+    }
+
+    public Observer<Data> getObserver() {
+        return elementObs.get(0);
+    }
+
 
     @Override
     public String toString() {
@@ -272,16 +316,16 @@ public class Board {
                             Mouvement mouvement2 = new Mouvement(new Position(i, j), Direction.OUEST);
                             Mouvement mouvement3 = new Mouvement(new Position(i, j), Direction.NORD);
                             Mouvement mouvement4 = new Mouvement(new Position(i, j), Direction.SUD);
-                            boolean isLegal = this.update(mouvement1, joueur, false);
+                            boolean isLegal = this.update(mouvement1, joueur, false) != MoveStatus.INVALID_MOVE;
                             if(isLegal)
                                 allMoves.add(mouvement1);
-                            isLegal = this.update(mouvement2, joueur, false);
+                            isLegal = this.update(mouvement2, joueur, false) != MoveStatus.INVALID_MOVE;
                             if(isLegal)
                                 allMoves.add(mouvement2);
-                            isLegal = this.update(mouvement3, joueur, false);
+                            isLegal = this.update(mouvement3, joueur, false) != MoveStatus.INVALID_MOVE;
                             if(isLegal)
                                 allMoves.add(mouvement3);
-                            isLegal = this.update(mouvement4, joueur, false);
+                            isLegal = this.update(mouvement4, joueur, false) != MoveStatus.INVALID_MOVE;
                             if(isLegal)
                                 allMoves.add(mouvement4);
                         }

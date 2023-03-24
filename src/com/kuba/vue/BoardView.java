@@ -3,6 +3,8 @@ package com.kuba.vue;
 
 import com.kuba.model.plateau.Bille;
 import com.kuba.model.plateau.Board;
+import com.kuba.observerpattern.Data;
+import com.kuba.observerpattern.Observer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,9 +13,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
-public class BoardView extends JPanel {
+public class BoardView extends JPanel implements Observer<Data> {
 
-    private Board board;
+    private Data board;
     public static final int billeWidth = 80;
     private BufferedImage red, black, white, background;
 
@@ -81,4 +83,11 @@ public class BoardView extends JPanel {
             }
         }
     }
+
+    @Override
+    public void update(Data e){
+        board = e;
+        this.repaint();
+    }
+
 }
