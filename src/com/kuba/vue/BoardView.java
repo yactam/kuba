@@ -17,10 +17,13 @@ public class BoardView extends JPanel implements Observer<Data> {
 
     private Data board;
     public static final int billeWidth = 80;
-    private BufferedImage red, black, white, background;
+    private BufferedImage red;
+    private BufferedImage black;
+    private BufferedImage white;
 
     public BoardView(Board board) {
         this.board = board;
+        board.addObserver(this);
         initBille();
         setPreferredSize(new Dimension(billeWidth * board.size(), billeWidth * board.size()));
     }
@@ -41,7 +44,7 @@ public class BoardView extends JPanel implements Observer<Data> {
     }
 
     private void createBackgroundImage() {
-        background = new BufferedImage(billeWidth * board.size(), billeWidth * board.size(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage background = new BufferedImage(billeWidth * board.size(), billeWidth * board.size(), BufferedImage.TYPE_INT_RGB);
         Graphics g = background.getGraphics();
         drawGrid((Graphics2D) g);
     }
@@ -54,18 +57,18 @@ public class BoardView extends JPanel implements Observer<Data> {
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D graphics2D = (Graphics2D) g;
-        super.paintComponent(g);
-        graphics2D.drawImage(background, 0, 0, null);
+        drawGrid(graphics2D);
         for(int i = 0; i < board.size(); i++) {
             for(int j = 0; j < board.size(); j++) {
                 if(!board.board(j, i).estVide()) {
-                    Bille bille = board.board(j, i).getBille();
-                    BufferedImage image = switch (bille.getColor()) {
-                        case NOIR -> black;
-                        case ROUGE -> red;
+                    int width = 598/board.size();
+                    Image image = switch (board.board(j, i).getBille().getColor()) {
                         case BLANC -> white;
+                        case ROUGE -> red;
+                        case NOIR -> black;
                     };
-                    graphics2D.drawImage(image, billeWidth * i, billeWidth * j, billeWidth, billeWidth, null);
+                    Image img = image.getScaledInstance(width, width, Image.SCALE_SMOOTH);
+                    graphics2D.drawImage(img, width * i, width * j, width, width, null);
                 }
             }
         }
@@ -73,12 +76,13 @@ public class BoardView extends JPanel implements Observer<Data> {
 
     private void drawGrid(Graphics2D graphics2D) {
         graphics2D.setColor(Color.LIGHT_GRAY);
-        graphics2D.fillRect(0, 0, billeWidth * board.size(), billeWidth * board.size());
-        graphics2D.setColor(Color.BLACK);
+        graphics2D.fillRect(0, 0, 598, 598);
         for(int i = 0; i < board.size(); i++) {
             for(int j = 0; j < board.size(); j++) {
                 if(i != board.size()-1 && j != board.size()-1) {
-                    graphics2D.drawRect(j * billeWidth + (billeWidth / 2), i * billeWidth + (billeWidth / 2), billeWidth, billeWidth);
+                    graphics2D.setColor(Color.BLACK);
+                    int width = 598/board.size();
+                    graphics2D.drawRect(j * width + (width / 2), i * width + (width / 2), width, width);
                 }
             }
         }

@@ -34,17 +34,16 @@ public class GameController {
     }
 
     private void deplacement(Direction d){
-        System.out.println("Deplacement de " + from + " direction " + d);
         try{
             if(d !=null && from != null){
-                MoveStatus status = board.update(new Mouvement(from, d), courant);
-                if(status == MoveStatus.BASIC_MOVE){
+                MoveStatus moveStatus = board.update(new Mouvement(from, d), courant);
+                if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
                     changePlayer();
                 }
-                else if(status == MoveStatus.MOVE_OUT){
+                else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
                     from = from.next(d);
                 } else {
-                    System.out.println("Invalid move");
+                    System.out.println(moveStatus.getMessage());
                 }
             }
         }
@@ -114,9 +113,11 @@ public class GameController {
                     direction = from.nextDir(to);
                     try{
                         if(direction != null && from != null){
-                            MoveStatus status = board.update(new Mouvement(from, direction), courant);
-                            if(status == MoveStatus.BASIC_MOVE) {
+                            MoveStatus moveStatus = board.update(new Mouvement(from, direction), courant);
+                            if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) {
                                 changePlayer();
+                            } else if(moveStatus.isLegal()) {
+                                System.out.println(moveStatus.getMessage());
                             }
                         }
                     }
