@@ -45,9 +45,9 @@ public class GameView extends JPanel {
         });
 
         boardView.setLocation(0, 0);
-        boardView.setSize(new Dimension((int) (0.8 * getWidth()),getHeight()));
-        boardView.setPreferredSize(new Dimension((int) (0.8 * getWidth()),getHeight()));
-        boardView.setBounds(0, 0, (int) (0.8 * getWidth()),getHeight());
+        //boardView.setSize(new Dimension((int) (0.8 * getWidth()),getHeight()));
+        //boardView.setPreferredSize(new Dimension((int) (0.8 * getWidth()),getHeight()));
+        //boardView.setBounds(0, 0, (int) (0.8 * getWidth()),getHeight());
         p1.setBounds(648, 123, 275, 165);
         p2.setBounds(648, 287, 275, 165);
         undo.setBounds(680, 475, 55, 55);

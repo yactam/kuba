@@ -70,7 +70,7 @@ public class GameController {
     private class KeyController extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            System.out.println("Key pressed");
+            //System.out.println("Key pressed");
             try{
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP -> {
@@ -90,7 +90,8 @@ public class GameController {
                         deplacement(direction);
                     }
                 }
-            }catch(Exception ex){
+            }
+            catch(Exception ex){
                 System.out.println("^");
             }
         }
