@@ -8,8 +8,6 @@ import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Position;
 import com.kuba.model.player.Joueur;
-
-import javax.swing.*;
 import java.util.*;
 
 

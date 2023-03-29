@@ -105,10 +105,10 @@ public class BoardView extends JPanel implements Observer<Data> {
             for (int j=0;j<board.size();j++){
                 Bille b = board.board(i, j).getBille();
                 if (b != null){
-                    graphics2D.drawImage(b.image(), b.getX(), 
-                                                    b.getY(),
-                                                    Bille.width, 
-                                                    Bille.width, null);
+                    graphics2D.drawImage(b.image(), b.getX()+((Bille.width/Bille.scale)/2), 
+                                                    b.getY()+((Bille.width/Bille.scale)/2),Bille.width-Bille.width/Bille.scale, 
+                                                    Bille.width-Bille.width/Bille.scale, null);
+
 
                     if (b.is_animate()){
                         Position neibPos = new Position(i, j).next(b.getAnimation().getDirection());
