@@ -55,7 +55,7 @@ public class GameController {
     private Position positionConvert(Point a){
         // Calcul selon la taille des billes
         int x = (int)a.getX()/ BoardView.billeWidth;
-        int y = (int)a.getY()/BoardView.billeWidth;
+        int y = (int)a.getY()/BoardView.billeHeight;
         return new Position(y,x);
     }
 

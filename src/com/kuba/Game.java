@@ -14,6 +14,7 @@ public class Game extends JFrame {
         
         BoardView boardView = new BoardView(board);
         new GameController(board, j1, j2);
+        
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle(" Board Affichage ");

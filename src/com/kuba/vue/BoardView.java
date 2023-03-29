@@ -15,6 +15,7 @@ import java.util.Objects;
 public class BoardView extends JPanel implements Observer<Data> {
 
     private Data board;
+    public static int billeHeight;
     public static int billeWidth;
     private BufferedImage red;
     private BufferedImage black;
@@ -28,8 +29,9 @@ public class BoardView extends JPanel implements Observer<Data> {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         width = (int) screenSize.getWidth() ;
         height = (int) screenSize.getHeight() ;
-        billeWidth =(int)((height/board.size() - 0.030*height/board.size()));
-        System.out.println("Bille Width : "+billeWidth);
+        billeHeight =(int)((height/board.size() - 0.030*height/board.size()));
+        billeWidth = (int)((width*70/100) / board.size());
+        System.out.println("Bille Width : "+billeHeight);
         initBille();
         setPreferredSize(new Dimension(width,height));
     }
@@ -72,8 +74,8 @@ public class BoardView extends JPanel implements Observer<Data> {
                         case ROUGE -> red;
                         case NOIR -> black;
                     };
-                    Image img = image.getScaledInstance(billeWidth, billeWidth, Image.SCALE_SMOOTH);
-                    graphics2D.drawImage(img, billeWidth * i, billeWidth * j, billeWidth, billeWidth, null);
+                    Image img = image.getScaledInstance(billeHeight, billeHeight, Image.SCALE_SMOOTH);
+                    graphics2D.drawImage(img, billeWidth * i, billeHeight * j, billeWidth, billeHeight, null);
                 }
             }
         }
@@ -87,7 +89,7 @@ public class BoardView extends JPanel implements Observer<Data> {
             for(int j = 0; j < board.size(); j++) {
                 if(i != board.size()-1 && j != board.size()-1) {
                     graphics2D.setColor(Color.BLACK);
-                    graphics2D.drawRect(j * billeWidth + (billeWidth / 2), i * billeWidth + (billeWidth / 2), billeWidth, billeWidth);
+                    graphics2D.drawRect(j * billeWidth + (billeWidth / 2), i * billeHeight + (billeHeight / 2), billeWidth, billeHeight);
                 }
             }
         }
