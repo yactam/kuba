@@ -9,21 +9,14 @@ import com.kuba.observerpattern.Observer;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Date;
-import java.util.Objects;
 
 public class BoardView extends JPanel implements Observer<Data> {
 
     private Data board;
     public static final int billeWidth = 80;
-    private BufferedImage red;
-    private BufferedImage black;
-    private BufferedImage white;
     private Timer timer;
     private static int sleep_time = 5;
     private Date dt;
@@ -33,30 +26,10 @@ public class BoardView extends JPanel implements Observer<Data> {
         timer = new Timer();
         this.board = board;
         board.addObserver(this);
-        initBille();
         setPreferredSize(new Dimension(billeWidth * board.size(), billeWidth * board.size()));
+        StatAnimation();
     }
 
-    private void initBille() {
-        loadImages();
-    }
-
-    private void loadImages() {
-        createBackgroundImage();
-        try {
-            red = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/red.png")));
-            black = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/black.png")));
-            white = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/white.png")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void createBackgroundImage() {
-        BufferedImage background = new BufferedImage(billeWidth * board.size(), billeWidth * board.size(), BufferedImage.TYPE_INT_RGB);
-        Graphics g = background.getGraphics();
-        drawGrid((Graphics2D) g);
-    }
 
     public void updateBoard(Board board) {
         this.board = board;
@@ -132,9 +105,8 @@ public class BoardView extends JPanel implements Observer<Data> {
             for (int j=0;j<board.size();j++){
                 Bille b = board.board(i, j).getBille();
                 if (b != null){
-                    graphics2D.drawImage(b.image(), b.getX()+(Bille.scale/2), 
-                                                    b.getY()+(Bille.scale/2),Bille.width-Bille.scale, 
-                                                    Bille.width-Bille.scale, null);
+                    int width = 598/board.size();
+                    graphics2D.drawImage(b.image(), width * i, width * j, width, width, null);
                     if (b.is_animate()){
                         Position neibPos = new Position(i, j).next(b.getAnimation().getDirection());
                         b.update(
