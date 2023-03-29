@@ -55,4 +55,13 @@ public class Cell implements Cloneable{
         return c;
     }
 
+    public boolean contains(int x, int y){
+        if (estVide()) return false;
+        if (x >= bille.getX() && x <= bille.getX()+Bille.width
+                && y >= bille.getY() && y <= bille.getY()+Bille.width){
+            return true;
+        }
+        return false;
+    }
+
 }
