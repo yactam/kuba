@@ -26,6 +26,7 @@ public class Board implements Observable<Data>,Data {
         board = new Cell[k][k];
         elementObs = new ArrayList<>();
         if(keys == null) initKeys();
+        Bille.width = 598/size();
         initBoard();
     }
 

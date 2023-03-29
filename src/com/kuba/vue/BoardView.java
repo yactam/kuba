@@ -63,8 +63,8 @@ public class BoardView extends JPanel implements Observer<Data> {
             for(int j = 0; j < board.size(); j++) {
                 if(i != board.size()-1 && j != board.size()-1) {
                     graphics2D.setColor(Color.BLACK);
-                    int width = 598/board.size();
-                    graphics2D.drawRect(j * width + (width / 2), i * width + (width / 2), width, width);
+                    graphics2D.drawRect(j * Bille.width + (Bille.width / 2), i * Bille.width + (Bille.width / 2), 
+                    Bille.width, Bille.width);
                 }
             }
         }
@@ -105,8 +105,11 @@ public class BoardView extends JPanel implements Observer<Data> {
             for (int j=0;j<board.size();j++){
                 Bille b = board.board(i, j).getBille();
                 if (b != null){
-                    int width = 598/board.size();
-                    graphics2D.drawImage(b.image(), width * i, width * j, width, width, null);
+                    graphics2D.drawImage(b.image(), b.getX(), 
+                                                    b.getY(),
+                                                    Bille.width, 
+                                                    Bille.width, null);
+
                     if (b.is_animate()){
                         Position neibPos = new Position(i, j).next(b.getAnimation().getDirection());
                         b.update(

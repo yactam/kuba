@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class Bille implements Cloneable, Serializable{
     private Couleur color;
-    public static final int width = 50;
+    public static int width = 50;
     private transient BufferedImage image;
     public static final int scale = 7;
     private AnimationBille animate = null;
@@ -118,6 +118,7 @@ public class Bille implements Cloneable, Serializable{
     }
 
     public Bille(Couleur c, int x_, int y_){
+        System.out.println(x_+","+y_);
         this.x = x_*Bille.width;
         this.y = y_*Bille.width;
         color = c;
