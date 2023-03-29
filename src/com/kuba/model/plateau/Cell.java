@@ -3,6 +3,8 @@ package com.kuba.model.plateau;
 public class Cell implements Cloneable{
 
     private Bille bille;
+    private int x,y;
+    private Board board;
 
     public void setBille(Bille bille) {
         if(this.bille == null) this.bille = new Bille(bille.getColor());
