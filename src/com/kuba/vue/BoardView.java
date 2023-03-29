@@ -104,7 +104,7 @@ public class BoardView extends JPanel implements Observer<Data> {
         
         for (int i=0;i<board.size();i++){
             for (int j=0;j<board.size();j++){
-                Bille b = board.board(j, i).getBille();
+                Bille b = board.board(i, j).getBille();
                 if (b != null){
                     graphics2D.drawImage(b.image(), b.getX()+((Bille.width/Bille.scale)/2), 
                                                     b.getY()+((Bille.width/Bille.scale)/2),Bille.width-Bille.width/Bille.scale, 

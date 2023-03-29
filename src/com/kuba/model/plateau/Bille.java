@@ -118,7 +118,6 @@ public class Bille implements Cloneable, Serializable{
     }
 
     public Bille(Couleur c, int x_, int y_){
-        System.out.println(x_+","+y_);
         this.x = x_*Bille.width;
         this.y = y_*Bille.width;
         color = c;
