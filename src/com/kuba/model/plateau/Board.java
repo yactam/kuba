@@ -44,7 +44,7 @@ public class Board implements Observable<Data>,Data {
     public void initBoard() {
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board[i].length; j++) {
-                board[i][j] = new Cell();
+                board[i][j] = new Cell(this, i, j);
             }
         }
         initWhite();
@@ -55,8 +55,9 @@ public class Board implements Observable<Data>,Data {
     private void initWhite() {
         for(int i = 0; i < n; i++) {
             for(int j = 0; j < n; j++) {
-                board(i, j).setBille(new Bille(Couleur.BLANC));
-                board(board.length-1 - i, board.length-1 - j).setBille(new Bille(Couleur.BLANC));
+                board(i, j).setBille(new Bille(Couleur.BLANC, j, i));
+                board(board.length-1 - i, board.length-1 - j).
+                    setBille(new Bille(Couleur.BLANC,board.length-1 - j,board.length-1 - i));
             }
         }
     }
@@ -64,8 +65,8 @@ public class Board implements Observable<Data>,Data {
     private void initBlack() {
         for(int i = 0; i < n; i++) {
             for(int j = board[i].length-1; j >= board[i].length-n; j--) {
-                board(i, j).setBille(new Bille(Couleur.NOIR));
-                board(j, i).setBille(new Bille(Couleur.NOIR));
+                board(i, j).setBille(new Bille(Couleur.NOIR,j,i));
+                board(j, i).setBille(new Bille(Couleur.NOIR,i,j));
             }
         }
     }
@@ -79,7 +80,7 @@ public class Board implements Observable<Data>,Data {
                 spaces = i + 1 - (k/2);
             }
             for(int j = 0; j < count; j++) {
-                board(i, j+spaces).setBille(new Bille(Couleur.ROUGE));
+                board(i, j+spaces).setBille(new Bille(Couleur.ROUGE,j+spaces,i));
             }
             if(i < k/2) {
                 count += 2;
@@ -89,6 +90,7 @@ public class Board implements Observable<Data>,Data {
         }
     }
 
+
     public int size() {
         return board.length;
     }
@@ -97,7 +99,7 @@ public class Board implements Observable<Data>,Data {
     }
     //TODO remove after testing
     public void initCell(int i, int j) {
-        board[i][j] = new Cell();
+        board[i][j] = new Cell(this, i, j);
     }
 
     public Cell board(int i, int j) {
