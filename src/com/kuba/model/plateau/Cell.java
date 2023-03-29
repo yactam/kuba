@@ -6,13 +6,26 @@ public class Cell implements Cloneable{
     private int x,y;
     private Board board;
 
+    public Cell(Board board, int x, int y){
+        this.board = board;
+        this.x = x;
+        this.y = y;
+    }
+
+    public int getX(){
+        return x;
+    }
+
+    public int getY(){
+        return y;
+    }
+
     public void setBille(Bille bille) {
-        if(this.bille == null) this.bille = new Bille(bille.getColor());
-        else this.bille = bille;
+        this.bille = bille;
     }
 
     public Bille getBille() throws NullPointerException{
-        return (Bille) bille.clone();
+        return bille;
     }
 
     public boolean estVide() {
