@@ -12,6 +12,7 @@ import java.util.Objects;
 
 public class Bille implements Cloneable, Serializable{
     private Couleur color;
+    public static int width;
     private transient BufferedImage image;
     private AnimationBille animate = null;
     private int x,y;
@@ -32,28 +33,24 @@ public class Bille implements Cloneable, Serializable{
     //to check for collision
     public void update(Bille b){
         if (is_animate()){
-            System.out.println(animate.dx + " " + animate.dy);
-            System.out.println(animate.d);
             animate.move();
-            System.out.println(x + ' ' + y);
             updatePos();
-            System.out.println(x + ' ' + y);
             if (b != null && !b.is_animate()){
                 switch (animate.d) {
                     case NORD -> {
-                        if (y == b.y)
+                        if (y == b.y + Bille.width / 1.2)
                             b.createAnimation(animate.d);
                     }
                     case SUD -> {
-                        if (y == b.y)
+                        if (y + Bille.width / 1.2 == b.y)
                             b.createAnimation(animate.d);
                     }
                     case OUEST -> {
-                        if (x == b.x)
+                        if (x == b.x + Bille.width / 1.2)
                             b.createAnimation(animate.d);
                     }
                     case EST -> {
-                        if (x == b.x)
+                        if (x + Bille.width / 1.2 == b.x)
                             b.createAnimation(animate.d);
                     }
                 }
@@ -64,10 +61,10 @@ public class Bille implements Cloneable, Serializable{
 
     public void createAnimation(Direction d){
         switch (d) {
-            case NORD -> animate = new AnimationBille(x, y, x, y-1, 0, -1, d);
-            case SUD -> animate = new AnimationBille(x, y, x, y+1, 0, 1, d);
-            case OUEST -> animate = new AnimationBille(x, y, x-1, y, -1, 0, d);
-            case EST -> animate = new AnimationBille(x, y, x+1, y, 1, 0, d);
+            case NORD -> animate = new AnimationBille(x, y, x, y - Bille.width, 0, -1, d);
+            case SUD -> animate = new AnimationBille(x, y, x, y + Bille.width, 0, 1, d);
+            case OUEST -> animate = new AnimationBille(x, y, x - Bille.width, y, -1, 0, d);
+            case EST -> animate = new AnimationBille(x, y, x + Bille.width, y, 1, 0, d);
         }
     }
 
@@ -82,11 +79,11 @@ public class Bille implements Cloneable, Serializable{
     public static class AnimationBille{
         private int x;
         private int y;
-        private final int d_x;
-        private final int d_y;
-        private final int dx;
-        private final int dy;
-        private final Direction d;
+        private int d_x;
+        private int d_y;
+        private int dx;
+        private int dy;
+        private Direction d;
 
         public AnimationBille(int x, int y, int d_x, int d_y, int dx, int dy, Direction d){
             this.x = x;this.y=y;this.d_x = d_x;this.d_y=d_y;this.dx=dx;this.dy=dy;
@@ -115,9 +112,9 @@ public class Bille implements Cloneable, Serializable{
         this(c, 0, 0);
     }
 
-    public Bille(Couleur c, int x, int y){
-        this.x = x;
-        this.y = y;
+    public Bille(Couleur c, int x_, int y_){
+        this.x = x_*Bille.width;
+        this.y = y_*Bille.width;
         color = c;
         String imageDesc = switch (color) {
             case NOIR -> "black";
@@ -146,7 +143,7 @@ public class Bille implements Cloneable, Serializable{
 
     @Override
     public Object clone(){
-        Bille b = new Bille(color, x, y);
+        Bille b = new Bille(color, x/Bille.width, y/Bille.width);
         if (animate != null) b.animate = new AnimationBille(animate);
 
         return b;

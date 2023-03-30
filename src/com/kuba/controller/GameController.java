@@ -7,7 +7,6 @@ import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Bille;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
-import com.kuba.vue.BoardView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,8 +53,15 @@ public class GameController {
     }
 
     private Position positionConvert(Point a){
-        int billeWidth = BoardView.HEIGHT / board.size();
-        return new Position(a.y / billeWidth, a.x / billeWidth);
+        for (int i=0;i<board.size();i++){
+            for (int j=0;j<board.size();j++){
+                if (board.board(i, j).contains(a.x, a.y)){
+                    return new Position(i, j);
+                }
+            }
+        }
+
+        return null;
     }
 
     public void changePlayer(){

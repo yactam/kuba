@@ -27,6 +27,7 @@ public class Board implements Observable<Data>, Data {
         elementObs = new ArrayList<>();
         if (keys == null)
             initKeys();
+        Bille.width = BoardView.HEIGHT / k;
         initBoard();
     }
 

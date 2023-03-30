@@ -16,24 +16,22 @@ import java.util.Date;
 public class BoardView extends JPanel implements Observer<Data> {
 
     private Data board;
+    public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public static int HEIGHT = screenSize.height - 30;
+    public final int billeWidth;
     private final Timer timer;
     private static final int sleep_time = 5;
     private Date dt;
-    public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    public static final int HEIGHT = screenSize.height - 40;
-    public final int billeWidth;
-
 
     public BoardView(Board board) {
         timer = new Timer();
         this.board = board;
         board.addObserver(this);
-        billeWidth = HEIGHT / board.size();
-        setPreferredSize(new Dimension(billeWidth * board.size(), billeWidth * board.size()));
-        setSize(new Dimension(billeWidth * board.size(), billeWidth * board.size()));
+        billeWidth = screenSize.height / board.size();
+        setPreferredSize(new Dimension(HEIGHT, HEIGHT));
+        setSize(new Dimension(HEIGHT, HEIGHT));
         StatAnimation();
     }
-
     private void drawGrid(Graphics2D graphics2D) {
         graphics2D.setColor(Color.LIGHT_GRAY);
         graphics2D.fillRect(0, 0, HEIGHT, HEIGHT);
@@ -41,13 +39,12 @@ public class BoardView extends JPanel implements Observer<Data> {
             for(int j = 0; j < board.size(); j++) {
                 if(i != board.size()-1 && j != board.size()-1) {
                     graphics2D.setColor(Color.BLACK);
-                    graphics2D.drawRect(j * billeWidth + (billeWidth / 2), i * billeWidth + (billeWidth / 2),
-                            billeWidth, billeWidth);
+                    graphics2D.drawRect(j * Bille.width + (Bille.width / 2), i * Bille.width + (Bille.width / 2), 
+                    Bille.width, Bille.width);
                 }
             }
         }
     }
-
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D graphics2D = (Graphics2D) g;
@@ -68,9 +65,9 @@ public class BoardView extends JPanel implements Observer<Data> {
                 MouseInfo.getPointerInfo ();
                 repaint();
                 dt = new Date (dt.getTime () + sleep_time);
-                timer.schedule(update (), dt);
+		        timer.schedule(update (), dt);
             }
-        };
+        };   
     }
 
     private boolean estDansLimite(Position position) {
@@ -79,18 +76,19 @@ public class BoardView extends JPanel implements Observer<Data> {
     }
 
     public void animate(Graphics2D graphics2D){
-
+        
         for (int i=0;i<board.size();i++){
             for (int j=0;j<board.size();j++){
-                Bille b = board.board(j, i).getBille();
+                Bille b = board.board(i, j).getBille();
                 if (b != null){
-                    graphics2D.drawImage(b.image(), (int) (b.getX() * billeWidth), (int) (b.getY() * billeWidth), billeWidth, billeWidth, null);
+                    graphics2D.drawImage(b.image(), b.getX(),
+                                                    b.getY(),Bille.width,
+                                                    Bille.width, null);
 
                     if (b.is_animate()){
-
-                        Position neibPos = new Position(j, i).next(b.getAnimation().getDirection());
+                        Position neibPos = new Position(i, j).next(b.getAnimation().getDirection());
                         b.update(
-                                estDansLimite(neibPos) ? board.board(neibPos.getI(), neibPos.getJ()).getBille():null
+                            estDansLimite(neibPos) ? board.board(neibPos.getI(), neibPos.getJ()).getBille():null
                         );
 
                     }
