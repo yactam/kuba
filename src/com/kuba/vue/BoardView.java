@@ -16,7 +16,9 @@ import java.util.Date;
 public class BoardView extends JPanel implements Observer<Data> {
 
     private Data board;
-    public static final int billeWidth = 80;
+    public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public static int HEIGHT = screenSize.height - 30;
+    public final int billeWidth;
     private Timer timer;
     private static int sleep_time = 5;
     private Date dt;
@@ -26,6 +28,7 @@ public class BoardView extends JPanel implements Observer<Data> {
         timer = new Timer();
         this.board = board;
         board.addObserver(this);
+        billeWidth = screenSize.height / board.size();
         setPreferredSize(new Dimension(billeWidth * board.size(), billeWidth * board.size()));
         StatAnimation();
     }
@@ -58,7 +61,7 @@ public class BoardView extends JPanel implements Observer<Data> {
 */
     private void drawGrid(Graphics2D graphics2D) {
         graphics2D.setColor(Color.LIGHT_GRAY);
-        graphics2D.fillRect(0, 0, 598, 598);
+        graphics2D.fillRect(0, 0, HEIGHT, HEIGHT);
         for(int i = 0; i < board.size(); i++) {
             for(int j = 0; j < board.size(); j++) {
                 if(i != board.size()-1 && j != board.size()-1) {
@@ -106,9 +109,9 @@ public class BoardView extends JPanel implements Observer<Data> {
             for (int j=0;j<board.size();j++){
                 Bille b = board.board(i, j).getBille();
                 if (b != null){
-                    graphics2D.drawImage(b.image(), b.getX()+((Bille.width/Bille.scale)/2), 
-                                                    b.getY()+((Bille.width/Bille.scale)/2),Bille.width-Bille.width/Bille.scale, 
-                                                    Bille.width-Bille.width/Bille.scale, null);
+                    graphics2D.drawImage(b.image(), b.getX(),
+                                                    b.getY(),Bille.width,
+                                                    Bille.width, null);
 
                     if (b.is_animate()){
                         Position neibPos = new Position(i, j).next(b.getAnimation().getDirection());

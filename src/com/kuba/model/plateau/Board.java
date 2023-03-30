@@ -8,6 +8,8 @@ import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Position;
 import com.kuba.model.player.Joueur;
+import com.kuba.vue.BoardView;
+
 import java.util.*;
 
 public class Board implements Observable<Data>, Data {
@@ -25,7 +27,7 @@ public class Board implements Observable<Data>, Data {
         elementObs = new ArrayList<>();
         if (keys == null)
             initKeys();
-        Bille.width = 598 / size();
+        Bille.width = BoardView.HEIGHT / k;
         initBoard();
     }
 

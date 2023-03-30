@@ -101,7 +101,7 @@ public class MenuView extends JPanel {
                 System.out.println(boardSizes.getItemCount());
                 Joueur j1 = new Joueur(playerOne.getText(), Couleur.BLANC);
                 Joueur j2 = new Joueur(playerTwo.getText(), Couleur.NOIR);
-                new Game(boardSizes.getItemCount(),j1, j2);
+                new Game(2,j1, j2);
             });
 
             exit.addActionListener(e -> {

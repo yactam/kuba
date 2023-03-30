@@ -12,9 +12,8 @@ import java.util.Objects;
 
 public class Bille implements Cloneable, Serializable{
     private Couleur color;
-    public static int width = 50;
+    public static int width;
     private transient BufferedImage image;
-    public static final int scale = 8;
     private AnimationBille animate = null;
     private int x,y;
 
@@ -37,23 +36,23 @@ public class Bille implements Cloneable, Serializable{
             animate.move();
             updatePos();
             if (b != null && !b.is_animate()){
-                switch (animate.d){
-                    case NORD:
-                        if (y == b.y + Bille.width/2)
+                switch (animate.d) {
+                    case NORD -> {
+                        if (y == b.y + Bille.width / 1.2)
                             b.createAnimation(animate.d);
-                    break;
-                    case SUD:
-                        if (y + Bille.width/2 == b.y)
+                    }
+                    case SUD -> {
+                        if (y + Bille.width / 1.2 == b.y)
                             b.createAnimation(animate.d);
-                    break;
-                    case OUEST:
-                        if (x == b.x + Bille.width/2)
+                    }
+                    case OUEST -> {
+                        if (x == b.x + Bille.width / 1.2)
                             b.createAnimation(animate.d);
-                    break;
-                    case EST:
-                        if (x + Bille.width/2 == b.x)
+                    }
+                    case EST -> {
+                        if (x + Bille.width / 1.2 == b.x)
                             b.createAnimation(animate.d);
-                    break;
+                    }
                 }
             }
         }
@@ -61,19 +60,11 @@ public class Bille implements Cloneable, Serializable{
 
 
     public void createAnimation(Direction d){
-        switch (d){
-            case NORD:
-                animate = new AnimationBille(x, y, x, y-Bille.width, 0, -1, d);
-            break;
-            case SUD:
-                animate = new AnimationBille(x, y, x, y+Bille.width, 0, 1, d);
-            break;
-            case OUEST:
-                animate = new AnimationBille(x, y, x-Bille.width, y, -1, 0, d);
-            break;
-            case EST:
-                animate = new AnimationBille(x, y, x+Bille.width, y, 1, 0, d);
-            break;
+        switch (d) {
+            case NORD -> animate = new AnimationBille(x, y, x, y - Bille.width, 0, -1, d);
+            case SUD -> animate = new AnimationBille(x, y, x, y + Bille.width, 0, 1, d);
+            case OUEST -> animate = new AnimationBille(x, y, x - Bille.width, y, -1, 0, d);
+            case EST -> animate = new AnimationBille(x, y, x + Bille.width, y, 1, 0, d);
         }
     }
 
