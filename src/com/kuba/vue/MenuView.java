@@ -12,7 +12,7 @@ import javax.swing.*;
 public class MenuView extends JPanel {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     JPanel background = new Background("src/resources/main_title.png", screenSize);
-    String[] choices = {"3x3", "7x7", "11x11", "15x15", "19x19"};
+    String[] choices = {"3", "7", "11", "15", "19"};
     JTextField playerOne, playerTwo;
     JCheckBox botOne, botTwo;
     JLabel text;
@@ -99,10 +99,10 @@ public class MenuView extends JPanel {
         public MenuController() {
             start.addActionListener(e -> {
                 int i = boardSizes.getSelectedIndex();
-                System.out.println(Integer.getInteger(choices[i]));
+                int t = (Integer.parseInt(choices[i]) + 1) / 4;
                 Joueur j1 = new Joueur(playerOne.getText(), Couleur.BLANC);
                 Joueur j2 = new Joueur(playerTwo.getText(), Couleur.NOIR);
-                new Game(2,j1, j2);
+                new Game(t,j1, j2);
             });
 
             exit.addActionListener(e -> {

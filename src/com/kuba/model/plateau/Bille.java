@@ -38,19 +38,19 @@ public class Bille implements Cloneable, Serializable{
             if (b != null && !b.is_animate()){
                 switch (animate.d) {
                     case NORD -> {
-                        if (y == b.y + Bille.width / 1.2)
+                        if (y == b.y + Bille.width / 2)
                             b.createAnimation(animate.d);
                     }
                     case SUD -> {
-                        if (y + Bille.width / 1.2 == b.y)
+                        if (y + Bille.width / 2 == b.y)
                             b.createAnimation(animate.d);
                     }
                     case OUEST -> {
-                        if (x == b.x + Bille.width / 1.2)
+                        if (x == b.x + Bille.width / 2)
                             b.createAnimation(animate.d);
                     }
                     case EST -> {
-                        if (x + Bille.width / 1.2 == b.x)
+                        if (x + Bille.width / 2 == b.x)
                             b.createAnimation(animate.d);
                     }
                 }
