@@ -4,6 +4,7 @@ import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.MoveStatus;
 import com.kuba.model.mouvement.Position;
+import com.kuba.model.plateau.Bille;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
 import com.kuba.vue.BoardView;
@@ -53,10 +54,8 @@ public class GameController {
     }
 
     private Position positionConvert(Point a){
-        // Calcul selon la taille des billes
-        int x = (int)a.getX()/ BoardView.billeWidth;
-        int y = (int)a.getY()/BoardView.billeHeight;
-        return new Position(y,x);
+        int billeWidth = BoardView.HEIGHT / board.size();
+        return new Position(a.y / billeWidth, a.x / billeWidth);
     }
 
     public void changePlayer(){
@@ -70,7 +69,6 @@ public class GameController {
     private class KeyController extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            //System.out.println("Key pressed");
             try{
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP -> {

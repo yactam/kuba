@@ -9,7 +9,7 @@ import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
 
 public class GameView extends JPanel {
-    private PlayerView p1, p2;
+    private final PlayerView p1, p2;
     private BoardView boardView;
     private JButton leave, confirm, undo, redo;
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

@@ -1,99 +1,105 @@
 package com.kuba.vue;
 
+
+import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Bille;
 import com.kuba.model.plateau.Board;
 import com.kuba.observerpattern.Data;
 import com.kuba.observerpattern.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
+import java.util.Date;
 
 public class BoardView extends JPanel implements Observer<Data> {
 
     private Data board;
-    public static int billeHeight;
-    public static int billeWidth;
-    private BufferedImage red;
-    private BufferedImage black;
-    private BufferedImage white;
-    private int width;
-    private int height;
+    private final Timer timer;
+    private static final int sleep_time = 5;
+    private Date dt;
+    public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public static final int HEIGHT = screenSize.height - 40;
+    public final int billeWidth;
+
+
     public BoardView(Board board) {
+        timer = new Timer();
         this.board = board;
         board.addObserver(this);
-        
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        width = (int) screenSize.getWidth() ;
-        height = (int) screenSize.getHeight() ;
-        billeHeight =(int)((height/board.size() - 0.030*height/board.size()));
-        billeWidth = (int)((width*70/100) / board.size());
-        System.out.println("Bille Width : "+billeHeight);
-        initBille();
-        setPreferredSize(new Dimension(width,height));
+        billeWidth = HEIGHT / board.size();
+        setPreferredSize(new Dimension(billeWidth * board.size(), billeWidth * board.size()));
+        setSize(new Dimension(billeWidth * board.size(), billeWidth * board.size()));
+        StatAnimation();
     }
 
-    private void initBille() {
-        loadImages();
-    }
-
-    private void loadImages() {
-        createBackgroundImage();
-        try {
-            red = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/red.png")));
-            black = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/black.png")));
-            white = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/white.png")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    private void drawGrid(Graphics2D graphics2D) {
+        graphics2D.setColor(Color.LIGHT_GRAY);
+        graphics2D.fillRect(0, 0, HEIGHT, HEIGHT);
+        for(int i = 0; i < board.size(); i++) {
+            for(int j = 0; j < board.size(); j++) {
+                if(i != board.size()-1 && j != board.size()-1) {
+                    graphics2D.setColor(Color.BLACK);
+                    graphics2D.drawRect(j * billeWidth + (billeWidth / 2), i * billeWidth + (billeWidth / 2),
+                            billeWidth, billeWidth);
+                }
+            }
         }
-    }
-
-    private void createBackgroundImage() {
-        BufferedImage background = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics g = background.getGraphics();
-        drawGrid((Graphics2D) g);
-    }
-
-    public void updateBoard(Board board) {
-        this.board = board;
-        repaint();
     }
 
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D graphics2D = (Graphics2D) g;
         drawGrid(graphics2D);
-        for(int i = 0; i < board.size(); i++) {
-            for(int j = 0; j < board.size(); j++) {
-                if(!board.board(j, i).estVide()) {
-                    Image image = switch (board.board(j, i).getBille().getColor()) {
-                        case BLANC -> white;
-                        case ROUGE -> red;
-                        case NOIR -> black;
-                    };
-                    Image img = image.getScaledInstance(billeHeight, billeHeight, Image.SCALE_SMOOTH);
-                    graphics2D.drawImage(img, billeWidth * i, billeHeight * j, billeWidth, billeHeight, null);
+        animate(graphics2D);
+    }
+
+    public void StatAnimation(){
+        dt = new Date (System.currentTimeMillis () + sleep_time);
+        timer.schedule(update(), dt);
+
+    }
+
+    private TimerTask update(){
+        return new TimerTask() {
+            @Override
+            public void run() {
+                MouseInfo.getPointerInfo ();
+                repaint();
+                dt = new Date (dt.getTime () + sleep_time);
+                timer.schedule(update (), dt);
+            }
+        };
+    }
+
+    private boolean estDansLimite(Position position) {
+        int i = position.getI(), j = position.getJ();
+        return i >= 0 && i < board.size() && j >= 0 && j < board.size();
+    }
+
+    public void animate(Graphics2D graphics2D){
+
+        for (int i=0;i<board.size();i++){
+            for (int j=0;j<board.size();j++){
+                Bille b = board.board(j, i).getBille();
+                if (b != null){
+                    graphics2D.drawImage(b.image(), (int) (b.getX() * billeWidth), (int) (b.getY() * billeWidth), billeWidth, billeWidth, null);
+
+                    if (b.is_animate()){
+
+                        Position neibPos = new Position(j, i).next(b.getAnimation().getDirection());
+                        b.update(
+                                estDansLimite(neibPos) ? board.board(neibPos.getI(), neibPos.getJ()).getBille():null
+                        );
+
+                    }
                 }
             }
         }
     }
 
-    private void drawGrid(Graphics2D graphics2D) {
-        graphics2D.setColor(Color.LIGHT_GRAY);
-        
-        graphics2D.fillRect(0, 0, width, height);
-        for(int i = 0; i < board.size(); i++) {
-            for(int j = 0; j < board.size(); j++) {
-                if(i != board.size()-1 && j != board.size()-1) {
-                    graphics2D.setColor(Color.BLACK);
-                    graphics2D.drawRect(j * billeWidth + (billeWidth / 2), i * billeHeight + (billeHeight / 2), billeWidth, billeHeight);
-                }
-            }
-        }
-    }
+
 
     @Override
     public void update(Data e){
