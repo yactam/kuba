@@ -5,26 +5,22 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import com.kuba.vue.BilleAnimateView;
+
 public class Bille implements Cloneable, Serializable{
     private Couleur color;
-    private int x,y;
-
-    public int getX(){
-        return x;
-    }
-
-    public int getY(){
-        return y;
-    }
-
-    public void setXY(int x, int y){
-        this.x=x;
-        this.y=y;
-    }
-
+    private BilleAnimateView bv;
 
     public Bille(Couleur c){
         color = c;
+    }
+
+    public void setBV(BilleAnimateView bv){
+        this.bv=bv;
+    }
+
+    public BilleAnimateView getBV(){
+        return bv;
     }
 
     public Couleur getColor() { return color; }

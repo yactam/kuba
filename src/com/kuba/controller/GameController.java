@@ -4,9 +4,9 @@ import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.MoveStatus;
 import com.kuba.model.mouvement.Position;
-import com.kuba.model.plateau.Bille;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
+import com.kuba.vue.BilleAnimateView;
 import com.kuba.vue.BoardView;
 
 import javax.swing.*;
@@ -46,7 +46,6 @@ public class GameController {
                     move = true;
                 }
                 else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
-                    from = from.next(d);
                     move = true;
                 } else {
                     System.out.println(moveStatus.getMessage());
@@ -60,14 +59,17 @@ public class GameController {
     }
 
     private void lancerAnimationBille(){
-        boardView.statrAnimation(from);
+        boardView.statrAnimation( from.next(direction), direction);
     }
 
     private Position positionConvert(Point a){
         for (int i=0;i<board.size();i++){
             for (int j=0;j<board.size();j++){
-                if (board.board(i, j).contains(a.x, a.y)){
-                    return new Position(i, j);
+                BilleAnimateView bv = boardView.getAnimatedBille(i, j);
+                if (bv != null &&
+                            bv.contains(a.x, a.y)){
+                    return new Position(bv.getY() / BilleAnimateView.width,
+                                        bv.getX() / BilleAnimateView.width);
                 }
             }
         }
@@ -132,6 +134,7 @@ public class GameController {
                             MoveStatus moveStatus = board.update(new Mouvement(from, direction), courant);
                             if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) {
                                 changePlayer();
+                                lancerAnimationBille();
                             } else if(moveStatus.isLegal()) {
                                 System.out.println(moveStatus.getMessage());
                             }

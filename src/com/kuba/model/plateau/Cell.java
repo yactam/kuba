@@ -40,14 +40,4 @@ public class Cell implements Cloneable{
         c.bille = (bille != null) ? (Bille) bille.clone() : null;
         return c;
     }
-
-    public boolean contains(int x, int y){
-        if (estVide()) return false;
-        if (x >= bille.getX() && x <= bille.getX()+BilleAnimateView.width
-                && y >= bille.getY() && y <= bille.getY()+BilleAnimateView.width){
-            return true;
-        }
-        return false;
-    }
-
 }
