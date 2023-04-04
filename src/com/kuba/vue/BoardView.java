@@ -17,7 +17,7 @@ public class BoardView extends JPanel implements Observer<Data> {
     private Data board;
     private BilleAnimateView billes[][];
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    public static int HEIGHT = screenSize.height - 30;
+    public static int HEIGHT = screenSize.height - 100;
     private final Timer timer;
     private static final int sleep_time = 5;
     private Date dt;
