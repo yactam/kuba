@@ -18,13 +18,12 @@ public class BoardView extends JPanel implements Observer<Data> {
     private Data board;
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public static int HEIGHT = screenSize.height - 100;
-    private final Timer timer;
+    private Timer timer;
     private static final int sleep_time = 5;
     private Date dt;
     private boolean is_animating = false;
 
     public BoardView(Board board) {
-        timer = new Timer();
         this.board = board;
         for (int i = 0; i < board.size(); i++) {
             for (int j = 0; j < board.size(); j++) {
@@ -59,6 +58,10 @@ public class BoardView extends JPanel implements Observer<Data> {
         Graphics2D graphics2D = (Graphics2D) g;
         drawGrid(graphics2D);
         draw(graphics2D);
+        if (!is_animating && timer != null){
+            timer.cancel();
+            timer.purge();
+        }
     }
 
     public void statrAnimation(Position from, Direction d) {
@@ -67,6 +70,7 @@ public class BoardView extends JPanel implements Observer<Data> {
             b.getBV().createAnimation(d);
         is_animating = true;
         dt = new Date(System.currentTimeMillis() + sleep_time);
+        timer = new Timer();
         timer.schedule(update(), dt);
     }
 
