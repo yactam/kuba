@@ -1,14 +1,9 @@
 package com.kuba.model.plateau;
 
-import javax.imageio.ImageIO;
-import com.kuba.model.mouvement.Direction;
-
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Objects;
 
 public class Bille implements Cloneable, Serializable{
     private Couleur color;
@@ -20,6 +15,11 @@ public class Bille implements Cloneable, Serializable{
 
     public int getY(){
         return y;
+    }
+
+    public void setXY(int x, int y){
+        this.x=x;
+        this.y=y;
     }
 
 

@@ -12,6 +12,8 @@ public class BilleAnimateView extends JPanel{
     private AnimationBille animate = null;
     public static int width;
     private transient BufferedImage image;
+    private Bille b;
+    private boolean start_animation;
 
     public BilleAnimateView(Bille b, int x_, int y_) {
         this.x = x_*BilleAnimateView.width;
@@ -26,6 +28,8 @@ public class BilleAnimateView extends JPanel{
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        this.b = b;
+        this.b.setXY(x, y);
     }
 
     public BufferedImage image() {
@@ -40,9 +44,14 @@ public class BilleAnimateView extends JPanel{
         return y;
     }
 
+    public void startAnimation(){
+        start_animation = true;
+    }
+
     private void updatePos(){
         this.x = animate.x;
         this.y = animate.y;
+        if (!animate.is_moving()) start_animation = false;
     }
 
     public void update(BilleAnimateView b){
@@ -86,7 +95,7 @@ public class BilleAnimateView extends JPanel{
     }
 
     public boolean is_animate(){
-        return animate != null && animate.is_moving();
+        return animate != null && animate.is_moving() || start_animation;
     }
 
     public static class AnimationBille{

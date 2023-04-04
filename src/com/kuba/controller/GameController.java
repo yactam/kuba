@@ -7,6 +7,7 @@ import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Bille;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
+import com.kuba.vue.BoardView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,8 +23,10 @@ public class GameController {
     private Joueur courant;
     private Position from;
     private Direction direction;
+    private BoardView boardView;
 
-    public GameController(Board board, Joueur blanc, Joueur noir) {
+    public GameController(Board board, BoardView boardView, Joueur blanc, Joueur noir) {
+        this.boardView = boardView;
         this.board = board;
         this.blanc = blanc;
         this.noir = noir;
@@ -34,22 +37,30 @@ public class GameController {
     }
 
     private void deplacement(Direction d){
+        boolean move = false;
         try{
             if(d !=null && from != null){
                 MoveStatus moveStatus = board.update(new Mouvement(from, d), courant);
                 if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
                     changePlayer();
+                    move = true;
                 }
                 else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
                     from = from.next(d);
+                    move = true;
                 } else {
                     System.out.println(moveStatus.getMessage());
                 }
+                if (move) lancerAnimationBille();
             }
         }
         catch(Exception e){
             System.out.println("--------------------------");
         }
+    }
+
+    private void lancerAnimationBille(){
+        boardView.statrAnimation(from);
     }
 
     private Position positionConvert(Point a){

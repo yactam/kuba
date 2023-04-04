@@ -1,6 +1,5 @@
 package com.kuba.vue;
 
-
 import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Board;
 import com.kuba.observerpattern.Data;
@@ -21,6 +20,7 @@ public class BoardView extends JPanel implements Observer<Data> {
     private final Timer timer;
     private static final int sleep_time = 5;
     private Date dt;
+    private boolean is_animating = false;
 
     public BoardView(Board board) {
         timer = new Timer();
@@ -36,7 +36,6 @@ public class BoardView extends JPanel implements Observer<Data> {
         board.addObserver(this);
         setPreferredSize(new Dimension(HEIGHT, HEIGHT));
         setSize(new Dimension(HEIGHT, HEIGHT));
-        StatAnimation();
     }
     
     private void drawGrid(Graphics2D graphics2D) {
@@ -52,14 +51,21 @@ public class BoardView extends JPanel implements Observer<Data> {
             }
         }
     }
+
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D graphics2D = (Graphics2D) g;
         drawGrid(graphics2D);
-        animate(graphics2D);
+        draw(graphics2D);
+        if (!is_animating) {
+            timer.cancel();
+            timer.purge();
+        }
     }
 
-    public void StatAnimation(){
+    public void statrAnimation(Position from){
+        billes[from.getI()][from.getJ()].startAnimation();
+        is_animating = true;
         dt = new Date (System.currentTimeMillis () + sleep_time);
         timer.schedule(update(), dt);
 
@@ -82,7 +88,7 @@ public class BoardView extends JPanel implements Observer<Data> {
         return i >= 0 && i < board.size() && j >= 0 && j < board.size();
     }
 
-    public void animate(Graphics2D graphics2D){
+    public void draw(Graphics2D graphics2D){
         
         for (int i=0;i<board.size();i++){
             for (int j=0;j<board.size();j++){

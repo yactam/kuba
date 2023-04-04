@@ -47,7 +47,7 @@ public class Board implements Observable<Data>, Data {
     public void initBoard() {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                board[i][j] = new Cell(this, i, j);
+                board[i][j] = new Cell();
             }
         }
         initWhite();
@@ -103,7 +103,7 @@ public class Board implements Observable<Data>, Data {
 
     // TODO remove after testing
     public void initCell(int i, int j) {
-        board[i][j] = new Cell(this, i, j);
+        board[i][j] = new Cell();
     }
 
     public Cell board(int i, int j) {
@@ -178,7 +178,7 @@ public class Board implements Observable<Data>, Data {
             // System.out.println("KO");
             return new MoveStatus(MoveStatus.Status.INVALID_MOVE, "KO");
         } else {
-            
+
             transitionBoard.treated_configs.add(hash_code);
             if (execute) {
                 this.board = transitionBoard.board;
@@ -200,7 +200,7 @@ public class Board implements Observable<Data>, Data {
         res.treated_configs = new HashSet<>(treated_configs);
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                res.board[i][j] = new Cell(this, i, j);
+                res.board[i][j] = new Cell();
                 if (board(i, j).estVide())
                     res.board(i, j).clear();
                 else
