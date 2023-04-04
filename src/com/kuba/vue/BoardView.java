@@ -16,6 +16,7 @@ import java.util.Date;
 public class BoardView extends JPanel implements Observer<Data> {
 
     private Data board;
+    private BilleAnimateView billes[][];
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public static int HEIGHT = screenSize.height - 30;
     public final int billeWidth;
@@ -26,6 +27,12 @@ public class BoardView extends JPanel implements Observer<Data> {
     public BoardView(Board board) {
         timer = new Timer();
         this.board = board;
+        billes = new BilleAnimateView[board.size()][board.size()];
+        for (int i=0;i<board.size();i++) {
+            for (int j=0;j<board.size();j++) {
+                billes[i][j] = new BilleAnimateView(board.obtenirBille(i, j), i, j); 
+            }
+        }
         board.addObserver(this);
         billeWidth = screenSize.height / board.size();
         setPreferredSize(new Dimension(HEIGHT, HEIGHT));
@@ -79,7 +86,7 @@ public class BoardView extends JPanel implements Observer<Data> {
         
         for (int i=0;i<board.size();i++){
             for (int j=0;j<board.size();j++){
-                Bille b = board.board(i, j).getBille();
+                BilleAnimateView b = billes[i][j];
                 if (b != null){
                     graphics2D.drawImage(b.image(), b.getX(),
                                                     b.getY(),Bille.width,
@@ -88,7 +95,7 @@ public class BoardView extends JPanel implements Observer<Data> {
                     if (b.is_animate()){
                         Position neibPos = new Position(i, j).next(b.getAnimation().getDirection());
                         b.update(
-                            estDansLimite(neibPos) ? board.board(neibPos.getI(), neibPos.getJ()).getBille():null
+                            estDansLimite(neibPos) ? billes[neibPos.getI()][neibPos.getJ()]:null
                         );
 
                     }
