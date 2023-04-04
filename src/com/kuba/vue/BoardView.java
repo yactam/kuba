@@ -2,7 +2,6 @@ package com.kuba.vue;
 
 
 import com.kuba.model.mouvement.Position;
-import com.kuba.model.plateau.Bille;
 import com.kuba.model.plateau.Board;
 import com.kuba.observerpattern.Data;
 import com.kuba.observerpattern.Observer;
@@ -19,7 +18,6 @@ public class BoardView extends JPanel implements Observer<Data> {
     private BilleAnimateView billes[][];
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public static int HEIGHT = screenSize.height - 30;
-    public final int billeWidth;
     private final Timer timer;
     private static final int sleep_time = 5;
     private Date dt;
@@ -28,13 +26,15 @@ public class BoardView extends JPanel implements Observer<Data> {
         timer = new Timer();
         this.board = board;
         billes = new BilleAnimateView[board.size()][board.size()];
+        BilleAnimateView.width = screenSize.height / board.size();
         for (int i=0;i<board.size();i++) {
             for (int j=0;j<board.size();j++) {
-                billes[i][j] = new BilleAnimateView(board.obtenirBille(i, j), i, j); 
+                if (board.obtenirBille(i, j) != null){
+                    billes[i][j] = new BilleAnimateView(board.obtenirBille(i, j), i, j); 
+                }else billes[i][j] = null;
             }
         }
         board.addObserver(this);
-        billeWidth = screenSize.height / board.size();
         setPreferredSize(new Dimension(HEIGHT, HEIGHT));
         setSize(new Dimension(HEIGHT, HEIGHT));
         StatAnimation();
@@ -46,8 +46,8 @@ public class BoardView extends JPanel implements Observer<Data> {
             for(int j = 0; j < board.size(); j++) {
                 if(i != board.size()-1 && j != board.size()-1) {
                     graphics2D.setColor(Color.BLACK);
-                    graphics2D.drawRect(j * Bille.width + (Bille.width / 2), i * Bille.width + (Bille.width / 2), 
-                    Bille.width, Bille.width);
+                    graphics2D.drawRect(j * BilleAnimateView.width + (BilleAnimateView.width / 2), i * BilleAnimateView.width + (BilleAnimateView.width / 2), 
+                    BilleAnimateView.width, BilleAnimateView.width);
                 }
             }
         }
@@ -89,8 +89,8 @@ public class BoardView extends JPanel implements Observer<Data> {
                 BilleAnimateView b = billes[i][j];
                 if (b != null){
                     graphics2D.drawImage(b.image(), b.getX(),
-                                                    b.getY(),Bille.width,
-                                                    Bille.width, null);
+                                                    b.getY(),BilleAnimateView.width,
+                                                    BilleAnimateView.width, null);
 
                     if (b.is_animate()){
                         Position neibPos = new Position(i, j).next(b.getAnimation().getDirection());

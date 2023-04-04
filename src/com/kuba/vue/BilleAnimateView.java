@@ -18,7 +18,6 @@ public class BilleAnimateView extends JPanel{
     public BilleAnimateView(Bille b, int x_, int y_) {
         this.x = x_*BilleAnimateView.width;
         this.y = y_*BilleAnimateView.width;
-        setPreferredSize(new Dimension(BilleAnimateView.width, BilleAnimateView.width));
         String imageDesc = switch (b.getColor()) {
             case NOIR -> "black";
             case BLANC -> "white";
