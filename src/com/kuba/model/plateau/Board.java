@@ -58,9 +58,9 @@ public class Board implements Observable<Data>, Data {
     private void initWhite() {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                board(i, j).setBille(new Bille(Couleur.BLANC, j, i));
+                board(i, j).setBille(new Bille(Couleur.BLANC));
                 board(board.length - 1 - i, board.length - 1 - j)
-                        .setBille(new Bille(Couleur.BLANC, board.length - 1 - j, board.length - 1 - i));
+                        .setBille(new Bille(Couleur.BLANC));
             }
         }
     }
@@ -68,8 +68,8 @@ public class Board implements Observable<Data>, Data {
     private void initBlack() {
         for (int i = 0; i < n; i++) {
             for (int j = board[i].length - 1; j >= board[i].length - n; j--) {
-                board(i, j).setBille(new Bille(Couleur.NOIR, j, i));
-                board(j, i).setBille(new Bille(Couleur.NOIR, i, j));
+                board(i, j).setBille(new Bille(Couleur.NOIR));
+                board(j, i).setBille(new Bille(Couleur.NOIR));
             }
         }
     }
@@ -83,7 +83,7 @@ public class Board implements Observable<Data>, Data {
                 spaces = i + 1 - (k / 2);
             }
             for (int j = 0; j < count; j++) {
-                board(i, j + spaces).setBille(new Bille(Couleur.ROUGE, j + spaces, i));
+                board(i, j + spaces).setBille(new Bille(Couleur.ROUGE));
             }
             if (i < k / 2) {
                 count += 2;
@@ -178,11 +178,7 @@ public class Board implements Observable<Data>, Data {
             // System.out.println("KO");
             return new MoveStatus(MoveStatus.Status.INVALID_MOVE, "KO");
         } else {
-
-            Bille b = board((new Position(pos.getI(), pos.getJ())))
-                    .getBille();
-            b.createAnimation(dir);
-
+            
             transitionBoard.treated_configs.add(hash_code);
             if (execute) {
                 this.board = transitionBoard.board;

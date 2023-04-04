@@ -1,6 +1,4 @@
 package com.kuba.vue;
-
-import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 import javax.imageio.ImageIO;
