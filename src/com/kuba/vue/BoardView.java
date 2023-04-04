@@ -26,7 +26,6 @@ public class BoardView extends JPanel implements Observer<Data> {
         timer = new Timer();
         this.board = board;
         billes = new BilleAnimateView[board.size()][board.size()];
-        BilleAnimateView.width = screenSize.height / board.size();
         for (int i=0;i<board.size();i++) {
             for (int j=0;j<board.size();j++) {
                 if (board.obtenirBille(i, j) != null){
@@ -39,6 +38,7 @@ public class BoardView extends JPanel implements Observer<Data> {
         setSize(new Dimension(HEIGHT, HEIGHT));
         StatAnimation();
     }
+    
     private void drawGrid(Graphics2D graphics2D) {
         graphics2D.setColor(Color.LIGHT_GRAY);
         graphics2D.fillRect(0, 0, HEIGHT, HEIGHT);
