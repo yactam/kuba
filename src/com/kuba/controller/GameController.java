@@ -23,7 +23,7 @@ public class GameController {
     private Joueur courant;
     private Position from;
     private Direction direction;
-    private BoardView boardView;
+    private final BoardView boardView;
 
     public GameController(Board board, BoardView boardView, Joueur blanc, Joueur noir) {
         this.boardView = boardView;
@@ -59,15 +59,14 @@ public class GameController {
     }
 
     private void lancerAnimationBille(){
-        boardView.statrAnimation( from.next(direction), direction);
+        boardView.startAnimation(from.next(direction), direction);
     }
 
     private Position positionConvert(Point a){
         for (int i=0;i<board.size();i++){
             for (int j=0;j<board.size();j++){
                 BilleAnimateView bv = boardView.getAnimatedBille(i, j);
-                if (bv != null &&
-                            bv.contains(a.x, a.y)){
+                if (bv != null && bv.contains(a.x, a.y)) {
                     return new Position(bv.getY() / BilleAnimateView.width,
                                         bv.getX() / BilleAnimateView.width);
                 }

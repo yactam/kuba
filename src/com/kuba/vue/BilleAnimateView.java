@@ -6,17 +6,16 @@ import javax.swing.JPanel;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.plateau.Bille;
 
-public class BilleAnimateView extends JPanel{
+public class BilleAnimateView {
     private int x;
     private int y;
     private AnimationBille animate = null;
     public static int width;
-    private transient BufferedImage image;
-    private Bille b;
+    private final transient BufferedImage image;
 
     public BilleAnimateView(Bille b, int x_, int y_) {
-        this.x = x_*BilleAnimateView.width;
-        this.y = y_*BilleAnimateView.width;
+        this.x = x_ * BilleAnimateView.width;
+        this.y = y_ * BilleAnimateView.width;
         String imageDesc = switch (b.getColor()) {
             case NOIR -> "black";
             case BLANC -> "white";
@@ -27,15 +26,16 @@ public class BilleAnimateView extends JPanel{
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        this.b = b;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + x + "," + y + ")";
     }
 
     public boolean contains(int x_, int y_){
-        if (x_ >= getX() && x_ <= getX()+BilleAnimateView.width
-                && y_ >= getY() && y_ <= getY()+BilleAnimateView.width){
-            return true;
-        }
-        return false;
+        return x_ >= getX() && x_ <= getX() + BilleAnimateView.width
+                && y_ >= getY() && y_ <= getY() + BilleAnimateView.width;
     }
 
     public BufferedImage image() {
@@ -102,11 +102,11 @@ public class BilleAnimateView extends JPanel{
     public static class AnimationBille{
         private int x;
         private int y;
-        private int d_x;
-        private int d_y;
-        private int dx;
-        private int dy;
-        private Direction d;
+        private final int d_x;
+        private final int d_y;
+        private final int dx;
+        private final int dy;
+        private final Direction d;
 
         public AnimationBille(int x, int y, int d_x, int d_y, int dx, int dy, Direction d){
             this.x = x;this.y=y;this.d_x = d_x;this.d_y=d_y;this.dx=dx;this.dy=dy;

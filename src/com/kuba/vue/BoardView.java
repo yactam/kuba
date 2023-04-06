@@ -6,6 +6,8 @@ import com.kuba.model.plateau.Bille;
 import com.kuba.model.plateau.Board;
 import com.kuba.observerpattern.Data;
 import com.kuba.observerpattern.Observer;
+
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -16,6 +18,7 @@ import java.util.Date;
 public class BoardView extends JPanel implements Observer<Data> {
 
     private Data board;
+    private final BilleAnimateView[][] billeAnimateViews;
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public static int HEIGHT = screenSize.height - 100;
     private Timer timer;
@@ -25,11 +28,14 @@ public class BoardView extends JPanel implements Observer<Data> {
 
     public BoardView(Board board) {
         this.board = board;
-        for (int i = 0; i < board.size(); i++) {
-            for (int j = 0; j < board.size(); j++) {
+        int n = board.size();
+        BilleAnimateView.width = HEIGHT / n;
+        billeAnimateViews = new BilleAnimateView[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 Bille b = board.obtenirBille(i, j);
                 if (b != null) {
-                    b.setBV(new BilleAnimateView(b, j, i));
+                    billeAnimateViews[i][j] = new BilleAnimateView(board.obtenirBille(i, j), j, i);
                 }
             }
         }
@@ -64,10 +70,12 @@ public class BoardView extends JPanel implements Observer<Data> {
         }
     }
 
-    public void statrAnimation(Position from, Direction d) {
-        Bille b = board.obtenirBille(from.getI(), from.getJ());
-        if (b!=null && b.getBV()!=null)
-            b.getBV().createAnimation(d);
+    public void startAnimation(Position from, Direction d) {
+        int i = from.getI(), j = from.getJ();
+        Bille b = board.obtenirBille(i, j);
+        BilleAnimateView bv = billeAnimateViews[i][j];
+        if (b != null && bv != null)
+            bv.createAnimation(d);
         is_animating = true;
         dt = new Date(System.currentTimeMillis() + sleep_time);
         timer = new Timer();
@@ -96,7 +104,7 @@ public class BoardView extends JPanel implements Observer<Data> {
         for (int i = 0; i < board.size(); i++) {
             for (int j = 0; j < board.size(); j++) {
                 BilleAnimateView b = null;
-                if (board.obtenirBille(i, j) != null) b = board.obtenirBille(i, j).getBV();
+                if (board.obtenirBille(i, j) != null) b = billeAnimateViews[i][j];
                 if (b != null) {
                     graphics2D.drawImage(b.image(), b.getX(),
                             b.getY(), BilleAnimateView.width,
@@ -104,10 +112,10 @@ public class BoardView extends JPanel implements Observer<Data> {
 
                     if (b.is_animate()) {
                         is_animating = true;
-                        Position neibPos = new Position(i, j).next(b.getAnimation().getDirection());
-                        Bille bille = board.obtenirBille(neibPos.getI(), neibPos.getJ());
+                        Position nibPose = new Position(i, j).next(b.getAnimation().getDirection());
                         b.update(
-                                (estDansLimite(neibPos) && bille != null) ? bille.getBV() : null);
+                                (estDansLimite(nibPose) && billeAnimateViews[nibPose.getI()][nibPose.getJ()] != null) ?
+                                        billeAnimateViews[nibPose.getI()][nibPose.getJ()] : null);
 
                     }
                 }
@@ -117,7 +125,7 @@ public class BoardView extends JPanel implements Observer<Data> {
 
     public BilleAnimateView getAnimatedBille(int i, int j) {
         if (board.obtenirBille(i, j) != null){
-            return board.obtenirBille(i, j).getBV();
+            return billeAnimateViews[i][j];
         }
         return null;
     }
@@ -125,6 +133,16 @@ public class BoardView extends JPanel implements Observer<Data> {
     @Override
     public void update(Data e) {
         board = e;
+        for(int i = 0; i < billeAnimateViews.length; i++) {
+            for(int j = 0; j < billeAnimateViews.length; j++) {
+                Bille b = board.obtenirBille(i, j);
+                if (b != null) {
+                    billeAnimateViews[i][j] = new BilleAnimateView(board.obtenirBille(i, j), j, i);
+                } else {
+                    billeAnimateViews[i][j] = null;
+                }
+            }
+        }
         this.repaint();
     }
 

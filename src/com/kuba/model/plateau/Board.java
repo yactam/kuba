@@ -8,8 +8,6 @@ import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Position;
 import com.kuba.model.player.Joueur;
-import com.kuba.vue.BilleAnimateView;
-import com.kuba.vue.BoardView;
 
 import java.util.*;
 
@@ -28,7 +26,6 @@ public class Board implements Observable<Data>, Data {
         elementObs = new ArrayList<>();
         if (keys == null)
             initKeys();
-        BilleAnimateView.width = (BoardView.HEIGHT / k);
         initBoard();
     }
 
@@ -227,8 +224,7 @@ public class Board implements Observable<Data>, Data {
     }
 
     private boolean estDansLimite(Position position) {
-        int i = position.getI(), j = position.getJ();
-        return i >= 0 && i < board.length && j >= 0 && j < board[i].length;
+        return estDansLimite(position.getI(), position.getJ());
     }
 
     private boolean estDansLimite(int i, int j) {
