@@ -22,12 +22,14 @@ public class GameController {
     private Joueur courant;
     private Position from;
     private Direction direction;
-
+    private Son son;
     public GameController(Board board, Joueur blanc, Joueur noir) {
         this.board = board;
         this.blanc = blanc;
         this.noir = noir;
         this.courant = blanc;
+        son = new Son();
+        son.playMusic(0);
         ((JPanel)board.getObserver()).addMouseListener(new MouseController());
         ((JPanel)board.getObserver()).addKeyListener(new KeyController());
         ((JPanel)board.getObserver()).setFocusable(true);
@@ -80,18 +82,22 @@ public class GameController {
                     case KeyEvent.VK_UP -> {
                         direction = Direction.NORD;
                         deplacement(direction);
+                        son.playSoundEffect(1);
                     }
                     case KeyEvent.VK_LEFT -> {
                         direction = Direction.OUEST;
                         deplacement(direction);
+                        son.playSoundEffect(1);
                     }
                     case KeyEvent.VK_RIGHT -> {
                         direction = Direction.EST;
-                        deplacement(direction);
+                        deplacement(direction);  
+                        son.playSoundEffect(1);
                     }
                     case KeyEvent.VK_DOWN -> {
                         direction = Direction.SUD;
-                        deplacement(direction);
+                        deplacement(direction); 
+                        son.playSoundEffect(1);
                     }
                 }
             }
@@ -121,6 +127,7 @@ public class GameController {
                             MoveStatus moveStatus = board.update(new Mouvement(from, direction), courant);
                             if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) {
                                 changePlayer();
+                                son.playSoundEffect(1);
                             } else if(moveStatus.isLegal()) {
                                 System.out.println(moveStatus.getMessage());
                             }
