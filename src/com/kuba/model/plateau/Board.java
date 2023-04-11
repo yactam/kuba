@@ -181,7 +181,6 @@ public class Board implements Observable<Data>, Data {
                 this.board = transitionBoard.board;
                 this.treated_configs = transitionBoard.treated_configs;
             }
-            notifyObservers();
             if (move_out)
                 return new MoveStatus(MoveStatus.Status.MOVE_OUT, "");
             return new MoveStatus(MoveStatus.Status.BASIC_MOVE, "");

@@ -65,6 +65,7 @@ public class BoardView extends JPanel implements Observer<Data> {
         drawGrid(graphics2D);
         draw(graphics2D);
         if (!is_animating && timer != null){
+            update(board);
             timer.cancel();
             timer.purge();
         }
@@ -72,10 +73,10 @@ public class BoardView extends JPanel implements Observer<Data> {
 
     public void startAnimation(Position from, Direction d) {
         int i = from.getI(), j = from.getJ();
-        Bille b = board.obtenirBille(i, j);
         BilleAnimateView bv = billeAnimateViews[i][j];
-        if (b != null && bv != null)
+        if (bv != null){
             bv.createAnimation(d);
+        }
         is_animating = true;
         dt = new Date(System.currentTimeMillis() + sleep_time);
         timer = new Timer();
@@ -104,7 +105,7 @@ public class BoardView extends JPanel implements Observer<Data> {
         for (int i = 0; i < board.size(); i++) {
             for (int j = 0; j < board.size(); j++) {
                 BilleAnimateView b = null;
-                if (board.obtenirBille(i, j) != null) b = billeAnimateViews[i][j];
+                b = billeAnimateViews[i][j];
                 if (b != null) {
                     graphics2D.drawImage(b.image(), b.getX(),
                             b.getY(), BilleAnimateView.width,
@@ -143,7 +144,6 @@ public class BoardView extends JPanel implements Observer<Data> {
                 }
             }
         }
-        this.repaint();
     }
 
 }

@@ -59,7 +59,7 @@ public class GameController {
     }
 
     private void lancerAnimationBille(){
-        boardView.startAnimation(from.next(direction), direction);
+        boardView.startAnimation(from, direction);
     }
 
     private Position positionConvert(Point a){

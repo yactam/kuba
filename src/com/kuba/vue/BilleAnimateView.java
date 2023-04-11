@@ -2,7 +2,6 @@ package com.kuba.vue;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.plateau.Bille;
 
