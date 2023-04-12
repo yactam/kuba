@@ -13,7 +13,7 @@ public class Game extends JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         
         BoardView boardView = new BoardView(board);
-        new GameController(board, j1, j2);
+        new GameController(board, boardView, j1, j2);
         
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);

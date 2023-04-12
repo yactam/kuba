@@ -4,9 +4,10 @@ import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.MoveStatus;
 import com.kuba.model.mouvement.Position;
-import com.kuba.model.plateau.Bille;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
+import com.kuba.vue.BilleAnimateView;
+import com.kuba.vue.BoardView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +24,10 @@ public class GameController {
     private Position from;
     private Direction direction;
     private Son son;
-    public GameController(Board board, Joueur blanc, Joueur noir) {
+    private final BoardView boardView;
+
+    public GameController(Board board, BoardView boardView, Joueur blanc, Joueur noir) {
+        this.boardView = boardView;
         this.board = board;
         this.blanc = blanc;
         this.noir = noir;
@@ -36,17 +40,20 @@ public class GameController {
     }
 
     private void deplacement(Direction d){
+        boolean move = false;
         try{
             if(d !=null && from != null){
                 MoveStatus moveStatus = board.update(new Mouvement(from, d), courant);
                 if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
                     changePlayer();
+                    move = true;
                 }
                 else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
-                    from = from.next(d);
+                    move = true;
                 } else {
                     System.out.println(moveStatus.getMessage());
                 }
+                if (move) lancerAnimationBille();
             }
         }
         catch(Exception e){
@@ -54,11 +61,17 @@ public class GameController {
         }
     }
 
+    private void lancerAnimationBille(){
+        boardView.startAnimation(from, direction);
+    }
+
     private Position positionConvert(Point a){
         for (int i=0;i<board.size();i++){
             for (int j=0;j<board.size();j++){
-                if (board.board(i, j).contains(a.x, a.y)){
-                    return new Position(i, j);
+                BilleAnimateView bv = boardView.getAnimatedBille(i, j);
+                if (bv != null && bv.contains(a.x, a.y)) {
+                    return new Position(bv.getY() / BilleAnimateView.width,
+                                        bv.getX() / BilleAnimateView.width);
                 }
             }
         }
@@ -128,6 +141,7 @@ public class GameController {
                             if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) {
                                 changePlayer();
                                 son.playSoundEffect(1);
+                                lancerAnimationBille();
                             } else if(moveStatus.isLegal()) {
                                 System.out.println(moveStatus.getMessage());
                             }

@@ -9,6 +9,7 @@ import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
 
 public class GameView extends JPanel {
+
     private final PlayerView p1, p2;
     private BoardView boardView;
     private JButton leave, confirm, undo, redo;
@@ -22,7 +23,7 @@ public class GameView extends JPanel {
         setBackground(new Color(0,0,0,0));
         Board plateau = new Board(N);
         boardView = new BoardView(plateau);
-        new GameController(plateau, j1, j2);
+        new GameController(plateau,boardView, j1, j2);
         //plateau.setBorder(new EmptyBorder(0, 0, getHeight(), getHeight()));
         p1 = new PlayerView(j1);
         p2 = new PlayerView(j2);

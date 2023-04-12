@@ -8,7 +8,6 @@ import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Position;
 import com.kuba.model.player.Joueur;
-import com.kuba.vue.BoardView;
 
 import java.util.*;
 
@@ -27,7 +26,6 @@ public class Board implements Observable<Data>, Data {
         elementObs = new ArrayList<>();
         if (keys == null)
             initKeys();
-        Bille.width = BoardView.HEIGHT / k;
         initBoard();
     }
 
@@ -46,7 +44,7 @@ public class Board implements Observable<Data>, Data {
     public void initBoard() {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                board[i][j] = new Cell(this, i, j);
+                board[i][j] = new Cell();
             }
         }
         initWhite();
@@ -57,9 +55,9 @@ public class Board implements Observable<Data>, Data {
     private void initWhite() {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                board(i, j).setBille(new Bille(Couleur.BLANC, j, i));
+                board(i, j).setBille(new Bille(Couleur.BLANC));
                 board(board.length - 1 - i, board.length - 1 - j)
-                        .setBille(new Bille(Couleur.BLANC, board.length - 1 - j, board.length - 1 - i));
+                        .setBille(new Bille(Couleur.BLANC));
             }
         }
     }
@@ -67,8 +65,8 @@ public class Board implements Observable<Data>, Data {
     private void initBlack() {
         for (int i = 0; i < n; i++) {
             for (int j = board[i].length - 1; j >= board[i].length - n; j--) {
-                board(i, j).setBille(new Bille(Couleur.NOIR, j, i));
-                board(j, i).setBille(new Bille(Couleur.NOIR, i, j));
+                board(i, j).setBille(new Bille(Couleur.NOIR));
+                board(j, i).setBille(new Bille(Couleur.NOIR));
             }
         }
     }
@@ -82,7 +80,7 @@ public class Board implements Observable<Data>, Data {
                 spaces = i + 1 - (k / 2);
             }
             for (int j = 0; j < count; j++) {
-                board(i, j + spaces).setBille(new Bille(Couleur.ROUGE, j + spaces, i));
+                board(i, j + spaces).setBille(new Bille(Couleur.ROUGE));
             }
             if (i < k / 2) {
                 count += 2;
@@ -102,7 +100,7 @@ public class Board implements Observable<Data>, Data {
 
     // TODO remove after testing
     public void initCell(int i, int j) {
-        board[i][j] = new Cell(this, i, j);
+        board[i][j] = new Cell();
     }
 
     public Cell board(int i, int j) {
@@ -178,16 +176,11 @@ public class Board implements Observable<Data>, Data {
             return new MoveStatus(MoveStatus.Status.INVALID_MOVE, "KO");
         } else {
 
-            Bille b = board((new Position(pos.getI(), pos.getJ())))
-                    .getBille();
-            b.createAnimation(dir);
-
             transitionBoard.treated_configs.add(hash_code);
             if (execute) {
                 this.board = transitionBoard.board;
                 this.treated_configs = transitionBoard.treated_configs;
             }
-            notifyObservers();
             if (move_out)
                 return new MoveStatus(MoveStatus.Status.MOVE_OUT, "");
             return new MoveStatus(MoveStatus.Status.BASIC_MOVE, "");
@@ -203,7 +196,7 @@ public class Board implements Observable<Data>, Data {
         res.treated_configs = new HashSet<>(treated_configs);
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                res.board[i][j] = new Cell(this, i, j);
+                res.board[i][j] = new Cell();
                 if (board(i, j).estVide())
                     res.board(i, j).clear();
                 else
@@ -230,8 +223,7 @@ public class Board implements Observable<Data>, Data {
     }
 
     private boolean estDansLimite(Position position) {
-        int i = position.getI(), j = position.getJ();
-        return i >= 0 && i < board.length && j >= 0 && j < board[i].length;
+        return estDansLimite(position.getI(), position.getJ());
     }
 
     private boolean estDansLimite(int i, int j) {
