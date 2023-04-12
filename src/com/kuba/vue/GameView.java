@@ -7,7 +7,7 @@ import javax.swing.*;
 import com.kuba.controller.GameController;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
-
+import com.kuba.controller.Son;
 public class GameView extends JPanel {
     private final PlayerView p1, p2;
     private BoardView boardView;
@@ -15,14 +15,14 @@ public class GameView extends JPanel {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
 
-    public GameView(int N, Joueur j1, Joueur j2) {
+    public GameView(int N, Joueur j1, Joueur j2, Son son) {
         setLayout(null);
         setSize(screenSize);
         setPreferredSize(screenSize);
         setBackground(new Color(0,0,0,0));
         Board plateau = new Board(N);
         boardView = new BoardView(plateau);
-        new GameController(plateau, j1, j2);
+        new GameController(plateau, j1, j2,son);
         //plateau.setBorder(new EmptyBorder(0, 0, getHeight(), getHeight()));
         p1 = new PlayerView(j1);
         p2 = new PlayerView(j2);

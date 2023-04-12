@@ -23,13 +23,16 @@ public class GameController {
     private Position from;
     private Direction direction;
     private Son son;
-    public GameController(Board board, Joueur blanc, Joueur noir) {
+    public GameController(Board board, Joueur blanc, Joueur noir, Son son) {
         this.board = board;
         this.blanc = blanc;
         this.noir = noir;
         this.courant = blanc;
-        son = new Son();
+        this.son = son;
         son.playMusic(0);
+        if(son.mute){
+            son.stopMusic();
+        }
         ((JPanel)board.getObserver()).addMouseListener(new MouseController());
         ((JPanel)board.getObserver()).addKeyListener(new KeyController());
         ((JPanel)board.getObserver()).setFocusable(true);

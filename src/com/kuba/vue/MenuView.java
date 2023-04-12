@@ -3,13 +3,14 @@ package com.kuba.vue;
 import com.kuba.Game;
 import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
-
+import com.kuba.controller.Son;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import javax.swing.*;
 
 
 public class MenuView extends JPanel {
+    Son son;
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     JPanel background = new Background("src/resources/main_title.png", screenSize);
     String[] choices = {"3", "7", "11", "15", "19"};
@@ -17,12 +18,13 @@ public class MenuView extends JPanel {
     JCheckBox botOne, botTwo;
     JLabel text;
     JComboBox<String> boardSizes;
-    JButton start, exit;
-    public MenuView() {
+    private boolean mute=false;
+    JButton start, exit , unmute;
+    public MenuView(Son son) {
+        this.son=son;
         setPreferredSize(screenSize);
         setSize(screenSize);
         setLayout(null);
-
 
         initPlayers();
         initBots();
@@ -36,6 +38,7 @@ public class MenuView extends JPanel {
         background.add(boardSizes);
         background.add(start);
         background.add(exit);
+        background.add(unmute);
         add(background);
         new MenuController();
     }
@@ -73,6 +76,7 @@ public class MenuView extends JPanel {
         boardSizes = new JComboBox<>(choices);
         start = new JButton(new ImageIcon("src/resources/start.png"));
         exit = new JButton(new ImageIcon("src/resources/exit.png"));
+        unmute = new JButton(new ImageIcon("src/resources/unmute.png"));
         boardSizes.setSelectedIndex(1);
 
         styleButtons();
@@ -87,7 +91,10 @@ public class MenuView extends JPanel {
         boardSizes.setBounds((int) (0.55 * getWidth()), (int) (0.6 * getHeight()), (int) (0.05*getWidth()), (int) (0.03*getHeight()));
         start.setBounds((int) (0.465 * getWidth()), (int) (0.7 * getHeight()), (int) (0.1*getWidth()), (int) (0.06*getHeight()));
         exit.setBounds((int) (0.465 * getWidth()), (int) (0.8 * getHeight()), (int) (0.1*getWidth()), (int) (0.06*getHeight()));
-
+        unmute.setBounds((int) (0.95 * getWidth()), (int) (0.05 * getHeight()), (int) (0.04*getWidth()), (int) (0.06*getHeight()));
+        
+        unmute.setBorder(BorderFactory.createLineBorder(new Color(0,0,0,0)));
+        unmute.setOpaque(false);
         start.setBorder(BorderFactory.createLineBorder(new Color(0,0,0,0)));
         start.setOpaque(false);
         exit.setBorder(BorderFactory.createLineBorder(new Color(0,0,0,0)));
@@ -102,7 +109,22 @@ public class MenuView extends JPanel {
                 int t = (Integer.parseInt(choices[i]) + 1) / 4;
                 Joueur j1 = new Joueur(playerOne.getText(), Couleur.BLANC);
                 Joueur j2 = new Joueur(playerTwo.getText(), Couleur.NOIR);
-                new Game(t,j1, j2);
+                new Game(t,j1, j2,son);
+            });
+
+            unmute.addActionListener( e->{
+                if(!mute){
+                    unmute.setIcon(new ImageIcon("src/resources/mute.png"));
+                    background.repaint();
+                    son.mute=true;
+                    mute=true;
+                }
+                else{
+                    unmute.setIcon(new ImageIcon("src/resources/unmute.png"));
+                    background.repaint();
+                    son.mute=false;
+                    mute=false;
+                }
             });
 
             exit.addActionListener(e -> {
