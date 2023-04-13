@@ -43,11 +43,14 @@ public class GameController {
             if(d !=null && from != null){
                 MoveStatus moveStatus = board.update(new Mouvement(from, d), courant);
                 if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
+                    if(!son.mute)son.playSoundEffect(1);
                     changePlayer();
                 }
                 else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
+                    if(!son.mute)son.playSoundEffect(1);
                     from = from.next(d);
                 } else {
+                    if(!son.mute)son.playSoundEffect(3);
                     System.out.println(moveStatus.getMessage());
                 }
             }
@@ -84,27 +87,24 @@ public class GameController {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP -> {
                         direction = Direction.NORD;
-                        deplacement(direction);
-                        son.playSoundEffect(1);
+                        deplacement(direction);  
                     }
                     case KeyEvent.VK_LEFT -> {
                         direction = Direction.OUEST;
                         deplacement(direction);
-                        son.playSoundEffect(1);
                     }
                     case KeyEvent.VK_RIGHT -> {
                         direction = Direction.EST;
                         deplacement(direction);  
-                        son.playSoundEffect(1);
                     }
                     case KeyEvent.VK_DOWN -> {
                         direction = Direction.SUD;
                         deplacement(direction); 
-                        son.playSoundEffect(1);
                     }
                 }
             }
             catch(Exception ex){
+                if(!son.mute)son.playSoundEffect(3);
                 System.out.println("^");
             }
         }
@@ -130,13 +130,15 @@ public class GameController {
                             MoveStatus moveStatus = board.update(new Mouvement(from, direction), courant);
                             if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) {
                                 changePlayer();
-                                son.playSoundEffect(1);
+                                if(!son.mute)son.playSoundEffect(1);
                             } else if(moveStatus.isLegal()) {
+                                if(!son.mute)son.playSoundEffect(3);
                                 System.out.println(moveStatus.getMessage());
                             }
                         }
                     }
                     catch(Exception exception){
+                        if(!son.mute)son.playSoundEffect(3);
                         System.out.print("_");
                     }
                 }

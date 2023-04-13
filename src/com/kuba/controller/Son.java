@@ -20,6 +20,7 @@ public class Son {
             sounds.add(getClass().getResource("/resources/audio/game.wav"));
             sounds.add(getClass().getResource("/resources/audio/move2.wav"));
             sounds.add(getClass().getResource("/resources/audio/move.wav"));
+            sounds.add(getClass().getResource("/resources/audio/error.wav"));
         }
         catch(Exception e){
             System.out.println(" Error on loading sounds ");
