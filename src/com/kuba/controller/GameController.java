@@ -29,9 +29,8 @@ public class GameController {
         this.noir = noir;
         this.courant = blanc;
         this.son = son;
-        son.playMusic(0);
-        if(son.mute){
-            son.stopMusic();
+        if(!son.mute){
+            son.playMusic(0);
         }
         ((JPanel)board.getObserver()).addMouseListener(new MouseController());
         ((JPanel)board.getObserver()).addKeyListener(new KeyController());
@@ -104,7 +103,7 @@ public class GameController {
                 }
             }
             catch(Exception ex){
-                if(!son.mute)son.playSoundEffect(3);
+                if(!son.muteEffect)son.playSoundEffect(3);
                 System.out.println("^");
             }
         }
@@ -130,15 +129,15 @@ public class GameController {
                             MoveStatus moveStatus = board.update(new Mouvement(from, direction), courant);
                             if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) {
                                 changePlayer();
-                                if(!son.mute)son.playSoundEffect(1);
+                                if(!son.muteEffect)son.playSoundEffect(1);
                             } else if(moveStatus.isLegal()) {
-                                if(!son.mute)son.playSoundEffect(3);
+                                if(!son.muteEffect)son.playSoundEffect(3);
                                 System.out.println(moveStatus.getMessage());
                             }
                         }
                     }
                     catch(Exception exception){
-                        if(!son.mute)son.playSoundEffect(3);
+                        if(!son.muteEffect)son.playSoundEffect(3);
                         System.out.print("_");
                     }
                 }

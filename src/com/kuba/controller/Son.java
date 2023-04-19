@@ -13,6 +13,7 @@ public class Son {
     float currentVolume=0;
     FloatControl fc;
     public boolean mute=false;
+    public boolean muteEffect=false;
     ArrayList<URL> sounds = new ArrayList<URL>();
 
     public Son() {
@@ -62,8 +63,10 @@ public class Son {
     }
 
     public void playSoundEffect(int i) {
-        setSound(i);
-        play();
+        if(!muteEffect){
+            setSound(i);
+            play();
+        }
     }
 
     public void stopMusic() {
