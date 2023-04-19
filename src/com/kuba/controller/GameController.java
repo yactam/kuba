@@ -42,14 +42,14 @@ public class GameController {
             if(d !=null && from != null){
                 MoveStatus moveStatus = board.update(new Mouvement(from, d), courant);
                 if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
-                    if(!son.mute)son.playSoundEffect(1);
+                  son.playSoundEffect(1);
                     changePlayer();
                 }
                 else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
-                    if(!son.mute)son.playSoundEffect(1);
+                    son.playSoundEffect(1);
                     from = from.next(d);
                 } else {
-                    if(!son.mute)son.playSoundEffect(3);
+                   son.playSoundEffect(3);
                     System.out.println(moveStatus.getMessage());
                 }
             }
@@ -103,7 +103,7 @@ public class GameController {
                 }
             }
             catch(Exception ex){
-                if(!son.muteEffect)son.playSoundEffect(3);
+                son.playSoundEffect(3);
                 System.out.println("^");
             }
         }
@@ -129,15 +129,15 @@ public class GameController {
                             MoveStatus moveStatus = board.update(new Mouvement(from, direction), courant);
                             if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) {
                                 changePlayer();
-                                if(!son.muteEffect)son.playSoundEffect(1);
+                               son.playSoundEffect(1);
                             } else if(moveStatus.isLegal()) {
-                                if(!son.muteEffect)son.playSoundEffect(3);
+                               son.playSoundEffect(3);
                                 System.out.println(moveStatus.getMessage());
                             }
                         }
                     }
                     catch(Exception exception){
-                        if(!son.muteEffect)son.playSoundEffect(3);
+                        son.playSoundEffect(3);
                         System.out.print("_");
                     }
                 }

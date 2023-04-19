@@ -67,6 +67,9 @@ public class Son {
             setSound(i);
             play();
         }
+        else{
+            System.err.println(" Son off");
+        }
     }
 
     public void stopMusic() {
