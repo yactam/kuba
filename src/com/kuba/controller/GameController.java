@@ -15,6 +15,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.EventListener;
 
 public class GameController {
 
@@ -23,7 +24,7 @@ public class GameController {
     private Joueur courant;
     private Position from;
     private Direction direction;
-    private Son son;
+    private final Son son;
     private final BoardView boardView;
 
     public GameController(Board board, BoardView boardView, Joueur blanc, Joueur noir) {
@@ -37,9 +38,11 @@ public class GameController {
         ((JPanel)board.getObserver()).addMouseListener(new MouseController());
         ((JPanel)board.getObserver()).addKeyListener(new KeyController());
         ((JPanel)board.getObserver()).setFocusable(true);
+        ((JPanel)board.getObserver()).requestFocusInWindow();
     }
 
     private void deplacement(Direction d){
+        System.out.println("deplacement");
         boolean move = false;
         try{
             if(d !=null && from != null){
@@ -90,6 +93,7 @@ public class GameController {
     private class KeyController extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
+            System.out.println("Press");
             try{
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP -> {
@@ -123,6 +127,7 @@ public class GameController {
     private class MouseController extends MouseAdapter {
         @Override
         public void mousePressed(MouseEvent e) {
+            System.out.println("click");
             if(((JPanel)board.getObserver()).contains(e.getPoint())){
                 from = positionConvert(e.getPoint());
                 System.out.println(from);
@@ -132,9 +137,13 @@ public class GameController {
         @Override
         public void mouseReleased(MouseEvent e) {
             if(((JPanel)board.getObserver()).contains(e.getPoint())){
+                System.out.println("contains");
                 Position to = positionConvert(e.getPoint());
+                System.out.println("to = " + to);
                 if(from != null){
+                    assert to != null;
                     direction = from.nextDir(to);
+                    System.out.println(direction);
                     try{
                         if(direction != null && from != null){
                             MoveStatus moveStatus = board.update(new Mouvement(from, direction), courant);

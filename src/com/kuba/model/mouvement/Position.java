@@ -41,6 +41,7 @@ public class Position implements Cloneable {
 	}
 
 	public Direction nextDir(Position p) {
+		if(p == null) return null;
 		if(j == p.j && p.i < i)
 			return Direction.NORD;
 		else if(j == p.j && p.i > i)
