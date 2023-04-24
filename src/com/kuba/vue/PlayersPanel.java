@@ -18,8 +18,8 @@ public class PlayersPanel extends JPanel {
         errors = new JLabel();
         exit = new JButton(new ImageIcon("/resources/exit.png"));
 
-        setSize(new Dimension((int) (0.3 * Game.WIDTH), (int) (0.9 * Game.HIEGHT)));
-        setPreferredSize(new Dimension((int) (0.3 * Game.WIDTH), (int) (0.9 * Game.HIEGHT)));
+        setSize(new Dimension((int) (0.3 * Game.WIDTH), (int) (0.9 * Game.HEIGHT)));
+        setPreferredSize(new Dimension((int) (0.3 * Game.WIDTH), (int) (0.9 * Game.HEIGHT)));
         setLayout(new GridLayout(4, 1));
         add(p1);
         add(p2);

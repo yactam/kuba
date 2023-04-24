@@ -28,17 +28,20 @@ public class GameController {
     private Joueur courant;
     private Position from;
     private Direction direction;
-    private final Son son;
+    private Son son;
     private final BoardView boardView;
 
-    public GameController(Board board, BoardView boardView, Joueur blanc, Joueur noir) {
+
+    public GameController(Board board,BoardView boardView, Joueur blanc, Joueur noir, Son son) {
         this.boardView = boardView;
         this.board = board;
         this.blanc = blanc;
         this.noir = noir;
         this.courant = blanc;
-        son = new Son();
-        son.playMusic(0);
+        this.son = son;
+        if(!son.mute){
+            son.playMusic(0);
+        }
         ((JPanel)board.getObserver()).addMouseListener(new MouseController());
         ((JPanel)board.getObserver()).addKeyListener(new KeyController());
         ((JPanel)board.getObserver()).setFocusable(true);
@@ -57,7 +60,14 @@ public class GameController {
                 else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
                     lancerAnimationBille();
                     son.playSoundEffect(1);
+                  son.playSoundEffect(1);
+                    changePlayer();
+                }
+                else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
+                    son.playSoundEffect(1);
+                    from = from.next(d);
                 } else {
+                   son.playSoundEffect(3);
                     System.out.println(moveStatus.getMessage());
                     son.playSoundEffect(2);
                 }
@@ -117,7 +127,7 @@ public class GameController {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP -> {
                         direction = Direction.NORD;
-                        deplacement(direction);
+                        deplacement(direction);  
                     }
                     case KeyEvent.VK_LEFT -> {
                         direction = Direction.OUEST;
@@ -125,15 +135,16 @@ public class GameController {
                     }
                     case KeyEvent.VK_RIGHT -> {
                         direction = Direction.EST;
-                        deplacement(direction);
+                        deplacement(direction);  
                     }
                     case KeyEvent.VK_DOWN -> {
                         direction = Direction.SUD;
-                        deplacement(direction);
+                        deplacement(direction); 
                     }
                 }
             }
             catch(Exception ex){
+                son.playSoundEffect(3);
                 System.out.println("^");
             }
         }
@@ -164,11 +175,15 @@ public class GameController {
                                 son.playSoundEffect(1);
                                 lancerAnimationBille();
                             } else if(!moveStatus.isLegal()) {
+                               son.playSoundEffect(1);
+                            } else if(moveStatus.isLegal()) {
+                               son.playSoundEffect(3);
                                 System.out.println(moveStatus.getMessage());
                             }
                         }
                     }
                     catch(Exception exception){
+                        son.playSoundEffect(3);
                         System.out.print("_");
                     }
                 }
