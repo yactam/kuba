@@ -5,7 +5,9 @@ import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.MoveStatus;
 import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Board;
+import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
+import com.kuba.model.player.ai.IA;
 import com.kuba.vue.BilleAnimateView;
 import com.kuba.vue.BoardView;
 
@@ -16,6 +18,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.EventListener;
+
+import static java.lang.Thread.sleep;
 
 public class GameController {
 
@@ -42,21 +46,21 @@ public class GameController {
     }
 
     private void deplacement(Direction d){
-        System.out.println("deplacement");
-        boolean move = false;
         try{
             if(d !=null && from != null){
-                MoveStatus moveStatus = board.update(new Mouvement(from, d), courant);
+                MoveStatus moveStatus = courant.move(board, new Mouvement(from, d));
                 if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
+                    lancerAnimationBille();
+                    son.playSoundEffect(1);
                     changePlayer();
-                    move = true;
                 }
                 else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
-                    move = true;
+                    lancerAnimationBille();
+                    son.playSoundEffect(1);
                 } else {
                     System.out.println(moveStatus.getMessage());
+                    son.playSoundEffect(2);
                 }
-                if (move) lancerAnimationBille();
             }
         }
         catch(Exception e){
@@ -88,33 +92,44 @@ public class GameController {
         }else{
             courant = blanc;
         }
+        if(courant instanceof IA) {
+            boardView.setFocusable(false);
+            aiPlayer();
+        } else {
+            boardView.setFocusable(true);
+            boardView.requestFocusInWindow();
+        }
+    }
+
+    private void aiPlayer() {
+        IA aiPlayer = (IA) courant;
+        Mouvement mouvement = aiPlayer.getMouvement(board);
+        MoveStatus moveStatus = aiPlayer.move(board, mouvement);
+        if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) changePlayer();
+        else aiPlayer();
     }
 
     private class KeyController extends KeyAdapter {
+
         @Override
         public void keyPressed(KeyEvent e) {
-            System.out.println("Press");
             try{
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP -> {
                         direction = Direction.NORD;
                         deplacement(direction);
-                        son.playSoundEffect(1);
                     }
                     case KeyEvent.VK_LEFT -> {
                         direction = Direction.OUEST;
                         deplacement(direction);
-                        son.playSoundEffect(1);
                     }
                     case KeyEvent.VK_RIGHT -> {
                         direction = Direction.EST;
-                        deplacement(direction);  
-                        son.playSoundEffect(1);
+                        deplacement(direction);
                     }
                     case KeyEvent.VK_DOWN -> {
                         direction = Direction.SUD;
-                        deplacement(direction); 
-                        son.playSoundEffect(1);
+                        deplacement(direction);
                     }
                 }
             }
@@ -127,31 +142,28 @@ public class GameController {
     private class MouseController extends MouseAdapter {
         @Override
         public void mousePressed(MouseEvent e) {
-            System.out.println("click");
             if(((JPanel)board.getObserver()).contains(e.getPoint())){
                 from = positionConvert(e.getPoint());
-                System.out.println(from);
+                //System.out.println(from);
             }
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
             if(((JPanel)board.getObserver()).contains(e.getPoint())){
-                System.out.println("contains");
                 Position to = positionConvert(e.getPoint());
-                System.out.println("to = " + to);
                 if(from != null){
                     assert to != null;
                     direction = from.nextDir(to);
                     System.out.println(direction);
                     try{
                         if(direction != null && from != null){
-                            MoveStatus moveStatus = board.update(new Mouvement(from, direction), courant);
+                            MoveStatus moveStatus = courant.move(board, to, direction);
                             if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) {
                                 changePlayer();
                                 son.playSoundEffect(1);
                                 lancerAnimationBille();
-                            } else if(moveStatus.isLegal()) {
+                            } else if(!moveStatus.isLegal()) {
                                 System.out.println(moveStatus.getMessage());
                             }
                         }

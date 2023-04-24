@@ -90,7 +90,12 @@ public class BoardView extends JPanel implements Observer<Data> {
                 MouseInfo.getPointerInfo();
                 repaint();
                 dt = new Date(dt.getTime() + sleep_time);
-                timer.schedule(update(), dt);
+                try {
+                    timer.schedule(update(), dt);
+                } catch (IllegalStateException ignored) {
+
+                }
+
             }
         };
     }

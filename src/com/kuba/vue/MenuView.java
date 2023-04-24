@@ -3,6 +3,7 @@ package com.kuba.vue;
 import com.kuba.Game;
 import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
+import com.kuba.model.player.ai.IA;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -14,7 +15,7 @@ public class MenuView extends JPanel {
     JPanel background = new Background("src/resources/main_title.png", screenSize);
     String[] choices = {"3", "7", "11", "15", "19"};
     JTextField playerOne, playerTwo;
-    JCheckBox botOne, botTwo;
+    JCheckBox botOne;
     JLabel text;
     JComboBox<String> boardSizes;
     JButton start, exit;
@@ -25,13 +26,12 @@ public class MenuView extends JPanel {
 
 
         initPlayers();
-        initBots();
+        initBot();
         initButtons();
 
         background.add(playerOne);
         background.add(playerTwo);
         background.add(botOne);
-        background.add(botTwo);
         background.add(text);
         background.add(boardSizes);
         background.add(start);
@@ -53,19 +53,15 @@ public class MenuView extends JPanel {
         playerTwo.setBounds((int) (0.7 * getWidth()), (int) (0.4 * getHeight()), (int) (0.07*getWidth()), (int) (0.05*getHeight()));
     }
 
-    private void initBots() {
+    private void initBot() {
         botOne = new JCheckBox("Utiliser un bot");
-        botTwo = new JCheckBox("Utiliser un bot");
-        styleBots();
+        styleBot();
     }
 
-    private void styleBots() {
+    private void styleBot() {
         botOne.setForeground(Color.WHITE);
         botOne.setBackground(new Color(0,0,0,100));
-        botTwo.setForeground(Color.WHITE);
-        botTwo.setBackground(new Color(0,0,0,100));
-        botOne.setBounds((int) (0.2 * getWidth()), (int) (0.47 * getHeight()), (int) (0.07*getWidth()), (int) (0.03*getHeight()));
-        botTwo.setBounds((int) (0.7 * getWidth()), (int) (0.47 * getHeight()), (int) (0.07*getWidth()), (int) (0.03*getHeight()));
+        botOne.setBounds((int) (0.7 * getWidth()), (int) (0.47 * getHeight()), (int) (0.07*getWidth()), (int) (0.03*getHeight()));
     }
 
     private void initButtons() {
@@ -100,9 +96,9 @@ public class MenuView extends JPanel {
             start.addActionListener(e -> {
                 int i = boardSizes.getSelectedIndex();
                 int t = (Integer.parseInt(choices[i]) + 1) / 4;
-                Joueur j1 = new Joueur(playerOne.getText(), Couleur.BLANC);
-                Joueur j2 = new Joueur(playerTwo.getText(), Couleur.NOIR);
-                new Game(t,j1, j2);
+                Joueur j1 = new Joueur(playerTwo.getText(), Couleur.BLANC);
+                Joueur j2 = (botOne.isSelected()) ? new IA(Couleur.NOIR, j1) : new Joueur(playerTwo.getText(), Couleur.NOIR);
+                new Game(t, j1, j2);
             });
 
             exit.addActionListener(e -> {

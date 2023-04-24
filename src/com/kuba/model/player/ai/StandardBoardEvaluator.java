@@ -8,7 +8,8 @@ public class StandardBoardEvaluator implements BoardEvaluator {
     private static final int BONUS_FRONTIER = 1; // It's good to be free in one side to move
     private static final int BONUS_RED = 2; // It's good to be next to red discs
     private static final int BONUS_PIECE = 30; // It's good to have pieces
-    private static final int GET_OUT_RED = 100; // In order to force the AI to get out the red discs
+    private static final int GET_OUT_RED_AI = 100; // In order to force the AI to get out the red discs
+    private static final int GET_OUT_RED_HU = 90;
     private static final int BONUS_MOVE = 10; // It's good to have more moves
 
     /**
@@ -23,9 +24,9 @@ public class StandardBoardEvaluator implements BoardEvaluator {
      * and return a negative number if it's not, 0 means equality for the two players
      */
     @Override
-    public int evaluate(Board board, Joueur currentPlayer, Joueur opponent) {
-        int res =  score(board, currentPlayer) - score(board, opponent);
-        return res + (currentPlayer.getScore() - opponent.getScore());
+    public int evaluate(Board board, Joueur aiPlayer, Joueur opponent) {
+        //return score(board, aiPlayer) - score(board, opponent);
+        return aiPlayer.getScore() - opponent.getScore();
     }
 
     private int score(Board board, Joueur joueur) {
@@ -37,12 +38,12 @@ public class StandardBoardEvaluator implements BoardEvaluator {
                     /*if(board.isFrontier(i, j)) {
                         ret += BONUS_FRONTIER;
                     }*/
-                    if(board.inFrontOfRed(i, j)) {
+                    /*if(board.inFrontOfRed(i, j)) {
                         ret += BONUS_RED;
-                    }
+                    }*/
                 }
                 if(!board.board(i, j).estVide() && board.board(i, j).getBille().getColor() == Couleur.ROUGE) {
-                    ret -= GET_OUT_RED;
+                    ret -= GET_OUT_RED_AI;
                 }
                 ret += board.getAllPossibleMoves(joueur).size() * BONUS_MOVE; // More moves is good
             }

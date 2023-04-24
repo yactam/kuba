@@ -53,15 +53,15 @@ public class Joueur {
     }
 
     public int getScore() {
-        return 2 * getNbBilleRougeCapturee() + getNbAdversaireCapturee();
+        return getNbBilleRougeCapturee() + getNbAdversaireCapturee();
     }
 
-    public void move(Board board, Position pos, Direction dir){
-        board.update(new Mouvement(pos, dir), this);
+    public MoveStatus move(Board board, Position pos, Direction dir){
+        return board.update(new Mouvement(pos, dir), this);
     }
 
-    public void move(Board board, Mouvement mouvement) {
-        board.update(mouvement, this);
+    public MoveStatus move(Board board, Mouvement mouvement) {
+        return board.update(mouvement, this);
     }
 
     @Override

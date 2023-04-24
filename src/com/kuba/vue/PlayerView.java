@@ -19,9 +19,9 @@ public class PlayerView extends JPanel {
         lab1.setFont(new Font("Serif", Font.BOLD, 14));
         JLabel lab2 = new JLabel("Billes rouges capturées");
         lab2.setFont(new Font("Serif", Font.BOLD, 14));
-        billesRestantes = new JLabel(j.getNbAdversaireCapturee()+"");
+        billesRestantes = new JLabel(String.valueOf(j.getNbAdversaireCapturee()));
         billesRestantes.setFont(new Font("Serif", Font.BOLD, 15));
-        billesCapturesR = new JLabel(j.getNbBilleRougeCapturee()+"");
+        billesCapturesR = new JLabel(String.valueOf(j.getNbBilleRougeCapturee()));
         billesCapturesR.setFont(new Font("Serif", Font.BOLD, 15));
 
         nom.setBounds( 18, 13,200, 40);
@@ -38,8 +38,8 @@ public class PlayerView extends JPanel {
     }
 
     public void update(){
-        billesRestantes = new JLabel(joueur.getNbAdversaireCapturee()+"");
-        billesCapturesR = new JLabel(joueur.getNbBilleRougeCapturee()+"");
+        billesRestantes = new JLabel(String.valueOf(joueur.getNbAdversaireCapturee()));
+        billesCapturesR = new JLabel(String.valueOf(joueur.getNbBilleRougeCapturee()));
         this.repaint();
     }
 }
