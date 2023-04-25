@@ -177,8 +177,6 @@ class MiniMaxTest {
         board.board(6, 4).setBille(new Bille(Couleur.BLANC));
         board.board(6, 6).setBille(new Bille(Couleur.BLANC));
 
-        System.out.println(board);
-
         Joueur j1 = new Joueur("1", Couleur.NOIR);
         Joueur j2 = new Joueur("2", Couleur.BLANC);
 
