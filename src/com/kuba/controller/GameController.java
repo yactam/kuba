@@ -23,7 +23,7 @@ import static java.lang.Thread.sleep;
 
 public class GameController {
 
-    private final Board board;
+    public final Board board;
     private final Joueur blanc, noir;
     private Joueur courant;
     private Position from;
@@ -60,12 +60,7 @@ public class GameController {
                 else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
                     lancerAnimationBille();
                     son.playSoundEffect(1);
-                  son.playSoundEffect(1);
                     changePlayer();
-                }
-                else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
-                    son.playSoundEffect(1);
-                    from = from.next(d);
                 } else {
                    son.playSoundEffect(3);
                     System.out.println(moveStatus.getMessage());
@@ -92,8 +87,42 @@ public class GameController {
                 }
             }
         }
-
         return null;
+    }
+
+    public void serverGestion(int i, int j, Direction dir){
+        try{
+            Position pos = new Position(i*BilleAnimateView.width,j*BilleAnimateView.width);
+            if(dir !=null && pos != null){
+                Mouvement m = new Mouvement(pos,dir);
+                System.out.println(m);
+                MoveStatus moveStatus = courant.move(board,m);
+                if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
+                    son.playSoundEffect(1);
+                    ((JPanel)board.getObserver()).repaint();
+                    changePlayer();
+                }
+                else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
+                    son.playSoundEffect(1);
+                    son.playSoundEffect(1);
+                    ((JPanel)board.getObserver()).repaint();
+                    changePlayer();
+                }
+                else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
+                    son.playSoundEffect(1);
+                    pos = pos.next(dir);
+                } else {
+                    son.playSoundEffect(3);
+                    System.out.println(moveStatus.getMessage());
+                    son.playSoundEffect(2);
+                }
+                System.out.println(board);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            System.out.println("--------------------------");
+        }      
     }
 
     public void changePlayer(){

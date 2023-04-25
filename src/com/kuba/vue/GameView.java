@@ -14,7 +14,7 @@ public class GameView extends JPanel {
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private int HEIGHT = screenSize.height, WIDTH = screenSize.width;
     private Son son;
-
+    public GameController control;
     public GameView(int n, Joueur j1, Joueur j2, Son son) {
         this.son = son;
         setLayout(null);
@@ -24,7 +24,7 @@ public class GameView extends JPanel {
         Board plateau = new Board(n);
         boardView = new BoardView(plateau);
 
-        new GameController(plateau,boardView, j1, j2,son);
+        control = new GameController(plateau,boardView, j1, j2,son);
 
         playersPanel = new PlayersPanel(j1, j2);
 

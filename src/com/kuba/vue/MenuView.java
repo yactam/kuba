@@ -96,10 +96,10 @@ public class MenuView extends JPanel {
                 (int) (0.06 * getHeight()));
         exit.setBounds((int) (0.465 * getWidth()), (int) (0.8 * getHeight()), (int) (0.1 * getWidth()),
                 (int) (0.06 * getHeight()));
-        unmute.setBounds((int) (0.90 * getWidth()), (int) (0.05 * getHeight()), (int) (0.07 * getWidth()),
-                (int) (0.095 * getHeight()));
-        s_effect.setBounds((int) (0.90 * getWidth()), (int) (0.2 * getHeight()), (int) (0.07 * getWidth()),
-                (int) (0.095 * getHeight()));
+        unmute.setBounds((int) (0.90 * getWidth()), (int) (0.05 * getHeight()), (int) (0.06 * getWidth()),
+                (int) (0.09 * getHeight()));
+        s_effect.setBounds((int) (0.90 * getWidth()), (int) (0.2 * getHeight()), (int) (0.06 * getWidth()),
+                (int) (0.09 * getHeight()));
 
         s_effect.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0, 0)));
         s_effect.setOpaque(false);

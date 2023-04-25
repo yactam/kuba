@@ -8,7 +8,6 @@ public class MoveStatus {
         BASIC_MOVE;
     }
 
-
     private final String message;
     private final Status status;
     public MoveStatus(Status status, String message) {
@@ -27,6 +26,4 @@ public class MoveStatus {
     public Status getStatus() {
         return status;
     }
-
-
 }

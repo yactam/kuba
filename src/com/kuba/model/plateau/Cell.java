@@ -1,26 +1,9 @@
 package com.kuba.model.plateau;
 
 
-public class Cell extends JLabel implements Cloneable, MouseListener, Observer{
+public class Cell implements Cloneable{
 
-    private Board board;
     private Bille bille;
-    private int x,y;
-
-    public Cell(Board board, int x, int y){
-        this.board = board;
-        this.x = x;
-        this.y = y;
-        addMouseListener(this);
-    }
-
-    public int getX(){
-        return x;
-    }
-
-    public int getY(){
-        return y;
-    }
 
     public void setBille(Bille bille) {
         this.bille = bille;
