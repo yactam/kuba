@@ -53,7 +53,7 @@ public class Joueur {
     }
 
     public int getScore() {
-        return getNbBilleRougeCapturee() + getNbAdversaireCapturee();
+        return 2 * getNbBilleRougeCapturee() + getNbAdversaireCapturee();
     }
 
     public MoveStatus move(Board board, Position pos, Direction dir){
