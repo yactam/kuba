@@ -90,39 +90,33 @@ public class GameController {
         return null;
     }
 
-    public void serverGestion(int i, int j, Direction dir){
+    public void serverGestion(int i, int j, Direction d){
         try{
-            Position pos = new Position(i*BilleAnimateView.width,j*BilleAnimateView.width);
-            if(dir !=null && pos != null){
-                Mouvement m = new Mouvement(pos,dir);
-                System.out.println(m);
-                MoveStatus moveStatus = courant.move(board,m);
+            BilleAnimateView bv = boardView.getAnimatedBille(i, j);
+            from = new Position(bv.getY() / BilleAnimateView.width,bv.getX() / BilleAnimateView.width);
+            direction = d;
+            if(d !=null && from != null){
+                MoveStatus moveStatus = courant.move(board, new Mouvement(from, d));
                 if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
+                    lancerAnimationBille();
                     son.playSoundEffect(1);
-                    ((JPanel)board.getObserver()).repaint();
                     changePlayer();
                 }
                 else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
+                    lancerAnimationBille();
                     son.playSoundEffect(1);
-                    son.playSoundEffect(1);
-                    ((JPanel)board.getObserver()).repaint();
                     changePlayer();
-                }
-                else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
-                    son.playSoundEffect(1);
-                    pos = pos.next(dir);
                 } else {
-                    son.playSoundEffect(3);
+                   son.playSoundEffect(3);
                     System.out.println(moveStatus.getMessage());
                     son.playSoundEffect(2);
                 }
-                System.out.println(board);
             }
         }
         catch(Exception e){
-            e.printStackTrace();
+            //e.printStackTrace();
             System.out.println("--------------------------");
-        }      
+        } 
     }
 
     public void changePlayer(){
