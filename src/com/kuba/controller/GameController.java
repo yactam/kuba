@@ -1,5 +1,8 @@
 package com.kuba.controller;
 
+
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.MoveStatus;
@@ -10,7 +13,8 @@ import com.kuba.model.player.Joueur;
 import com.kuba.model.player.ai.IA;
 import com.kuba.vue.BilleAnimateView;
 import com.kuba.vue.BoardView;
-
+import java.io.DataOutputStream;
+import java.io.IOException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -22,7 +26,7 @@ import java.util.EventListener;
 import static java.lang.Thread.sleep;
 
 public class GameController {
-
+    public ObjectOutputStream gameOutput;
     public final Board board;
     private final Joueur blanc, noir;
     private Joueur courant;
@@ -30,7 +34,10 @@ public class GameController {
     private Direction direction;
     private Son son;
     private final BoardView boardView;
-
+    private boolean online=false;
+    private Joueur jOnlineValidation;
+    private boolean turn=false;
+    private int lenTabBytes;
 
     public GameController(Board board,BoardView boardView, Joueur blanc, Joueur noir, Son son) {
         this.boardView = boardView;
@@ -48,23 +55,68 @@ public class GameController {
         ((JPanel)board.getObserver()).requestFocusInWindow();
     }
 
+    public GameController(Board board,BoardView boardView, Joueur blanc, Joueur noir, Son son,boolean online, ObjectOutputStream out, Joueur j) {
+        this(board,boardView,blanc,noir,son);
+        System.out.println("Online");
+        this.online = online;
+        jOnlineValidation = j;
+        System.out.println(online);
+        this.gameOutput = out;
+    }
+
+
     private void deplacement(Direction d){
         try{
-            if(d !=null && from != null){
-                MoveStatus moveStatus = courant.move(board, new Mouvement(from, d));
-                if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
-                    lancerAnimationBille();
-                    son.playSoundEffect(1);
-                    changePlayer();
+            if(!online){
+                if(d !=null && from != null){
+                    MoveStatus moveStatus = courant.move(board, new Mouvement(from, d));
+                    if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
+                        lancerAnimationBille();
+                        son.playSoundEffect(1);
+                        changePlayer();
+                    }
+                    else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
+                        lancerAnimationBille();
+                        son.playSoundEffect(1);
+                        changePlayer();
+                    } else {
+                    son.playSoundEffect(3);
+                        System.out.println(moveStatus.getMessage());
+                        son.playSoundEffect(2);
+                    }
                 }
-                else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
-                    lancerAnimationBille();
-                    son.playSoundEffect(1);
-                    changePlayer();
-                } else {
-                   son.playSoundEffect(3);
-                    System.out.println(moveStatus.getMessage());
-                    son.playSoundEffect(2);
+            }
+            else{
+                System.out.println("Verification Joueur "+ courant.equals(jOnlineValidation));
+                if(courant.equals(jOnlineValidation)){
+                    turn = true;
+                    if(d !=null && from != null){
+                        MoveStatus moveStatus = courant.move(board, new Mouvement(from, d));
+                        if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
+                            lancerAnimationBille();
+                            son.playSoundEffect(1);
+                            turn=false;
+                        }
+                        else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
+                            lancerAnimationBille();
+                            son.playSoundEffect(1);
+                            turn = false;
+                        } else {
+                        son.playSoundEffect(3);
+                            System.out.println(moveStatus.getMessage());
+                            son.playSoundEffect(2);
+                        }
+
+                        try {
+                            // Gestion partage des données de la partie
+							gameOutput.writeObject(board.getCells());
+							gameOutput.flush();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+                        System.out.println("DATA SENT");
+                        // Verifier si la partie termine 
+                    }
                 }
             }
         }
@@ -119,6 +171,13 @@ public class GameController {
         } 
     }
 
+    private void completebyte(int x){
+        this.lenTabBytes = x;
+    }
+    public int getlenTabBytes(){
+        return this.lenTabBytes;
+    }
+
     public void changePlayer(){
         if(courant == blanc){
             courant = noir;
@@ -132,6 +191,14 @@ public class GameController {
             boardView.setFocusable(true);
             boardView.requestFocusInWindow();
         }
+    }
+
+    public Joueur getCourant(){
+        return this.courant;
+    }
+
+    public boolean verifTo(){
+        return this.turn;
     }
 
     private void aiPlayer() {

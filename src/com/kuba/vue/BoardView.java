@@ -18,6 +18,7 @@ import java.util.Date;
 public class BoardView extends JPanel implements Observer<Data> {
 
     private Data board;
+    private boolean online;
     private final BilleAnimateView[][] billeAnimateViews;
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public static int HEIGHT = screenSize.height - 100;
@@ -83,6 +84,10 @@ public class BoardView extends JPanel implements Observer<Data> {
         timer.schedule(update(), dt);
     }
 
+    public void setOnline(boolean a){
+        this.online=a;
+    }
+
     private TimerTask update() {
         return new TimerTask() {
             @Override
@@ -129,6 +134,7 @@ public class BoardView extends JPanel implements Observer<Data> {
         }
     }
 
+
     public BilleAnimateView getAnimatedBille(int i, int j) {
         if (board.obtenirBille(i, j) != null){
             return billeAnimateViews[i][j];
@@ -149,6 +155,10 @@ public class BoardView extends JPanel implements Observer<Data> {
                 }
             }
         }
+    }
+
+    public void setBoard(Data b){
+        this.board = b;
     }
 
 }

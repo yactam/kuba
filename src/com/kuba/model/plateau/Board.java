@@ -98,6 +98,10 @@ public class Board implements Observable<Data>, Data {
         return board[pos.getI()][pos.getJ()];
     }
 
+    public void setBoard(Cell[][] b){
+        this.board =b;
+    }
+
     // TODO remove after testing
     public void initCell(int i, int j) {
         board[i][j] = new Cell();
@@ -204,6 +208,10 @@ public class Board implements Observable<Data>, Data {
             }
         }
         return res;
+    }
+
+    public Cell[][] getCells() {
+        return this.board;
     }
 
     private boolean moveOut(Position limit, Joueur joueur, boolean execute) {
