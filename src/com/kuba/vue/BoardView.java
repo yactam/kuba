@@ -7,13 +7,15 @@ import com.kuba.model.plateau.Board;
 import com.kuba.observerpattern.Data;
 import com.kuba.observerpattern.Observer;
 
-import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.util.Date;
+import java.util.Timer;
 
 public class BoardView extends JPanel implements Observer<Data> {
 
@@ -42,19 +44,23 @@ public class BoardView extends JPanel implements Observer<Data> {
         board.addObserver(this);
         setPreferredSize(new Dimension(HEIGHT, HEIGHT));
         setSize(new Dimension(HEIGHT, HEIGHT));
+        setBorder(BorderFactory.createLineBorder(Color.WHITE, 5, true));
     }
 
     private void drawGrid(Graphics2D graphics2D) {
         graphics2D.setColor(Color.LIGHT_GRAY);
         graphics2D.fillRect(0, 0, HEIGHT, HEIGHT);
+        BufferedImage image;
+        try {
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/layout.png")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         for (int i = 0; i < board.size(); i++) {
             for (int j = 0; j < board.size(); j++) {
-                if (i != board.size() - 1 && j != board.size() - 1) {
-                    graphics2D.setColor(Color.BLACK);
-                    graphics2D.drawRect(j * BilleAnimateView.width + (BilleAnimateView.width / 2),
-                            i * BilleAnimateView.width + (BilleAnimateView.width / 2),
-                            BilleAnimateView.width, BilleAnimateView.width);
-                }
+                    graphics2D.drawImage(image, j * BilleAnimateView.width,
+                            i * BilleAnimateView.width,
+                            BilleAnimateView.width, BilleAnimateView.width, null);
             }
         }
     }
