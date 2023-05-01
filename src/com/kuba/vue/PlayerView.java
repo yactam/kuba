@@ -1,45 +1,62 @@
 package com.kuba.vue;
 
 import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import com.kuba.model.player.Joueur;
 
 public class PlayerView extends JPanel {
-    private JLabel billesCapturesR;
-    private JLabel billesRestantes;
+    private final JLabel nom;
+    private final JLabel billesRouges;
+    private final JLabel billesAdversaire;
     private final Joueur joueur;
+    public static final Font f1;
+    static {
+        InputStream is = PlayerView.class.getResourceAsStream("/resources/fonts/Amatic-Bold.ttf");
+        Font font, derived_font;
+        try {
+            assert is != null;
+            font = Font.createFont(Font.TRUETYPE_FONT, is);
+            derived_font = font.deriveFont((float) (0.02 * GameView.WIDTH));
+        } catch (FontFormatException | IOException e) {
+            derived_font = new Font("Arial", Font.BOLD, 23);
+        }
+
+        f1 = derived_font;
+    }
 
     public PlayerView(Joueur j){
-        setBackground(new Color(0,0,0,0));
-        setLayout(null);
         joueur = j;
-        JLabel nom = new JLabel(j.getNom());
-        nom.setFont(new Font("Serif", Font.BOLD, 22));
-        JLabel lab1 = new JLabel("Billes restantes");
-        lab1.setFont(new Font("Serif", Font.BOLD, 14));
-        JLabel lab2 = new JLabel("Billes rouges capturées");
-        lab2.setFont(new Font("Serif", Font.BOLD, 14));
-        billesRestantes = new JLabel(String.valueOf(j.getNbAdversaireCapturee()));
-        billesRestantes.setFont(new Font("Serif", Font.BOLD, 15));
-        billesCapturesR = new JLabel(String.valueOf(j.getNbBilleRougeCapturee()));
-        billesCapturesR.setFont(new Font("Serif", Font.BOLD, 15));
 
-        nom.setBounds( 18, 13,200, 40);
-        lab1.setBounds(18, 73,200, 30);
-        lab2.setBounds(18,113,200, 30);
-        billesRestantes.setBounds(228, 78, 20, 20);
-        billesCapturesR.setBounds(228,118, 20, 20);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        nom = new JLabel(j.getNom());
+        billesRouges = new JLabel("Billes rouges capturées: " + j.getNbBilleRougeCapturee());
+        billesAdversaire = new JLabel("Billes adversaires capturées: " + j.getNbAdversaireCapturee());
 
+        add(Box.createGlue());
         add(nom);
-        add(lab1);
-        add(billesRestantes);
-        add(lab2);
-        add(billesCapturesR);
+        add(Box.createGlue());
+        add(billesRouges);
+        add(Box.createGlue());
+        add(billesAdversaire);
+        add(Box.createGlue());
+
+        style();
+    }
+
+    private void style() {
+        nom.setFont(f1);
+        billesRouges.setFont(f1);
+        billesAdversaire.setFont(f1);
+
+        nom.setAlignmentX(CENTER_ALIGNMENT);
     }
 
     public void update(){
-        billesRestantes = new JLabel(String.valueOf(joueur.getNbAdversaireCapturee()));
-        billesCapturesR = new JLabel(String.valueOf(joueur.getNbBilleRougeCapturee()));
-        this.repaint();
+        billesRouges.setText("Billes rouges capturées: " + joueur.getNbBilleRougeCapturee());
+        billesAdversaire.setText("Billes adversaires capturées: " + joueur.getNbAdversaireCapturee());
     }
 }
