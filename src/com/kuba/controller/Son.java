@@ -8,8 +8,9 @@ import java.util.ArrayList;
 
 public class Son {
 
-    Clip clip;
-    ArrayList<URL> sounds = new ArrayList<URL>();
+    private Clip clip;
+    private final ArrayList<URL> sounds = new ArrayList<>();
+    private boolean isPlaying;
 
     public Son() {
         try{
@@ -36,15 +37,15 @@ public class Son {
         
     }
 
-    public void play() {
+    private void play() {
         clip.start();
     }
 
-    public void loop() {
+    private void loop() {
         clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
-    public void stop() {
+    private void stop() {
         clip.stop();
     }
 
@@ -52,6 +53,7 @@ public class Son {
         setSound(i);
         play();
         loop();
+        isPlaying = true;
     }
 
     public void playSoundEffect(int i) {
@@ -61,6 +63,11 @@ public class Son {
 
     public void stopMusic() {
         stop();
+        isPlaying = false;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
     }
     
 }
