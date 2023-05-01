@@ -1,5 +1,6 @@
 package com.kuba.model.mouvement;
-public class Position implements Cloneable {
+import java.io.Serializable;
+public class Position implements Cloneable , Serializable {
 	private final int i;
 	private final int j;
 

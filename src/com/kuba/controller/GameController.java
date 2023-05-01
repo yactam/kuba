@@ -87,7 +87,7 @@ public class GameController {
                 }
             }
             else{
-                System.out.println("Verification Joueur "+ courant.equals(jOnlineValidation));
+                System.out.println(" Verification Joueur deplacement "+ courant.equals(jOnlineValidation));
                 if(courant.equals(jOnlineValidation)){
                     turn = true;
                     if(d !=null && from != null){
@@ -109,18 +109,22 @@ public class GameController {
 
                         try {
                             // Gestion partage des données de la partie
-							gameOutput.writeObject(board.getCells());
+                            Mouvement send =  new Mouvement(from, d);
+							gameOutput.writeObject(send);
 							gameOutput.flush();
 						} catch (IOException e1) {
 							e1.printStackTrace();
 						}
                         System.out.println("DATA SENT");
-                        // Verifier si la partie termine 
+                        ((JPanel)board.getObserver()).setFocusable(false);
+                        ((JPanel)board.getObserver()).setEnabled(false);
+                        courant = (courant.equals(blanc))? noir : blanc;
                     }
                 }
             }
         }
         catch(Exception e){
+            e.printStackTrace();
             System.out.println("--------------------------");
         }
     }
@@ -142,21 +146,25 @@ public class GameController {
         return null;
     }
 
-    public void serverGestion(int i, int j, Direction d){
+    public void serverGestion(Mouvement mv){
         try{
-            BilleAnimateView bv = boardView.getAnimatedBille(i, j);
-            from = new Position(bv.getY() / BilleAnimateView.width,bv.getX() / BilleAnimateView.width);
-            direction = d;
-            if(d !=null && from != null){
-                MoveStatus moveStatus = courant.move(board, new Mouvement(from, d));
+            if(mv != null){
+                Joueur j = (jOnlineValidation.equals(blanc)) ? noir : blanc;
+                MoveStatus moveStatus = j.move(board, mv);
                 if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
-                    lancerAnimationBille();
+                    //lancerAnimationBille();
+                    board.notifyObservers();
                     son.playSoundEffect(1);
+                    ((JPanel)board.getObserver()).setFocusable(true);
+                    ((JPanel)board.getObserver()).setEnabled(true);
                     changePlayer();
                 }
                 else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
-                    lancerAnimationBille();
+                    //lancerAnimationBille();
+                    board.notifyObservers();
                     son.playSoundEffect(1);
+                    ((JPanel)board.getObserver()).setFocusable(true);
+                    ((JPanel)board.getObserver()).setEnabled(true);
                     changePlayer();
                 } else {
                    son.playSoundEffect(3);
@@ -166,7 +174,7 @@ public class GameController {
             }
         }
         catch(Exception e){
-            //e.printStackTrace();
+            e.printStackTrace();
             System.out.println("--------------------------");
         } 
     }

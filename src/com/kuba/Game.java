@@ -26,7 +26,7 @@ public class Game extends JFrame {
     public Game(int n, Joueur j1, Joueur j2,Son son,boolean online,ObjectOutputStream out,Joueur j) {
         gameView = new GameView(n, j1, j2,son,online,out,j);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setTitle(" Board Affichage ");
+        //setTitle(" Board Affichage ");
         this.setSize(screenSize);
         add(gameView);
         pack();

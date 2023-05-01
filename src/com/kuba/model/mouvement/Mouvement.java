@@ -1,6 +1,6 @@
 package com.kuba.model.mouvement;
-
-public class Mouvement {
+import java.io.Serializable;
+public class Mouvement implements Serializable{
 
     private final Direction direction;
     private final Position position;

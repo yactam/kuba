@@ -1,6 +1,6 @@
 package com.kuba.model.mouvement;
-
-public enum Direction {
+import java.io.Serializable;
+public enum Direction implements Serializable{
 	NORD(-1, 0), SUD(1, 0), OUEST(0, -1), EST(0, 1);
 	static final Direction[] reverse = {SUD, NORD, EST, OUEST};
 	private final int i;

@@ -67,22 +67,21 @@ public class Online implements Runnable{
 			System.out.println("The port you entered was invalid, please input another port: ");
 			port = scanner.nextInt();
 		}
-    
-        g = new Game(2, j1, j2,son,true,dos,current);
 		
-		System.out.println(" 1 - Verification Joueur "+ j1.equals(current));
-                
-		//g.getGameView().getBoardView().setFocusable(false);
-		//g.getGameView().getBoardView().setFocusable(false);
-		 
+		if(dos!=null)  g = new Game(2, j1, j2,son,true,dos,current);
+		
+		System.out.println(" 1 - Verification Joueur server : "+ j1.equals(current));
+        System.out.println(" 2 - Verification Joueur connect : "+ j2.equals(current));
+         
+		
         thread = new Thread(this,"Online");
         thread.start();
     }
 
     public void run(){
         while(true){
-    		g.getGameView().getBoardView().repaint();
-			play();
+    		if(g!=null) g.getGameView().getBoardView().repaint();
+			if(dos != null) play();
 			
 			if (!colorC && !accepted) {
 				listenForServerRequest();
@@ -94,19 +93,28 @@ public class Online implements Runnable{
     private void play() {
 		if (errors >= 10) unableToCommunicateWithOpponent = true;
 		try {
-			if(g.getGameView().control.verifTo() && g.getGameView().control.getCourant()!=current){
-				ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-				Object objectReceived = inputStream.readObject();
-				//g.getGameView().getBoardView().setBoard((Board)dis.readObject());
-				g.getGameView().getBoardView().repaint();
-				//g.getGameView().control.changePlayer();
+			if(!g.getGameView().control.verifTo() && g.getGameView().control.getCourant() != current){
+				System.out.println("Not your turn");
+				Mouvement objectReceived = (Mouvement) dis.readObject();
+				testR(objectReceived);
+				g.getGameView().control.serverGestion(objectReceived);
+			}
+			else{
+				//System.out.println(" your turn! ");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			errors++;
 		}
 	}
-        
+    
+	public void testR(Mouvement v){
+		System.out.println("----------------------------------");
+		if(v != null) System.out.println(" Mouvement reçu");
+		else System.out.println(" Mouvement null  ");
+		System.out.println("----------------------------------");
+	}
+
     private void listenForServerRequest() {
 		socket = null;
 		try {
@@ -115,6 +123,8 @@ public class Online implements Runnable{
 			dis = new ObjectInputStream(socket.getInputStream());
 			accepted = true;
 			System.out.println("CLIENT HAS REQUESTED TO JOIN, AND WE HAVE ACCEPTED");
+			g = new Game(2, j1, j2,son,true,dos,current);
+			g.setTitle("Server Board");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
