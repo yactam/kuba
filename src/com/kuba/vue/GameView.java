@@ -8,22 +8,21 @@ import com.kuba.controller.GameController;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
 
-public class GameView extends JPanel {
-    private BoardView boardView;
-    private PlayersPanel playersPanel;
-    private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private int HEIGHT = screenSize.height, WIDTH = screenSize.width;
+public class GameView extends Background {
+    private final BoardView boardView;
+    private final PlayersPanel playersPanel;
+    private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public static final int HEIGHT = screenSize.height, WIDTH = screenSize.width;
 
 
     public GameView(int n, Joueur j1, Joueur j2) {
+        super("src/resources/table.jpg", new Dimension(WIDTH, HEIGHT));
         setLayout(null);
         setSize(new Dimension(WIDTH, HEIGHT));
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(new Color(0,0,0,0));
         Board plateau = new Board(n);
         boardView = new BoardView(plateau);
-        new GameController(plateau, boardView, j1, j2);
-
         playersPanel = new PlayersPanel(j1, j2);
 
         boardView.setLocation((int) (0.1 * WIDTH), (int) (0.05 * HEIGHT));
@@ -31,6 +30,12 @@ public class GameView extends JPanel {
 
         add(boardView);
         add(playersPanel);
+
+        new GameController(plateau, this, j1, j2);
+    }
+
+    public BoardView boardview() {
+        return boardView;
     }
 
     public void showError(String message) {
@@ -40,5 +45,23 @@ public class GameView extends JPanel {
     public void cleanError() {
         playersPanel.cleanError();
     }
-    
+    public void changePlayer(int player) {
+        playersPanel.setCurrent(player);
+    }
+
+    public void updateScore() {
+        playersPanel.update();
+    }
+
+    public void recommencer(ActionListener actionListener) {
+        playersPanel.recommencerAddListener(actionListener);
+    }
+
+    public void abandonner(ActionListener actionListener) {
+        playersPanel.abandonnerAddListener(actionListener);
+    }
+
+    public void mute(ActionListener actionListener) {
+        playersPanel.muteAddListener(actionListener);
+    }
 }

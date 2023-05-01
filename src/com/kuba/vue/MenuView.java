@@ -96,7 +96,7 @@ public class MenuView extends JPanel {
             start.addActionListener(e -> {
                 int i = boardSizes.getSelectedIndex();
                 int t = (Integer.parseInt(choices[i]) + 1) / 4;
-                Joueur j1 = new Joueur(playerTwo.getText(), Couleur.BLANC);
+                Joueur j1 = new Joueur(playerOne.getText(), Couleur.BLANC);
                 Joueur j2 = (botOne.isSelected()) ? new IA(Couleur.NOIR, j1) : new Joueur(playerTwo.getText(), Couleur.NOIR);
                 new Game(t, j1, j2);
             });
