@@ -1,5 +1,6 @@
 
 import com.kuba.vue.MenuView;
+
 import javax.swing.*;
 
 public class Main {
