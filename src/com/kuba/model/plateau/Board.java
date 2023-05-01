@@ -297,20 +297,24 @@ public class Board implements Observable<Data>, Data {
         return b.hashCode() == this.hashCode();
     }
 
-    public boolean gameOver() {
-        int red = 0, black = 0, white = 0;
-        for (Cell[] cells : board) {
-            for (Cell cell : cells) {
-                if (!cell.estVide()) {
-                    switch (cell.getBille().getColor()) {
-                        case BLANC -> white++;
-                        case NOIR -> black++;
-                        case ROUGE -> red++;
-                    }
-                }
-            }
-        }
-        return red == 0 || black == 0 || white == 0;
+    public boolean gameOver(Joueur player, Joueur opponent) {
+        int n = (this.size() + 1) / 4;
+        int nbBillesRouges = 8 * n * n - 12 * n + 5;
+        if(player.getNbBilleRougeCapturee() > nbBillesRouges/2) return true;
+        if(opponent.getNbBilleRougeCapturee() > nbBillesRouges/2) return true;
+        if(player.getNbAdversaireCapturee() == 2 * n * n) return true;
+        if(opponent.getNbAdversaireCapturee() == 2 * n * n) return true;
+        return false;
+    }
+
+    public Joueur getWinner(Joueur player, Joueur opponent) {
+        int n = (this.size() + 1) / 4;
+        int nbBillesRouges = 8 * n * n - 12 * n + 5;
+        if(player.getNbBilleRougeCapturee() > nbBillesRouges/2) return player;
+        if(opponent.getNbBilleRougeCapturee() > nbBillesRouges/2) return opponent;
+        if(player.getNbAdversaireCapturee() == 2 * n * n) return player;
+        if(opponent.getNbAdversaireCapturee() == 2 * n * n) return opponent;
+        return null;
     }
 
     public Collection<Mouvement> getAllPossibleMoves(Joueur... joueurs) {
