@@ -1,25 +1,50 @@
 package com.kuba;
-import java.awt.*;
 
 import com.kuba.model.player.Joueur;
-import com.kuba.vue.GameView;
+import com.kuba.vue.*;
 
+import java.awt.*;
 import javax.swing.*;
 
 public class Game extends JFrame {
+    public final Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
 
-    private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    public static final int HEIGHT = screenSize.height, WIDTH = screenSize.width;;
+    public MenuView menu = new MenuView(this);
+    //private Settings settings = new Settings(this);
+    private GameView board;
 
-    public Game(int n, Joueur j1, Joueur j2) {
-
-        GameView gameView = new GameView(n, j1, j2);
+    public Game() {
+        setSize(screensize);
+        setContentPane(menu);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setTitle(" Board Affichage ");
-        this.setSize(screenSize);
-        add(gameView);
+        setTitle("Kuba: The Game");
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
     }
+
+    /*public void moveToSettings(){
+        setContentPane(settings);
+        invalidate();
+        validate();
+    }*/
+
+    public void moveToMenu(){
+        setContentPane(menu);
+        invalidate();
+        validate();
+    }
+
+    public void moveToBoard(int n, Joueur j1, Joueur j2){     
+        board = new GameView(this, n, j1, j2);
+        setContentPane(board);
+        invalidate();
+        validate();
+    }
+
+    /*public void moveToEndScreen(Joueur gagnant){
+        setContentPane(new EndScreen(this, gagnant));
+        invalidate();
+        validate();
+    }*/
 }

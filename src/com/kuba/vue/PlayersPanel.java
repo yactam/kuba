@@ -14,9 +14,9 @@ public class PlayersPanel extends JPanel {
     private JPanel buttons;
     private JButton exit, abandonner, recommencer, mute;
 
-    public PlayersPanel(Joueur j1, Joueur j2) {
-        setSize(new Dimension((int) (0.3 * Game.WIDTH), (int) (0.9 * Game.HEIGHT)));
-        setPreferredSize(new Dimension((int) (0.3 * Game.WIDTH), (int) (0.9 * Game.HEIGHT)));
+    public PlayersPanel(Joueur j1, Joueur j2, int WIDTH, int HEIGHT) {
+        setSize(new Dimension((int) (0.3 * WIDTH), (int) (0.9 * HEIGHT)));
+        setPreferredSize(new Dimension((int) (0.3 * WIDTH), (int) (0.9 * HEIGHT)));
         setLayout(new GridLayout(4, 1));
         setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 6, true));
 

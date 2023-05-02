@@ -30,11 +30,13 @@ public class GameController {
     private Joueur courant;
     private Position from;
     private Direction direction;
+    private final Game game;
     private final Son son;
     private final GameView gameView;
     private final BoardView boardView;
 
-    public GameController(Board board, GameView gameView, Joueur blanc, Joueur noir) {
+    public GameController(Game g, Board board, GameView gameView, Joueur blanc, Joueur noir) {
+        game = g;
         this.gameView = gameView;
         this.boardView = gameView.boardview();
         this.board = board;
@@ -56,7 +58,7 @@ public class GameController {
             blanc.setNbRougesCapturee(0);
             noir.setNbAdversaireCapturee(0);
             noir.setNbRougesCapturee(0);
-            new Game((board.size()+1) / 4, blanc, noir);
+            game.moveToBoard((board.size()+1) / 4, blanc, noir);
         });
 
         gameView.mute(e -> {

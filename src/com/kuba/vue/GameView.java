@@ -7,6 +7,7 @@ import javax.swing.*;
 import com.kuba.controller.GameController;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
+import com.kuba.Game;
 
 public class GameView extends Background {
     private final BoardView boardView;
@@ -15,7 +16,7 @@ public class GameView extends Background {
     public static final int HEIGHT = screenSize.height, WIDTH = screenSize.width;
 
 
-    public GameView(int n, Joueur j1, Joueur j2) {
+    public GameView(Game g, int n, Joueur j1, Joueur j2) {
         super("src/resources/table.jpg", new Dimension(WIDTH, HEIGHT));
         setLayout(null);
         setSize(new Dimension(WIDTH, HEIGHT));
@@ -23,7 +24,7 @@ public class GameView extends Background {
         setBackground(new Color(0,0,0,0));
         Board plateau = new Board(n);
         boardView = new BoardView(plateau);
-        playersPanel = new PlayersPanel(j1, j2);
+        playersPanel = new PlayersPanel(j1, j2, WIDTH, HEIGHT);
 
         boardView.setLocation((int) (0.1 * WIDTH), (int) (0.05 * HEIGHT));
         playersPanel.setLocation((int) (0.65 * WIDTH), (int) (0.05 * HEIGHT));
@@ -31,7 +32,7 @@ public class GameView extends Background {
         add(boardView);
         add(playersPanel);
 
-        new GameController(plateau, this, j1, j2);
+        new GameController(g, plateau, this, j1, j2);
     }
 
     public BoardView boardview() {
