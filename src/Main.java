@@ -1,17 +1,10 @@
+import com.kuba.Game;
 
-import com.kuba.vue.MenuView;
 import javax.swing.*;
-import com.kuba.controller.Son;
-
+import com.kuba.reseau.*;
 public class Main {
     public static void main(String[] args) {
-        Son son=new Son();
-        JPanel menu =  new MenuView(son);
-        JFrame frame = new JFrame();
-        frame.add(menu);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        frame.pack();
-        frame.setLocationRelativeTo(null);  
+        //new Game();
+        new Online();
     }
 }

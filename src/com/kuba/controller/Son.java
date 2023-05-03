@@ -14,6 +14,7 @@ public class Son {
     FloatControl fc;
     public boolean mute=false;
     public boolean muteEffect=false;
+    public boolean isPlaying;
     ArrayList<URL> sounds = new ArrayList<URL>();
 
     public Son() {
@@ -43,16 +44,15 @@ public class Son {
         
     }
 
-    public void play() {
-        clip.setFramePosition(0);
+    private void play() {
         clip.start();
     }
 
-    public void loop() {
+    private void loop() {
         clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
-    public void stop() {
+    private void stop() {
         clip.stop();
     }
 
@@ -60,6 +60,7 @@ public class Son {
         setSound(i);
         play();
         loop();
+        isPlaying = true;
     }
 
     public void playSoundEffect(int i) {
@@ -74,13 +75,19 @@ public class Son {
 
     public void stopMusic() {
         stop();
+        isPlaying = false;
+        mute=true;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
     }
 
     public void volumeMute(){
         if(this.clip==null){
             this.setSound(0);
         }
-        if(!mute){
+        if(!mute){  
             previousVolume=currentVolume;
             currentVolume= 6.0f;
             fc.setValue(currentVolume);

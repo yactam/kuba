@@ -289,11 +289,7 @@ public class Board implements Observable<Data>, Data {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
                 if (!board(i, j).estVide()) {
-                    switch (board[i][j].getBille().getColor()) {
-                        case ROUGE -> zobristHash ^= keys[0][i + board[i].length * j];
-                        case NOIR -> zobristHash ^= keys[1][i + board[i].length * j];
-                        case BLANC -> zobristHash ^= keys[2][i + board[i].length * j];
-                    }
+                    zobristHash ^= keys[2 - board(i,j).getBille().getColor().ordinal()][i + board[i].length * j];
                 }
             }
         }
@@ -309,20 +305,24 @@ public class Board implements Observable<Data>, Data {
         return b.hashCode() == this.hashCode();
     }
 
-    public boolean gameOver() {
-        int red = 0, black = 0, white = 0;
-        for (Cell[] cells : board) {
-            for (Cell cell : cells) {
-                if (!cell.estVide()) {
-                    switch (cell.getBille().getColor()) {
-                        case BLANC -> white++;
-                        case NOIR -> black++;
-                        case ROUGE -> red++;
-                    }
-                }
-            }
-        }
-        return red == 0 || black == 0 || white == 0;
+    public boolean gameOver(Joueur player, Joueur opponent) {
+        int n = (this.size() + 1) / 4;
+        int nbBillesRouges = 8 * n * n - 12 * n + 5;
+        if(player.getNbBilleRougeCapturee() > nbBillesRouges/2) return true;
+        if(opponent.getNbBilleRougeCapturee() > nbBillesRouges/2) return true;
+        if(player.getNbAdversaireCapturee() == 2 * n * n) return true;
+        if(opponent.getNbAdversaireCapturee() == 2 * n * n) return true;
+        return false;
+    }
+
+    public Joueur getWinner(Joueur player, Joueur opponent) {
+        int n = (this.size() + 1) / 4;
+        int nbBillesRouges = 8 * n * n - 12 * n + 5;
+        if(player.getNbBilleRougeCapturee() > nbBillesRouges/2) return player;
+        if(opponent.getNbBilleRougeCapturee() > nbBillesRouges/2) return opponent;
+        if(player.getNbAdversaireCapturee() == 2 * n * n) return player;
+        if(opponent.getNbAdversaireCapturee() == 2 * n * n) return opponent;
+        return null;
     }
 
     public Collection<Mouvement> getAllPossibleMoves(Joueur... joueurs) {
@@ -330,60 +330,16 @@ public class Board implements Observable<Data>, Data {
         for (Joueur joueur : joueurs) {
             for (int i = 0; i < board.length; i++) {
                 for (int j = 0; j < board.length; j++) {
-                    if (!board(i, j).estVide()) {
-                        Couleur c = board(i, j).getBille().getColor();
-                        if (joueur.getCouleur() == c) {
-                            Mouvement mouvement1 = new Mouvement(new Position(i, j), Direction.EST);
-                            Mouvement mouvement2 = new Mouvement(new Position(i, j), Direction.OUEST);
-                            Mouvement mouvement3 = new Mouvement(new Position(i, j), Direction.NORD);
-                            Mouvement mouvement4 = new Mouvement(new Position(i, j), Direction.SUD);
-                            boolean isLegal = this.update(mouvement1, joueur, false).isLegal();
-                            if (isLegal)
-                                allMoves.add(mouvement1);
-                            isLegal = this.update(mouvement2, joueur, false).isLegal();
-                            if (isLegal)
-                                allMoves.add(mouvement2);
-                            isLegal = this.update(mouvement3, joueur, false).isLegal();
-                            if (isLegal)
-                                allMoves.add(mouvement3);
-                            isLegal = this.update(mouvement4, joueur, false).isLegal();
-                            if (isLegal)
-                                allMoves.add(mouvement4);
-                        }
+                    if (!board(i, j).estVide() && board(i, j).getBille().getColor() == joueur.getCouleur()) {
+                            for(Direction dir : Direction.values()) {
+                                Mouvement mouvement = new Mouvement(new Position(i, j), dir);
+                                boolean isLegal = this.update(mouvement, joueur, false).isLegal();
+                                if (isLegal) allMoves.add(mouvement);
+                            }
                     }
                 }
             }
         }
         return allMoves;
-    }
-
-    public boolean isFrontier(int i, int j) {
-        assert (!board(i, j).estVide() && board(i, j).getBille().getColor() != Couleur.ROUGE);
-        if (estDansLimite(i - 1, j) && board(i - 1, j).estVide())
-            return true;
-        if (estDansLimite(i, j - 1) && board(i, j - 1).estVide())
-            return true;
-        if (estDansLimite(i + 1, j) && board(i + 1, j).estVide())
-            return true;
-        if (estDansLimite(i, j + 1) && board(i, j + 1).estVide())
-            return true;
-        return false;
-    }
-
-    public boolean inFrontOfRed(int i, int j) {
-        assert (!board(i, j).estVide() && board(i, j).getBille().getColor() != Couleur.ROUGE);
-        if (estDansLimite(i - 1, j) && !board(i - 1, j).estVide()
-                && board(i - 1, j).getBille().getColor() == Couleur.ROUGE)
-            return true;
-        if (estDansLimite(i, j - 1) && !board(i, j - 1).estVide()
-                && board(i, j - 1).getBille().getColor() == Couleur.ROUGE)
-            return true;
-        if (estDansLimite(i + 1, j) && !board(i + 1, j).estVide()
-                && board(i + 1, j).getBille().getColor() == Couleur.ROUGE)
-            return true;
-        if (estDansLimite(i, j + 1) && !board(i, j + 1).estVide()
-                && board(i, j + 1).getBille().getColor() == Couleur.ROUGE)
-            return true;
-        return false;
     }
 }

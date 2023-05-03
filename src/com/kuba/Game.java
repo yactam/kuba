@@ -1,41 +1,53 @@
 package com.kuba;
-import java.awt.*;
-import com.kuba.controller.GameController;
-import com.kuba.model.plateau.Board;
+
 import com.kuba.model.player.Joueur;
-import com.kuba.vue.BoardView;
-import com.kuba.vue.GameView;
-import java.io.DataOutputStream;
+import com.kuba.vue.*;
 import java.io.ObjectOutputStream;
+import java.awt.*;
 import javax.swing.*;
-import com.kuba.controller.Son;
+
 public class Game extends JFrame {
-    private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    public static final int HEIGHT = screenSize.height, WIDTH = screenSize.width;;
-    private GameView gameView;
-    public Game(int n, Joueur j1, Joueur j2,Son son) { 
-        gameView = new GameView(n, j1, j2,son);
+    public final Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+    public MenuView menu = new MenuView(this);
+    public GameView board;
+
+    public Game() {
+        setSize(screensize);
+        setContentPane(menu);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setTitle(" Board Affichage ");
-        this.setSize(screenSize);
-        add(gameView);
+        setTitle("Kuba: The Game");
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
     }
-    public Game(int n, Joueur j1, Joueur j2,Son son,boolean online,ObjectOutputStream out,Joueur j) {
-        gameView = new GameView(n, j1, j2,son,online,out,j);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        //setTitle(" Board Affichage ");
-        this.setSize(screenSize);
-        add(gameView);
+
+    public Game(int n, Joueur j1, Joueur j2,boolean online,ObjectOutputStream out,Joueur j) {
+        board = new GameView(this,n, j1, j2,online,out,j);
+        setContentPane(board);
+        setUndecorated(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE); 
+        setTitle("Kuba: The Game");
         pack();
         setLocationRelativeTo(null);
-        setVisible(true);     
+        setVisible(true);
     }
 
+
     public GameView getGameView() {
-        return this.gameView;
+        return this.board;
+    }
+
+    public void moveToMenu(){
+        setContentPane(menu);
+        invalidate();
+        validate();
+    }
+
+    public void moveToBoard(int n, Joueur j1, Joueur j2){     
+        board = new GameView(this, n, j1, j2);
+        setContentPane(board);
+        invalidate();
+        validate();
     }
 
 }

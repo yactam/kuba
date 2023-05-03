@@ -1,8 +1,6 @@
 package com.kuba.controller;
 
-
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import com.kuba.Game;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.MoveStatus;
@@ -13,8 +11,8 @@ import com.kuba.model.player.Joueur;
 import com.kuba.model.player.ai.IA;
 import com.kuba.vue.BilleAnimateView;
 import com.kuba.vue.BoardView;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import com.kuba.vue.GameView;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -22,7 +20,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.EventListener;
-
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 import static java.lang.Thread.sleep;
 
 public class GameController {
@@ -32,40 +31,83 @@ public class GameController {
     private Joueur courant;
     private Position from;
     private Direction direction;
-    private Son son;
+    private final Game game;
+    private final Son son;
+    private final GameView gameView;
     private final BoardView boardView;
     private boolean online=false;
     private Joueur jOnlineValidation;
     private boolean turn=false;
     private int lenTabBytes;
 
-    public GameController(Board board,BoardView boardView, Joueur blanc, Joueur noir, Son son) {
-        this.boardView = boardView;
+    public GameController(Game g, Board board, GameView gameView, Joueur blanc, Joueur noir) {
+        game = g;
+        this.gameView = gameView;
+        this.boardView = gameView.boardview();
         this.board = board;
         this.blanc = blanc;
         this.noir = noir;
         this.courant = blanc;
-        this.son = son;
-        if(!son.mute){
-            son.playMusic(0);
-        }
-        ((JPanel)board.getObserver()).addMouseListener(new MouseController());
-        ((JPanel)board.getObserver()).addKeyListener(new KeyController());
-        ((JPanel)board.getObserver()).setFocusable(true);
-        ((JPanel)board.getObserver()).requestFocusInWindow();
+        son=new Son();
+        initListeners();
     }
 
-    public GameController(Board board,BoardView boardView, Joueur blanc, Joueur noir, Son son,boolean online, ObjectOutputStream out, Joueur j) {
-        this(board,boardView,blanc,noir,son);
+    private void initListeners() {
+        ((JPanel)board.getObserver()).addMouseListener(new MouseController());
+        ((JPanel)board.getObserver()).addKeyListener(new KeyController());
+        enableController(true);
+        gameView.recommencer(e -> {
+            blanc.setNbAdversaireCapturee(0);
+            blanc.setNbRougesCapturee(0);
+            noir.setNbAdversaireCapturee(0);
+            noir.setNbRougesCapturee(0);
+            game.moveToBoard((board.size()+1) / 4, blanc, noir);
+        });
+
+        gameView.menu(e -> {
+            son.stopMusic();
+            game.moveToMenu();
+        });
+
+        gameView.mute(e -> {
+            gameView.unmute(son.isPlaying());
+            if(son.isPlaying()) {
+                son.stopMusic();
+            } else {
+                son.playMusic(0);
+            }
+            enableController(true);
+        });
+
+        gameView.abandonner(e -> {
+            enableController(false);
+            gameView.showError((courant == blanc ? noir.getNom() : blanc.getNom()) + " a gagné la partie.");
+        });
+    }
+
+    
+    public GameController(Game g, Board board,BoardView boardView,GameView gv,Joueur blanc, Joueur noir,boolean online, ObjectOutputStream out, Joueur j) {
+        game = g;
+        this.board=board;
         System.out.println("Online");
+        son=new Son();
+        this.gameView = gv;
+        this.boardView = boardView;
+        this.blanc = blanc;
+        this.noir = noir;
+        this.courant = blanc;
+        initListeners();
         this.online = online;
         jOnlineValidation = j;
         System.out.println(online);
         this.gameOutput = out;
+        initListeners();
     }
+    
 
 
     private void deplacement(Direction d){
+        gameView.cleanError();
         try{
             if(!online){
                 if(d !=null && from != null){
@@ -120,6 +162,10 @@ public class GameController {
                         ((JPanel)board.getObserver()).setEnabled(false);
                         courant = (courant.equals(blanc))? noir : blanc;
                     }
+                }
+                if(board.gameOver(blanc, noir)) {
+                    gameView.showError(board.getWinner(blanc, noir).getNom() + " a gagné la partie.");
+                    enableController(false);
                 }
             }
         }
@@ -187,17 +233,19 @@ public class GameController {
     }
 
     public void changePlayer(){
+        gameView.cleanError();
         if(courant == blanc){
             courant = noir;
+            gameView.changePlayer(2);
         }else{
             courant = blanc;
+            gameView.changePlayer(1);
         }
         if(courant instanceof IA) {
-            boardView.setFocusable(false);
+            enableController(false);
             aiPlayer();
         } else {
-            boardView.setFocusable(true);
-            boardView.requestFocusInWindow();
+            enableController(true);
         }
     }
 
@@ -208,11 +256,20 @@ public class GameController {
     public boolean verifTo(){
         return this.turn;
     }
+    public void enableController(boolean enable) {
+        boardView.setFocusable(enable);
+        if(enable) boardView.requestFocusInWindow();
+    }
 
     private void aiPlayer() {
         IA aiPlayer = (IA) courant;
         Mouvement mouvement = aiPlayer.getMouvement(board);
         MoveStatus moveStatus = aiPlayer.move(board, mouvement);
+        gameView.updateScore();
+        if(board.gameOver(blanc, noir)) {
+            gameView.showError(board.getWinner(blanc, noir).getNom() + " a gagné la partie.");
+            return;
+        }
         if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) changePlayer();
         else aiPlayer();
     }
@@ -264,7 +321,6 @@ public class GameController {
                 if(from != null){
                     assert to != null;
                     direction = from.nextDir(to);
-                    System.out.println(direction);
                     try{
                         if(direction != null && from != null){
                             MoveStatus moveStatus = courant.move(board, to, direction);
@@ -278,6 +334,7 @@ public class GameController {
                                son.playSoundEffect(3);
                                 System.out.println(moveStatus.getMessage());
                             }
+                            deplacement(direction);
                         }
                     }
                     catch(Exception exception){

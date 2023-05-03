@@ -33,7 +33,7 @@ public class MiniMax implements MoveStrategy {
     }
 
     public int min(Board board, int depth, int alpha, int beta) {
-        if(depth == 0 || gameOver(board, aiPlayer, opponent)) {
+        if(depth == 0 || board.gameOver(aiPlayer, opponent)) {
             return this.boardEvaluator.evaluate(board, aiPlayer, opponent);
         }
 
@@ -56,7 +56,7 @@ public class MiniMax implements MoveStrategy {
     }
 
     public int max(Board board, int depth, int alpha, int beta) {
-        if(depth == 0 || gameOver(board, aiPlayer, opponent)) {
+        if(depth == 0 || board.gameOver(aiPlayer, opponent)) {
             return this.boardEvaluator.evaluate(board, aiPlayer, opponent);
         }
 
@@ -78,25 +78,5 @@ public class MiniMax implements MoveStrategy {
         }
 
         return alpha;
-    }
-
-    private boolean gameOver(Board board, Joueur player, Joueur opponent) {
-        int n = (board.size() + 1) / 4;
-        int nbBillesRouges = 8 * n * n - 12 * n + 5;
-        if(player.getNbBilleRougeCapturee() > nbBillesRouges/2) return true;
-        if(opponent.getNbBilleRougeCapturee() > nbBillesRouges/2) return true;
-        if(player.getNbAdversaireCapturee() == 2 * n * n) return true;
-        if(opponent.getNbAdversaireCapturee() == 2 * n * n) return true;
-        return false;
-    }
-
-    private Joueur getWinner(Board board, Joueur player, Joueur opponent) {
-        int n = (board.size() + 1) / 4;
-        int nbBillesRouges = 8 * n * n - 12 * n + 5;
-        if(player.getNbBilleRougeCapturee() > nbBillesRouges/2) return player;
-        if(opponent.getNbBilleRougeCapturee() > nbBillesRouges/2) return opponent;
-        if(player.getNbAdversaireCapturee() == 2 * n * n) return player;
-        if(opponent.getNbAdversaireCapturee() == 2 * n * n) return opponent;
-        return null;
     }
 }

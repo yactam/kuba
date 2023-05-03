@@ -39,6 +39,9 @@ public class Online implements Runnable{
     private boolean yourTurn = false;
 	private boolean accepted = false;
 	private boolean unableToCommunicateWithOpponent = false;
+	private boolean won = false;
+	private boolean enemyWon = false;
+	private boolean tie = false;
 
     private int errors = 0;
     
@@ -54,7 +57,9 @@ public class Online implements Runnable{
 		if(!connect()) initializeServer();
 		else current = j2;
 		
-		if(dos!=null)  g = new Game(2, j1, j2,true,dos,current);
+		if(dos!=null){
+			g = new Game(2, j1, j2,true,dos,current);
+		}
 		
 		System.out.println(" 1 - Verification Joueur server : "+ j1.equals(current));
         System.out.println(" 2 - Verification Joueur connect : "+ j2.equals(current));
@@ -66,7 +71,7 @@ public class Online implements Runnable{
 
     public void run(){
         while(true){
-    		if(g!=null) g.getGameView().getBoardView().repaint();
+    		if(g!=null) g.getGameView().boardview().repaint();
 			if(dos != null) play();
 			
 			if (!colorC && !accepted) {

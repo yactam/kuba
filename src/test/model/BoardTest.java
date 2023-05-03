@@ -20,7 +20,7 @@ class BoardTest {
         Joueur j1 = new Joueur("Blanc", Couleur.BLANC);
         Joueur j2 = new Joueur("Noir", Couleur.NOIR);
         board.initBoard();
-        assertFalse(board.gameOver());
+        assertFalse(board.gameOver(j1, j2));
         assertEquals(board.getAllPossibleMoves(j1, j2).size(), 16);
         assertEquals(board.getAllPossibleMoves(j1).size(), 8);
         assertEquals(board.getAllPossibleMoves(j2).size(), 8);
