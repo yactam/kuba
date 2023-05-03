@@ -61,7 +61,13 @@ public class GameController {
             game.moveToBoard((board.size()+1) / 4, blanc, noir);
         });
 
+        gameView.menu(e -> {
+            son.stopMusic();
+            game.moveToMenu();
+        });
+
         gameView.mute(e -> {
+            gameView.unmute(son.isPlaying());
             if(son.isPlaying()) {
                 son.stopMusic();
             } else {

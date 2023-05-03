@@ -32,6 +32,9 @@ public class PlayerView extends JPanel {
         joueur = j;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBackground(new Color(237, 102, 49));
+        setOpaque(false);
+
         nom = new JLabel(j.getNom());
         billesRouges = new JLabel("Billes rouges capturées: " + j.getNbBilleRougeCapturee());
         billesAdversaire = new JLabel("Billes adversaires capturées: " + j.getNbAdversaireCapturee());
@@ -48,7 +51,7 @@ public class PlayerView extends JPanel {
     }
 
     private void style() {
-        nom.setFont(f1);
+        nom.setFont(f1.deriveFont((float) (0.03 * GameView.WIDTH)));
         billesRouges.setFont(f1);
         billesAdversaire.setFont(f1);
 
@@ -58,5 +61,14 @@ public class PlayerView extends JPanel {
     public void update(){
         billesRouges.setText("Billes rouges capturées: " + joueur.getNbBilleRougeCapturee());
         billesAdversaire.setText("Billes adversaires capturées: " + joueur.getNbAdversaireCapturee());
+    }
+
+    public void recolor(){
+        setBackground(new Color(237, 102, 49));
+        setOpaque(true);
+    }
+    public void uncolor(){
+        setBackground(new Color(0,0,0,0));
+        setOpaque(false);
     }
 }

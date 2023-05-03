@@ -65,4 +65,12 @@ public class GameView extends Background {
     public void mute(ActionListener actionListener) {
         playersPanel.muteAddListener(actionListener);
     }
+
+    public void menu(ActionListener actionListener) {
+        playersPanel.menuAddListener(actionListener);
+    }
+
+    public void unmute(boolean isPlaying){
+        playersPanel.unmute(isPlaying);
+    }
 }
