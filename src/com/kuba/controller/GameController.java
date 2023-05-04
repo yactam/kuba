@@ -163,6 +163,9 @@ public class GameController {
                         courant = (courant.equals(blanc))? noir : blanc;
                     }
                 }
+                else{
+                    gameView.showError(" Not you Turn ");
+                }
                 if(board.gameOver(blanc, noir)) {
                     gameView.showError(board.getWinner(blanc, noir).getNom() + " a gagné la partie.");
                     enableController(false);
