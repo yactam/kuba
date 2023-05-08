@@ -8,14 +8,14 @@ import com.kuba.model.player.Joueur;
 
 public class MiniMax implements MoveStrategy {
 
-    private final BoardEvaluator boardEvaluator;
+    private final Evaluator boardEvaluator;
     private final int depthSearch;
     private final Joueur aiPlayer;
     private final Joueur opponent;
     private Mouvement bestMove;
 
     public MiniMax(int depthSearch, Joueur aiPlayer, Joueur opponent) {
-        this.boardEvaluator = new StandardBoardEvaluator();
+        this.boardEvaluator = new StandardEvaluator();
         this.depthSearch = depthSearch;
         this.aiPlayer = aiPlayer;
         this.opponent = opponent;
@@ -34,7 +34,7 @@ public class MiniMax implements MoveStrategy {
 
     public int min(Board board, int depth, int alpha, int beta) {
         if(depth == 0 || board.gameOver(aiPlayer, opponent)) {
-            return this.boardEvaluator.evaluate(board, aiPlayer, opponent);
+            return this.boardEvaluator.evaluate(aiPlayer, opponent);
         }
 
         for(Mouvement move : board.getAllPossibleMoves(opponent)) {
@@ -57,7 +57,7 @@ public class MiniMax implements MoveStrategy {
 
     public int max(Board board, int depth, int alpha, int beta) {
         if(depth == 0 || board.gameOver(aiPlayer, opponent)) {
-            return this.boardEvaluator.evaluate(board, aiPlayer, opponent);
+            return this.boardEvaluator.evaluate(aiPlayer, opponent);
         }
 
         for(Mouvement move : board.getAllPossibleMoves(aiPlayer)) {
