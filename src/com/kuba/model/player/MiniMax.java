@@ -9,7 +9,6 @@ import com.kuba.model.player.ai.StandardEvaluator;
 
 
 public class MiniMax implements MoveStrategy {
-
     private final Evaluator evaluator;
     private final int depthSearch;
     private final Joueur aiPlayer;
@@ -26,7 +25,7 @@ public class MiniMax implements MoveStrategy {
     public Mouvement execute(Board board) {
         int sr1 = aiPlayer.getNbBilleRougeCaptured(), sa1 = aiPlayer.getNbAdversaireCaptured();
         int sr2 = opponent.getNbBilleRougeCaptured(), sa2 = opponent.getNbAdversaireCaptured();
-        max(board, depthSearch, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        max(board, depthSearch, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         aiPlayer.setNbRougesCaptured(sr1);
         aiPlayer.setNbAdversaireCaptured(sa1);
         opponent.setNbAdversaireCaptured(sa2);
@@ -34,30 +33,34 @@ public class MiniMax implements MoveStrategy {
         return bestMove;
     }
 
-    public int min(Board board, int depth, int alpha, int beta) {
+    public int max(Board board, int depth, int alpha, int beta, boolean max) {
         if(depth == 0 || board.gameOver(aiPlayer, opponent)) {
             return this.evaluator.evaluate(aiPlayer, opponent);
         }
-
-        for(Mouvement move : board.getAllPossibleMoves(opponent)) {
+        Joueur current = max ? aiPlayer : opponent;
+        for(Mouvement move : board.getAllPossibleMoves(current)) {
             Board tmp = board.copyBoard();
-            int tmp1 = opponent.getNbBilleRougeCaptured(), tmp2 = opponent.getNbAdversaireCaptured();
-            opponent.move(tmp, move);
-            int currentValue = max(tmp, depth-1, alpha, beta);
-            opponent.setNbRougesCaptured(tmp1);
-            opponent.setNbAdversaireCaptured(tmp2);
-            if(currentValue < beta) {
+            int tmp1 = current.getNbBilleRougeCaptured(), tmp2 = current.getNbAdversaireCaptured();
+            current.move(tmp, move);
+            int currentValue = max(tmp, depth-1, alpha, beta, !max);
+            current.setNbRougesCaptured(tmp1);
+            current.setNbAdversaireCaptured(tmp2);
+            if(max && currentValue > alpha) {
+                alpha = currentValue;
+                if(depth == depthSearch)
+                    bestMove = move;
+            }
+            if(!max && currentValue < beta) {
                 beta = currentValue;
             }
-            if(alpha > beta) {
-                return beta;
-            }
+            if(!max && alpha > beta) return beta;
+            if(max && beta < alpha) return alpha;
         }
 
-        return beta;
+        return (max ? alpha : beta);
     }
 
-    public int max(Board board, int depth, int alpha, int beta) {
+    /*public int max(Board board, int depth, int alpha, int beta) {
         if(depth == 0 || board.gameOver(aiPlayer, opponent)) {
             return this.evaluator.evaluate(aiPlayer, opponent);
         }
@@ -66,7 +69,7 @@ public class MiniMax implements MoveStrategy {
             Board tmp = board.copyBoard();
             int tmp1 = aiPlayer.getNbBilleRougeCaptured(), tmp2 = aiPlayer.getNbAdversaireCaptured();
             aiPlayer.move(tmp, move);
-            int currentValue = min(tmp, depth-1, alpha, beta);
+            //int currentValue = min(tmp, depth-1, alpha, beta);
             aiPlayer.setNbRougesCaptured(tmp1);
             aiPlayer.setNbAdversaireCaptured(tmp2);
             if(currentValue > alpha) {
@@ -80,5 +83,5 @@ public class MiniMax implements MoveStrategy {
         }
 
         return alpha;
-    }
+    }*/
 }

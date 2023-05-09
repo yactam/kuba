@@ -132,8 +132,7 @@ public class Board implements Observable<Data>, Data {
                     "Le joueur ne peut bouger que les billes de sa propre couleur");
         }
 
-        // Mouvement pas valide il y a une bille avant la bille que le joueur veut
-        // bouger
+        // Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger
         if (estDansLimite(pos.prev(dir)) && !estVide(pos.prev(dir))) {
             return new MoveStatus(MoveStatus.Status.INVALID_MOVE,
                     "Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger");
@@ -169,7 +168,6 @@ public class Board implements Observable<Data>, Data {
             if (execute) {
                 this.board = transitionBoard.board;
                 this.treated_configs = transitionBoard.treated_configs;
-                this.notifyObservers();
             }
             if (move_out)
                 return new MoveStatus(MoveStatus.Status.MOVE_OUT, "");

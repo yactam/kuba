@@ -22,18 +22,19 @@ public class Joueur {
     }
 
     public void capturerBilleAdversaire() {
-        this.score.updateAdversaire();
+        score.updateAdversaire();
     }
 
     @Override
     public String toString() {
-        return "Joueur : " + this.nom + " Nombre de billes adversaires capturées : " + this.score.getAdversaire() + " Nombre de billes rouge capturé : " + this.score.getRouges() + " Couleur : " + couleur.toString();
+        return "Joueur : " + this.nom + " Nombre de billes adversaires capturées : "
+                + score.getAdversaire() + " Nombre de billes rouge capturé : "
+                + score.getRouges() + " Couleur : " + couleur.toString();
     }
 
     public String getNom() {
         return nom;
     }
-
     public Couleur getCouleur() {
         return couleur;
     }
