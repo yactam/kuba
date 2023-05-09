@@ -63,7 +63,7 @@ public class PlayersPanel extends Background {
     private void style() {
         setCurrent(1);
         errors.setHorizontalAlignment(JLabel.CENTER);
-        Font f2 = PlayerView.f1.deriveFont((float) (0.021 * GameView.WIDTH));
+        Font f2 = PlayerView.f1.deriveFont((float) (0.014 * GameView.WIDTH));
         errors.setFont(f2);
         errors.setForeground(new Color(255, 120, 0));
         abandonner.setBorderPainted(false);

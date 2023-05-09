@@ -4,6 +4,7 @@ import com.kuba.Game;
 import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
 import com.kuba.model.player.IA;
+import static com.kuba.vue.GameView.*;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -11,15 +12,12 @@ import javax.swing.*;
 
 
 public class MenuView extends JPanel {
-    Game game;
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    JPanel background = new Background("src/resources/images/main_title.png", screenSize);
-    String[] choices = {" 3x3 ", " 7x7 ", "11x11", "15x15", "19x19"};
-    JTextField playerOne, playerTwo;
-    JCheckBox botOne;
-    JLabel text;
-    JComboBox<String> boardSizes;
-    JButton start, exit;
+    private final Game game;
+    private final String[] choices = {" 3x3 ", " 7x7 ", "11x11", "15x15", "19x19"};
+    private JTextField playerOne, playerTwo;
+    private JCheckBox botOne;
+    private JComboBox<String> boardSizes;
+    private JButton start, exit;
     public MenuView(Game g) {
         game = g;
         setPreferredSize(screenSize);
@@ -30,6 +28,7 @@ public class MenuView extends JPanel {
         initBot();
         initButtons();
 
+        JPanel background = new Background("src/resources/images/main_title.png", screenSize);
         background.add(playerOne);
         background.add(playerTwo);
         background.add(botOne);

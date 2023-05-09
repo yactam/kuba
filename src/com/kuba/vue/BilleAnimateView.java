@@ -1,4 +1,5 @@
 package com.kuba.vue;
+
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 import javax.imageio.ImageIO;
@@ -6,8 +7,7 @@ import com.kuba.model.mouvement.Direction;
 import com.kuba.model.plateau.Bille;
 
 public class BilleAnimateView {
-    private int x;
-    private int y;
+    private int x, y;
     private AnimationBille animate = null;
     public static int Diameter;
     private final transient BufferedImage image;
@@ -74,10 +74,10 @@ public class BilleAnimateView {
 
     public void createAnimation(Direction d){
         switch (d) {
-            case NORD -> animate = new AnimationBille(x, y, x, y - BilleAnimateView.Diameter, 0, -1, d);
-            case SUD -> animate = new AnimationBille(x, y, x, y + BilleAnimateView.Diameter, 0, 1, d);
-            case OUEST -> animate = new AnimationBille(x, y, x - BilleAnimateView.Diameter, y, -1, 0, d);
-            case EST -> animate = new AnimationBille(x, y, x + BilleAnimateView.Diameter, y, 1, 0, d);
+            case NORD -> animate = new AnimationBille(x, y, x, y - BilleAnimateView.Diameter, d);
+            case SUD -> animate = new AnimationBille(x, y, x, y + BilleAnimateView.Diameter, d);
+            case OUEST -> animate = new AnimationBille(x, y, x - BilleAnimateView.Diameter, y, d);
+            case EST -> animate = new AnimationBille(x, y, x + BilleAnimateView.Diameter, y, d);
         }
     }
 
@@ -90,26 +90,18 @@ public class BilleAnimateView {
     }
 
     public static class AnimationBille{
-        private int x;
-        private int y;
-        private final int d_x;
-        private final int d_y;
-        private final int dx;
-        private final int dy;
+        private int x, y;
+        private final int d_x, d_y;
         private final Direction d;
 
-        public AnimationBille(int x, int y, int d_x, int d_y, int dx, int dy, Direction d){
-            this.x = x;this.y=y;this.d_x = d_x;this.d_y=d_y;this.dx=dx;this.dy=dy;
+        public AnimationBille(int x, int y, int d_x, int d_y, Direction d){
+            this.x = x;this.y=y;this.d_x = d_x;this.d_y=d_y;
             this.d = d;
         }
 
-        public AnimationBille(AnimationBille an){
-            this(an.x, an.y, an.d_x, an.d_y, an.dx, an.dy, an.d);
-        }
-
         public void move(){
-            x+=dx;
-            y+=dy;
+            x+=d.getDj();
+            y+=d.getDi();
         }
 
         public boolean is_moving(){

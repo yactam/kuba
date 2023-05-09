@@ -2,6 +2,8 @@ package com.kuba.vue;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.kuba.controller.GameController;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Position;
@@ -12,7 +14,7 @@ import com.kuba.Game;
 public class GameView extends Background {
     private final BoardView boardView;
     private final PlayersPanel playersPanel;
-    private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public static final int HEIGHT = screenSize.height, WIDTH = screenSize.width;
 
     public GameView(Game g, int n, Joueur j1, Joueur j2) {
@@ -79,5 +81,9 @@ public class GameView extends Background {
             boardView.requestFocusInWindow();
             boardView.requestFocus();
         }
+    }
+
+    public boolean isAnimating() {
+        return boardView.isAnimating();
     }
 }
