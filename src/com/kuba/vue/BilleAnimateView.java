@@ -15,13 +15,9 @@ public class BilleAnimateView {
     public BilleAnimateView(Bille b, int x_, int y_) {
         this.x = x_ * BilleAnimateView.width;
         this.y = y_ * BilleAnimateView.width;
-        String imageDesc = switch (b.getColor()) {
-            case NOIR -> "black";
-            case BLANC -> "white";
-            case ROUGE -> "red";
-        };
         try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/" + imageDesc + ".png")));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResource(
+                    "/resources/" + b.getColor().toString() + ".png")));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -83,10 +79,10 @@ public class BilleAnimateView {
 
     public void createAnimation(Direction d){
         switch (d) {
-            case NORD -> animate = new AnimationBille(x, y, x, y - BilleAnimateView.width, 0, -1, d);
-            case SUD -> animate = new AnimationBille(x, y, x, y + BilleAnimateView.width, 0, 1, d);
-            case OUEST -> animate = new AnimationBille(x, y, x - BilleAnimateView.width, y, -1, 0, d);
-            case EST -> animate = new AnimationBille(x, y, x + BilleAnimateView.width, y, 1, 0, d);
+            case NORD -> animate = new AnimationBille(x, y, x, y - BilleAnimateView.width, d);
+            case SUD -> animate = new AnimationBille(x, y, x, y + BilleAnimateView.width, d);
+            case OUEST -> animate = new AnimationBille(x, y, x - BilleAnimateView.width, y, d);
+            case EST -> animate = new AnimationBille(x, y, x + BilleAnimateView.width, y, d);
         }
     }
 
@@ -103,22 +99,16 @@ public class BilleAnimateView {
         private int y;
         private final int d_x;
         private final int d_y;
-        private final int dx;
-        private final int dy;
         private final Direction d;
 
-        public AnimationBille(int x, int y, int d_x, int d_y, int dx, int dy, Direction d){
-            this.x = x;this.y=y;this.d_x = d_x;this.d_y=d_y;this.dx=dx;this.dy=dy;
+        public AnimationBille(int x, int y, int d_x, int d_y, Direction d){
+            this.x = x;this.y=y;this.d_x = d_x;this.d_y=d_y;
             this.d = d;
         }
 
-        public AnimationBille(AnimationBille an){
-            this(an.x, an.y, an.d_x, an.d_y, an.dx, an.dy, an.d);
-        }
-
         public void move(){
-            x+=dx;
-            y+=dy;
+            x+=d.getJ();
+            y+=d.getI();
         }
 
         public boolean is_moving(){
