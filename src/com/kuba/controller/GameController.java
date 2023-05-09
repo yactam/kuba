@@ -5,7 +5,6 @@ import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.MoveStatus;
 import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Board;
-import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
 import com.kuba.model.player.ai.IA;
 import com.kuba.vue.BilleAnimateView;
@@ -17,7 +16,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.EventListener;
 
 import static java.lang.Thread.sleep;
 
@@ -30,6 +28,7 @@ public class GameController {
     private Direction direction;
     private final Son son;
     private final BoardView boardView;
+    private Thread threadAI;
 
     public GameController(Board board, BoardView boardView, Joueur blanc, Joueur noir) {
         this.boardView = boardView;
@@ -43,6 +42,16 @@ public class GameController {
         ((JPanel)board.getObserver()).addKeyListener(new KeyController());
         ((JPanel)board.getObserver()).setFocusable(true);
         ((JPanel)board.getObserver()).requestFocusInWindow();
+        threadAI = CreateAiThread();
+    }
+
+    private Thread CreateAiThread(){
+        Thread t = new Thread() {
+            public void run() {
+                aiPlayer();
+            }
+        };
+        return t;
     }
 
     private void deplacement(Direction d){
@@ -94,7 +103,7 @@ public class GameController {
         }
         if(courant instanceof IA) {
             boardView.setFocusable(false);
-            aiPlayer();
+            threadAI.start();//start the thread
         } else {
             boardView.setFocusable(true);
             boardView.requestFocusInWindow();
@@ -105,7 +114,22 @@ public class GameController {
         IA aiPlayer = (IA) courant;
         Mouvement mouvement = aiPlayer.getMouvement(board);
         MoveStatus moveStatus = aiPlayer.move(board, mouvement);
-        if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) changePlayer();
+        if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
+            try{
+                sleep(1000);
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+            from = mouvement.getPosition();
+            direction = mouvement.getDirection();
+            lancerAnimationBille();
+            changePlayer();
+            try {
+                threadAI.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         else aiPlayer();
     }
 

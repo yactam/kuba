@@ -12,7 +12,7 @@ import javax.swing.*;
 
 public class MenuView extends JPanel {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    JPanel background = new Background("./src/resources/main_title.png", screenSize);
+    JPanel background = new Background("/src/resources/main_title.png", screenSize);
     String[] choices = {"3", "7", "11", "15", "19"};
     JTextField playerOne, playerTwo;
     JCheckBox botOne;
