@@ -7,7 +7,7 @@ import com.kuba.model.plateau.Bille;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
-import com.kuba.model.player.ai.MiniMax;
+import com.kuba.model.player.MiniMax;
 import com.kuba.vue.BoardView;
 import org.junit.jupiter.api.Test;
 

@@ -21,8 +21,8 @@ public class Game extends JFrame {
         setVisible(true);
     }
 
-    public Game(int n, Joueur j1, Joueur j2,boolean online,ObjectOutputStream out,Joueur j) {
-        board = new GameView(this,n, j1, j2,online,out,j);
+    public Game(int n, Joueur j1, Joueur j2) {
+        board = new GameView(this,n, j1, j2);
         setContentPane(board);
         setUndecorated(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE); 
@@ -30,11 +30,6 @@ public class Game extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-    }
-
-
-    public GameView getGameView() {
-        return this.board;
     }
 
     public void moveToMenu(){

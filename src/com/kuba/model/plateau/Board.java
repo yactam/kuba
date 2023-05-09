@@ -72,7 +72,7 @@ public class Board implements Observable<Data>, Data {
     }
 
     private void initRed() {
-        int count = 1, spaces = 1, k = 4 * n - 1;
+        int count = 1, spaces, k = 4 * n - 1;
         for (int i = 1; i < k - 1; i++) {
             if (i < k / 2) {
                 spaces = (k / 2) - i + 1;
@@ -98,10 +98,6 @@ public class Board implements Observable<Data>, Data {
         return board[pos.getI()][pos.getJ()];
     }
 
-    public void setBoard(Cell[][] b){
-        this.board =b;
-    }
-
     // TODO remove after testing
     public void initCell(int i, int j) {
         board[i][j] = new Cell();
@@ -114,11 +110,7 @@ public class Board implements Observable<Data>, Data {
     public Couleur ColorAt(Position pos) {
         return board(pos).getBille().getColor();
     }
-
-    public Couleur ColorAt(int i, int j) {
-        return board(i, j).getBille().getColor();
-    }
-
+    
     private boolean estVide(Position position) {
         return board(position).estVide();
     }
@@ -136,8 +128,6 @@ public class Board implements Observable<Data>, Data {
             return new MoveStatus(MoveStatus.Status.INVALID_MOVE, "Position non valide");
         // Le joueur ne peut bouger que les billes de sa propre couleur
         if (!ColorAt(pos).equals(joueur.getCouleur())) {
-            // System.out.println("Le joueur ne peut bouger que les billes de sa propre
-            // couleur");
             return new MoveStatus(MoveStatus.Status.INVALID_MOVE,
                     "Le joueur ne peut bouger que les billes de sa propre couleur");
         }
@@ -145,9 +135,6 @@ public class Board implements Observable<Data>, Data {
         // Mouvement pas valide il y a une bille avant la bille que le joueur veut
         // bouger
         if (estDansLimite(pos.prev(dir)) && !estVide(pos.prev(dir))) {
-            // System.out.println(pos.prev(dir));
-            // System.out.println("Mouvement pas valide il y a une bille avant la bille que
-            // le joueur veut bouger");
             return new MoveStatus(MoveStatus.Status.INVALID_MOVE,
                     "Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger");
         }
@@ -176,14 +163,13 @@ public class Board implements Observable<Data>, Data {
 
         int hash_code = transitionBoard.hashCode(); // KO
         if (isTreated(hash_code)) {
-            // System.out.println("KO");
             return new MoveStatus(MoveStatus.Status.INVALID_MOVE, "KO");
         } else {
-
             transitionBoard.treated_configs.add(hash_code);
             if (execute) {
                 this.board = transitionBoard.board;
                 this.treated_configs = transitionBoard.treated_configs;
+                this.notifyObservers();
             }
             if (move_out)
                 return new MoveStatus(MoveStatus.Status.MOVE_OUT, "");
@@ -209,11 +195,6 @@ public class Board implements Observable<Data>, Data {
         }
         return res;
     }
-
-    public Cell[][] getCells() {
-        return this.board;
-    }
-
     private boolean moveOut(Position limit, Joueur joueur, boolean execute) {
         if (!ColorAt(limit).equals(joueur.getCouleur())) {
             if (ColorAt(limit).equals(Couleur.ROUGE) && execute) {
@@ -223,8 +204,6 @@ public class Board implements Observable<Data>, Data {
             }
             board(limit).clear();
         } else {
-            // System.out.println("Le joueur ne peut pas sortir les billes de sa propre
-            // couleur");
             return false;
         }
         return true;
@@ -252,11 +231,6 @@ public class Board implements Observable<Data>, Data {
             o.update(this);
         }
     }
-
-    public Data getData() {
-        return this;
-    }
-
     @Override
     public boolean libre(int i, int j) {
         return board[i][j].estVide();
@@ -308,20 +282,20 @@ public class Board implements Observable<Data>, Data {
     public boolean gameOver(Joueur player, Joueur opponent) {
         int n = (this.size() + 1) / 4;
         int nbBillesRouges = 8 * n * n - 12 * n + 5;
-        if(player.getNbBilleRougeCapturee() > nbBillesRouges/2) return true;
-        if(opponent.getNbBilleRougeCapturee() > nbBillesRouges/2) return true;
-        if(player.getNbAdversaireCapturee() == 2 * n * n) return true;
-        if(opponent.getNbAdversaireCapturee() == 2 * n * n) return true;
+        if(player.getNbBilleRougeCaptured() > nbBillesRouges/2) return true;
+        if(opponent.getNbBilleRougeCaptured() > nbBillesRouges/2) return true;
+        if(player.getNbAdversaireCaptured() == 2 * n * n) return true;
+        if(opponent.getNbAdversaireCaptured() == 2 * n * n) return true;
         return false;
     }
 
     public Joueur getWinner(Joueur player, Joueur opponent) {
         int n = (this.size() + 1) / 4;
         int nbBillesRouges = 8 * n * n - 12 * n + 5;
-        if(player.getNbBilleRougeCapturee() > nbBillesRouges/2) return player;
-        if(opponent.getNbBilleRougeCapturee() > nbBillesRouges/2) return opponent;
-        if(player.getNbAdversaireCapturee() == 2 * n * n) return player;
-        if(opponent.getNbAdversaireCapturee() == 2 * n * n) return opponent;
+        if(player.getNbBilleRougeCaptured() > nbBillesRouges/2) return player;
+        if(opponent.getNbBilleRougeCaptured() > nbBillesRouges/2) return opponent;
+        if(player.getNbAdversaireCaptured() == 2 * n * n) return player;
+        if(opponent.getNbAdversaireCaptured() == 2 * n * n) return opponent;
         return null;
     }
 

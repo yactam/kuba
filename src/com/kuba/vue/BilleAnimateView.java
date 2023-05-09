@@ -9,19 +9,15 @@ public class BilleAnimateView {
     private int x;
     private int y;
     private AnimationBille animate = null;
-    public static int width;
+    public static int Diameter;
     private final transient BufferedImage image;
 
     public BilleAnimateView(Bille b, int x_, int y_) {
-        this.x = x_ * BilleAnimateView.width;
-        this.y = y_ * BilleAnimateView.width;
-        String imageDesc = switch (b.getColor()) {
-            case NOIR -> "black";
-            case BLANC -> "white";
-            case ROUGE -> "red";
-        };
+        this.x = x_ * BilleAnimateView.Diameter;
+        this.y = y_ * BilleAnimateView.Diameter;
         try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/" + imageDesc + ".png")));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResource(
+                    "/resources/images/" + b.getColor().toString() + ".png")));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -30,11 +26,6 @@ public class BilleAnimateView {
     @Override
     public String toString() {
         return "(" + x + "," + y + ")";
-    }
-
-    public boolean contains(int x_, int y_){
-        return x_ >= getX() && x_ <= getX() + BilleAnimateView.width
-                && y_ >= getY() && y_ <= getY() + BilleAnimateView.width;
     }
 
     public BufferedImage image() {
@@ -61,19 +52,19 @@ public class BilleAnimateView {
             if (b != null && !b.is_animate()){
                 switch (animate.d) {
                     case NORD -> {
-                        if (y == b.y + BilleAnimateView.width / 2)
+                        if (y == b.y + BilleAnimateView.Diameter / 2)
                             b.createAnimation(animate.d);
                     }
                     case SUD -> {
-                        if (y + BilleAnimateView.width / 2 == b.y)
+                        if (y + BilleAnimateView.Diameter / 2 == b.y)
                             b.createAnimation(animate.d);
                     }
                     case OUEST -> {
-                        if (x == b.x + BilleAnimateView.width / 2)
+                        if (x == b.x + BilleAnimateView.Diameter / 2)
                             b.createAnimation(animate.d);
                     }
                     case EST -> {
-                        if (x + BilleAnimateView.width / 2 == b.x)
+                        if (x + BilleAnimateView.Diameter / 2 == b.x)
                             b.createAnimation(animate.d);
                     }
                 }
@@ -83,10 +74,10 @@ public class BilleAnimateView {
 
     public void createAnimation(Direction d){
         switch (d) {
-            case NORD -> animate = new AnimationBille(x, y, x, y - BilleAnimateView.width, 0, -1, d);
-            case SUD -> animate = new AnimationBille(x, y, x, y + BilleAnimateView.width, 0, 1, d);
-            case OUEST -> animate = new AnimationBille(x, y, x - BilleAnimateView.width, y, -1, 0, d);
-            case EST -> animate = new AnimationBille(x, y, x + BilleAnimateView.width, y, 1, 0, d);
+            case NORD -> animate = new AnimationBille(x, y, x, y - BilleAnimateView.Diameter, 0, -1, d);
+            case SUD -> animate = new AnimationBille(x, y, x, y + BilleAnimateView.Diameter, 0, 1, d);
+            case OUEST -> animate = new AnimationBille(x, y, x - BilleAnimateView.Diameter, y, -1, 0, d);
+            case EST -> animate = new AnimationBille(x, y, x + BilleAnimateView.Diameter, y, 1, 0, d);
         }
     }
 

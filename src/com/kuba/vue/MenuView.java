@@ -3,7 +3,7 @@ package com.kuba.vue;
 import com.kuba.Game;
 import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
-import com.kuba.model.player.ai.IA;
+import com.kuba.model.player.IA;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -13,7 +13,7 @@ import javax.swing.*;
 public class MenuView extends JPanel {
     Game game;
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    JPanel background = new Background("src/resources/main_title.png", screenSize);
+    JPanel background = new Background("src/resources/images/main_title.png", screenSize);
     String[] choices = {" 3x3 ", " 7x7 ", "11x11", "15x15", "19x19"};
     JTextField playerOne, playerTwo;
     JCheckBox botOne;
@@ -73,8 +73,8 @@ public class MenuView extends JPanel {
 
     private void initButtons() {
         boardSizes = new JComboBox<>(choices);
-        start = new JButton(new ImageIcon("src/resources/launch.png"));
-        exit = new JButton(new ImageIcon("src/resources/return.png"));
+        start = new JButton(new ImageIcon("src/resources/images/launch.png"));
+        exit = new JButton(new ImageIcon("src/resources/images/return.png"));
         boardSizes.setSelectedIndex(1);
 
         styleButtons();

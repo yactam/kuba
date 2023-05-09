@@ -6,11 +6,9 @@ import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.MoveStatus;
 import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Board;
-import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
-import com.kuba.model.player.ai.IA;
+import com.kuba.model.player.IA;
 import com.kuba.vue.BilleAnimateView;
-import com.kuba.vue.BoardView;
 import com.kuba.vue.GameView;
 
 import javax.swing.*;
@@ -19,37 +17,26 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.EventListener;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
-import static java.lang.Thread.sleep;
 
 public class GameController {
-    public ObjectOutputStream gameOutput;
     public final Board board;
     private final Joueur blanc, noir;
     private Joueur courant;
     private Position from;
-    private Direction direction;
     private final Game game;
     private final Son son;
     private final GameView gameView;
-    private final BoardView boardView;
-    private boolean online=false;
-    private Joueur jOnlineValidation;
-    private boolean turn=false;
-    private int lenTabBytes;
 
     public GameController(Game g, Board board, GameView gameView, Joueur blanc, Joueur noir) {
         game = g;
         this.gameView = gameView;
-        this.boardView = gameView.boardview();
         this.board = board;
         this.blanc = blanc;
         this.noir = noir;
         this.courant = blanc;
         son=new Son();
         initListeners();
+        gameView.enableController(true);
     }
 
     private void initListeners() {
@@ -57,10 +44,8 @@ public class GameController {
         ((JPanel)board.getObserver()).addKeyListener(new KeyController());
         enableController(true);
         gameView.recommencer(e -> {
-            blanc.setNbAdversaireCapturee(0);
-            blanc.setNbRougesCapturee(0);
-            noir.setNbAdversaireCapturee(0);
-            noir.setNbRougesCapturee(0);
+            blanc.resetScore();
+            noir.resetScore();
             game.moveToBoard((board.size()+1) / 4, blanc, noir);
         });
 
@@ -85,151 +70,40 @@ public class GameController {
         });
     }
 
-    
-    public GameController(Game g, Board board,BoardView boardView,GameView gv,Joueur blanc, Joueur noir,boolean online, ObjectOutputStream out, Joueur j) {
-        game = g;
-        this.board=board;
-        System.out.println("Online");
-        son=new Son();
-        this.gameView = gv;
-        this.boardView = boardView;
-        this.blanc = blanc;
-        this.noir = noir;
-        this.courant = blanc;
-        initListeners();
-        this.online = online;
-        jOnlineValidation = j;
-        System.out.println(online);
-        this.gameOutput = out;
-        initListeners();
-    }
-    
-
-
     private void deplacement(Direction d){
         gameView.cleanError();
-        try{
-            if(!online){
-                if(d !=null && from != null){
-                    MoveStatus moveStatus = courant.move(board, new Mouvement(from, d));
-                    if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
-                        lancerAnimationBille();
-                        son.playSoundEffect(1);
-                        changePlayer();
-                    }
-                    else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
-                        lancerAnimationBille();
-                        son.playSoundEffect(1);
-                        changePlayer();
-                    } else {
-                    son.playSoundEffect(3);
-                        System.out.println(moveStatus.getMessage());
-                        son.playSoundEffect(2);
-                    }
+        if(d !=null && from != null){
+            MoveStatus moveStatus = courant.move(board, new Mouvement(from, d));
+            if(moveStatus.getStatus() == MoveStatus.Status.INVALID_MOVE){
+                son.playSoundEffect(2);
+                gameView.showError(moveStatus.getMessage());
+            }
+            else {
+                son.playSoundEffect(1);
+                lancerAnimationBille(from, d);
+                if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
+                    checkEndGame();
+                } else {
+                    changePlayer();
                 }
             }
-            else{
-                System.out.println(" Verification Joueur deplacement "+ courant.equals(jOnlineValidation));
-                if(courant.equals(jOnlineValidation)){
-                    turn = true;
-                    if(d !=null && from != null){
-                        MoveStatus moveStatus = courant.move(board, new Mouvement(from, d));
-                        if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
-                            lancerAnimationBille();
-                            son.playSoundEffect(1);
-                            turn=false;
-                        }
-                        else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
-                            lancerAnimationBille();
-                            son.playSoundEffect(1);
-                            turn = false;
-                        } else {
-                        son.playSoundEffect(3);
-                            System.out.println(moveStatus.getMessage());
-                            son.playSoundEffect(2);
-                        }
+        }
 
-                        try {
-                            // Gestion partage des données de la partie
-                            Mouvement send =  new Mouvement(from, d);
-							gameOutput.writeObject(send);
-							gameOutput.flush();
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-                        System.out.println("DATA SENT");
-                        ((JPanel)board.getObserver()).setFocusable(false);
-                        ((JPanel)board.getObserver()).setEnabled(false);
-                        courant = (courant.equals(blanc))? noir : blanc;
-                    }
-                }
-                if(board.gameOver(blanc, noir)) {
-                    gameView.showError(board.getWinner(blanc, noir).getNom() + " a gagné la partie.");
-                    enableController(false);
-                }
-            }
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            System.out.println("--------------------------");
-        }
     }
 
-    private void lancerAnimationBille(){
-        boardView.startAnimation(from, direction);
+    private void lancerAnimationBille(Position position, Direction direction){
+        gameView.startAnimation(position, direction);
+    }
+
+    private void checkEndGame() {
+        if(board.gameOver(blanc, noir)) {
+            gameView.showError(board.getWinner(blanc, noir).getNom() + " a gagné la partie.");
+            enableController(false);
+        }
     }
 
     private Position positionConvert(Point a){
-        for (int i=0;i<board.size();i++){
-            for (int j=0;j<board.size();j++){
-                BilleAnimateView bv = boardView.getAnimatedBille(i, j);
-                if (bv != null && bv.contains(a.x, a.y)) {
-                    return new Position(bv.getY() / BilleAnimateView.width,
-                                        bv.getX() / BilleAnimateView.width);
-                }
-            }
-        }
-        return null;
-    }
-
-    public void serverGestion(Mouvement mv){
-        try{
-            if(mv != null){
-                Joueur j = (jOnlineValidation.equals(blanc)) ? noir : blanc;
-                MoveStatus moveStatus = j.move(board, mv);
-                if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
-                    //lancerAnimationBille();
-                    board.notifyObservers();
-                    son.playSoundEffect(1);
-                    ((JPanel)board.getObserver()).setFocusable(true);
-                    ((JPanel)board.getObserver()).setEnabled(true);
-                    changePlayer();
-                }
-                else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
-                    //lancerAnimationBille();
-                    board.notifyObservers();
-                    son.playSoundEffect(1);
-                    ((JPanel)board.getObserver()).setFocusable(true);
-                    ((JPanel)board.getObserver()).setEnabled(true);
-                    changePlayer();
-                } else {
-                   son.playSoundEffect(3);
-                    System.out.println(moveStatus.getMessage());
-                    son.playSoundEffect(2);
-                }
-            }
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            System.out.println("--------------------------");
-        } 
-    }
-
-    private void completebyte(int x){
-        this.lenTabBytes = x;
-    }
-    public int getlenTabBytes(){
-        return this.lenTabBytes;
+        return new Position(a.y / BilleAnimateView.Diameter, a.x / BilleAnimateView.Diameter);
     }
 
     public void changePlayer(){
@@ -248,17 +122,8 @@ public class GameController {
             enableController(true);
         }
     }
-
-    public Joueur getCourant(){
-        return this.courant;
-    }
-
-    public boolean verifTo(){
-        return this.turn;
-    }
     public void enableController(boolean enable) {
-        boardView.setFocusable(enable);
-        if(enable) boardView.requestFocusInWindow();
+        gameView.enableController(enable);
     }
 
     private void aiPlayer() {
@@ -278,29 +143,11 @@ public class GameController {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            try{
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_UP -> {
-                        direction = Direction.NORD;
-                        deplacement(direction);  
-                    }
-                    case KeyEvent.VK_LEFT -> {
-                        direction = Direction.OUEST;
-                        deplacement(direction);
-                    }
-                    case KeyEvent.VK_RIGHT -> {
-                        direction = Direction.EST;
-                        deplacement(direction);  
-                    }
-                    case KeyEvent.VK_DOWN -> {
-                        direction = Direction.SUD;
-                        deplacement(direction); 
-                    }
-                }
-            }
-            catch(Exception ex){
-                son.playSoundEffect(3);
-                System.out.println("^");
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_UP -> deplacement(Direction.NORD);
+                case KeyEvent.VK_LEFT -> deplacement(Direction.OUEST);
+                case KeyEvent.VK_RIGHT -> deplacement(Direction.EST);
+                case KeyEvent.VK_DOWN -> deplacement(Direction.SUD);
             }
         }
     }
@@ -310,7 +157,6 @@ public class GameController {
         public void mousePressed(MouseEvent e) {
             if(((JPanel)board.getObserver()).contains(e.getPoint())){
                 from = positionConvert(e.getPoint());
-                //System.out.println(from);
             }
         }
 
@@ -318,29 +164,9 @@ public class GameController {
         public void mouseReleased(MouseEvent e) {
             if(((JPanel)board.getObserver()).contains(e.getPoint())){
                 Position to = positionConvert(e.getPoint());
-                if(from != null){
-                    assert to != null;
-                    direction = from.nextDir(to);
-                    try{
-                        if(direction != null && from != null){
-                            MoveStatus moveStatus = courant.move(board, to, direction);
-                            if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) {
-                                changePlayer();
-                                son.playSoundEffect(1);
-                                lancerAnimationBille();
-                            } else if(!moveStatus.isLegal()) {
-                               son.playSoundEffect(1);
-                            } else if(moveStatus.isLegal()) {
-                               son.playSoundEffect(3);
-                                System.out.println(moveStatus.getMessage());
-                            }
-                            deplacement(direction);
-                        }
-                    }
-                    catch(Exception exception){
-                        son.playSoundEffect(3);
-                        System.out.print("_");
-                    }
+                Direction direction = from.nextDir(to);
+                if(from != null && direction != null){
+                    deplacement(direction);
                 }
             }
         }

@@ -8,7 +8,6 @@ import com.kuba.observerpattern.Data;
 import com.kuba.observerpattern.Observer;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -32,7 +31,7 @@ public class BoardView extends JPanel implements Observer<Data> {
     public BoardView(Board board) {
         this.board = board;
         int n = board.size();
-        BilleAnimateView.width = HEIGHT / n;
+        BilleAnimateView.Diameter = HEIGHT / n;
         billeAnimateViews = new BilleAnimateView[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -53,15 +52,15 @@ public class BoardView extends JPanel implements Observer<Data> {
         graphics2D.fillRect(0, 0, HEIGHT, HEIGHT);
         BufferedImage image;
         try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/layout.png")));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/images/layout.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         for (int i = 0; i < board.size(); i++) {
             for (int j = 0; j < board.size(); j++) {
-                    graphics2D.drawImage(image, j * BilleAnimateView.width,
-                            i * BilleAnimateView.width,
-                            BilleAnimateView.width, BilleAnimateView.width, null);
+                    graphics2D.drawImage(image, j * BilleAnimateView.Diameter,
+                            i * BilleAnimateView.Diameter,
+                            BilleAnimateView.Diameter, BilleAnimateView.Diameter, null);
             }
         }
     }
@@ -124,8 +123,8 @@ public class BoardView extends JPanel implements Observer<Data> {
                 b = billeAnimateViews[i][j];
                 if (b != null) {
                     graphics2D.drawImage(b.image(), b.getX(),
-                            b.getY(), BilleAnimateView.width,
-                            BilleAnimateView.width, null);
+                            b.getY(), BilleAnimateView.Diameter,
+                            BilleAnimateView.Diameter, null);
 
                     if (b.is_animate()) {
                         is_animating = true;

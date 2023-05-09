@@ -4,7 +4,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 
 import com.kuba.model.player.Joueur;
 
@@ -36,8 +35,8 @@ public class PlayerView extends JPanel {
         setOpaque(false);
 
         nom = new JLabel(j.getNom());
-        billesRouges = new JLabel("Billes rouges capturées: " + j.getNbBilleRougeCapturee());
-        billesAdversaire = new JLabel("Billes adversaires capturées: " + j.getNbAdversaireCapturee());
+        billesRouges = new JLabel("Billes rouges capturées: " + j.getNbBilleRougeCaptured());
+        billesAdversaire = new JLabel("Billes adversaires capturées: " + j.getNbAdversaireCaptured());
 
         add(Box.createGlue());
         add(nom);
@@ -59,8 +58,8 @@ public class PlayerView extends JPanel {
     }
 
     public void update(){
-        billesRouges.setText("Billes rouges capturées: " + joueur.getNbBilleRougeCapturee());
-        billesAdversaire.setText("Billes adversaires capturées: " + joueur.getNbAdversaireCapturee());
+        billesRouges.setText("Billes rouges capturées: " + joueur.getNbBilleRougeCaptured());
+        billesAdversaire.setText("Billes adversaires capturées: " + joueur.getNbAdversaireCaptured());
     }
 
     public void recolor(){
