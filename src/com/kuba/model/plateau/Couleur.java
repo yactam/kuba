@@ -6,17 +6,29 @@ public enum Couleur {
         public Couleur opposite() {
             return NOIR;
         }
+        @Override
+        public String toString() {
+            return "white";
+        }
     },
     NOIR {
         @Override
         public Couleur opposite() {
             return BLANC;
         }
+        @Override
+        public String toString() {
+            return "black";
+        }
     },
     ROUGE {
         @Override
         public Couleur opposite() {
             return null;
+        }
+        @Override
+        public String toString() {
+            return "red";
         }
     };
 

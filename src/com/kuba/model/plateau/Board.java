@@ -132,8 +132,6 @@ public class Board implements Observable<Data>, Data {
             return new MoveStatus(MoveStatus.Status.INVALID_MOVE, "Position non valide");
         // Le joueur ne peut bouger que les billes de sa propre couleur
         if (!ColorAt(pos).equals(joueur.getCouleur())) {
-            // System.out.println("Le joueur ne peut bouger que les billes de sa propre
-            // couleur");
             return new MoveStatus(MoveStatus.Status.INVALID_MOVE,
                     "Le joueur ne peut bouger que les billes de sa propre couleur");
         }
@@ -141,9 +139,6 @@ public class Board implements Observable<Data>, Data {
         // Mouvement pas valide il y a une bille avant la bille que le joueur veut
         // bouger
         if (estDansLimite(pos.prev(dir)) && !estVide(pos.prev(dir))) {
-            // System.out.println(pos.prev(dir));
-            // System.out.println("Mouvement pas valide il y a une bille avant la bille que
-            // le joueur veut bouger");
             return new MoveStatus(MoveStatus.Status.INVALID_MOVE,
                     "Mouvement pas valide il y a une bille avant la bille que le joueur veut bouger");
         }
@@ -172,7 +167,6 @@ public class Board implements Observable<Data>, Data {
 
         int hash_code = transitionBoard.hashCode(); // KO
         if (isTreated(hash_code)) {
-            // System.out.println("KO");
             return new MoveStatus(MoveStatus.Status.INVALID_MOVE, "KO");
         } else {
 
@@ -215,8 +209,6 @@ public class Board implements Observable<Data>, Data {
             }
             board(limit).clear();
         } else {
-            // System.out.println("Le joueur ne peut pas sortir les billes de sa propre
-            // couleur");
             return false;
         }
         return true;

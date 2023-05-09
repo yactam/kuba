@@ -1,10 +1,6 @@
 package com.kuba.model.plateau;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
+import java.io.*;
 
 
 public class Bille implements Cloneable, Serializable{
@@ -25,15 +21,16 @@ public class Bille implements Cloneable, Serializable{
     @Override
     public Object clone(){
         Bille b = new Bille(color);
-
         return b;
     }
 
+    @Serial
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         out.writeObject(color); 
     }
 
+    @Serial
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         color = (Couleur) in.readObject();
