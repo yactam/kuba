@@ -17,6 +17,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static java.lang.Thread.sleep;
 
 public class GameController {
     public final Board board;
@@ -36,13 +39,12 @@ public class GameController {
         this.courant = blanc;
         son=new Son();
         initListeners();
-        gameView.enableController(true);
+        enableController(true);
     }
 
     private void initListeners() {
         ((JPanel)board.getObserver()).addMouseListener(new MouseController());
         ((JPanel)board.getObserver()).addKeyListener(new KeyController());
-        enableController(true);
         gameView.recommencer(e -> {
             blanc.resetScore();
             noir.resetScore();
@@ -61,7 +63,6 @@ public class GameController {
             } else {
                 son.playMusic(0);
             }
-            enableController(true);
         });
 
         gameView.abandonner(e -> {
@@ -70,7 +71,11 @@ public class GameController {
         });
     }
 
-    private void deplacement(Direction d){
+    public void enableController(boolean enable) {
+        gameView.enableController(enable);
+    }
+
+    private void deplacement(Direction d) throws InterruptedException {
         gameView.cleanError();
         if(d !=null && from != null){
             MoveStatus moveStatus = courant.move(board, new Mouvement(from, d));
@@ -82,6 +87,8 @@ public class GameController {
                 son.playSoundEffect(1);
                 lancerAnimationBille(from, d);
                 if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
+                    from = from.next(d);
+                    gameView.updateScore();
                     checkEndGame();
                 } else {
                     changePlayer();
@@ -95,11 +102,13 @@ public class GameController {
         gameView.startAnimation(position, direction);
     }
 
-    private void checkEndGame() {
+    private boolean checkEndGame() {
         if(board.gameOver(blanc, noir)) {
             gameView.showError(board.getWinner(blanc, noir).getNom() + " a gagné la partie.");
             enableController(false);
+            return true;
         }
+        return false;
     }
 
     private Position positionConvert(Point a){
@@ -122,19 +131,14 @@ public class GameController {
             enableController(true);
         }
     }
-    public void enableController(boolean enable) {
-        gameView.enableController(enable);
-    }
 
     private void aiPlayer() {
         IA aiPlayer = (IA) courant;
         Mouvement mouvement = aiPlayer.getMouvement(board);
         MoveStatus moveStatus = aiPlayer.move(board, mouvement);
+        //lancerAnimationBille(mouvement.getPosition(), mouvement.getDirection());
         gameView.updateScore();
-        if(board.gameOver(blanc, noir)) {
-            gameView.showError(board.getWinner(blanc, noir).getNom() + " a gagné la partie.");
-            return;
-        }
+        if(checkEndGame()) return;
         if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) changePlayer();
         else aiPlayer();
     }
@@ -143,12 +147,17 @@ public class GameController {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_UP -> deplacement(Direction.NORD);
-                case KeyEvent.VK_LEFT -> deplacement(Direction.OUEST);
-                case KeyEvent.VK_RIGHT -> deplacement(Direction.EST);
-                case KeyEvent.VK_DOWN -> deplacement(Direction.SUD);
+            try {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_UP -> deplacement(Direction.NORD);
+                    case KeyEvent.VK_LEFT -> deplacement(Direction.OUEST);
+                    case KeyEvent.VK_RIGHT -> deplacement(Direction.EST);
+                    case KeyEvent.VK_DOWN -> deplacement(Direction.SUD);
+                }
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
             }
+
         }
     }
 
@@ -166,7 +175,12 @@ public class GameController {
                 Position to = positionConvert(e.getPoint());
                 Direction direction = from.nextDir(to);
                 if(from != null && direction != null){
-                    deplacement(direction);
+                    try {
+                        deplacement(direction);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+
                 }
             }
         }
