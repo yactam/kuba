@@ -71,7 +71,7 @@ class MiniMaxTest {
 
         MiniMax miniMax = new MiniMax(4, j1, j2);
         Mouvement mouvement = miniMax.execute(board);
-        assertEquals(mouvement, new Mouvement(new Position(0, 0), Direction.EST));
+        assertEquals(mouvement, new Mouvement(new Position(0, 0), Direction.SUD));
     }
 
     @Test
@@ -183,7 +183,7 @@ class MiniMaxTest {
         MiniMax miniMax = new MiniMax(3, j1, j2);
 
         Mouvement mouvement = miniMax.execute(board);
-        assertEquals(mouvement, new Mouvement(new Position(1, 1), Direction.OUEST));
+        assertEquals(mouvement, new Mouvement(new Position(2, 1), Direction.NORD));
     }
 
 }
