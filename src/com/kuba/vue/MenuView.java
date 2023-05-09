@@ -12,7 +12,7 @@ import javax.swing.*;
 
 public class MenuView extends JPanel {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    JPanel background = new Background("src/resources/main_title.png", screenSize);
+    JPanel background = new Background("./src/resources/main_title.png", screenSize);
     String[] choices = {"3", "7", "11", "15", "19"};
     JTextField playerOne, playerTwo;
     JCheckBox botOne;
@@ -67,8 +67,8 @@ public class MenuView extends JPanel {
     private void initButtons() {
         text = new JLabel("Taille du plateau");
         boardSizes = new JComboBox<>(choices);
-        start = new JButton(new ImageIcon("src/resources/start.png"));
-        exit = new JButton(new ImageIcon("src/resources/exit.png"));
+        start = new JButton(new ImageIcon(Background.absPath+"src/resources/start.png"));
+        exit = new JButton(new ImageIcon(Background.absPath+"src/resources/exit.png"));
         boardSizes.setSelectedIndex(1);
 
         styleButtons();
