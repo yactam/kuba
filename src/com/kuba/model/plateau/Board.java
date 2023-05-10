@@ -38,7 +38,6 @@ public class Board implements Observable<Data>, Data {
                 keys[i][j] = random.nextLong();
             }
         }
-        this.notifyObservers();
     }
 
     public void initBoard() {
@@ -98,7 +97,7 @@ public class Board implements Observable<Data>, Data {
         return board[pos.getI()][pos.getJ()];
     }
 
-    // TODO remove after testing
+    // TODO remove after testing, c'est juste une methode pour pouvoir initialiser les tests
     public void initCell(int i, int j) {
         board[i][j] = new Cell();
     }
