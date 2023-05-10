@@ -45,7 +45,7 @@ public class GameOnline extends JFrame {
         public ColorPanel() {
             setBackground(new Color(119, 81, 44));
     
-            ImageIcon icon = new ImageIcon("src/resources/onllineButton.png"); 
+            ImageIcon icon = new ImageIcon("src/resources/images/onllineButton.png");
             bouton = new JButton(icon);
             bouton.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
             bouton.setOpaque(false);
@@ -59,6 +59,10 @@ public class GameOnline extends JFrame {
             bouton.setAlignmentY(Component.CENTER_ALIGNMENT);
         }
     
+    }
+
+    public static void main(String[] args) {
+        new GameOnline();
     }
 
 }
