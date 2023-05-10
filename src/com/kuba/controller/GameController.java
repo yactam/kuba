@@ -59,12 +59,12 @@ public class GameController {
             if(d !=null && from != null){
                 MoveStatus moveStatus = courant.move(board, new Mouvement(from, d));
                 if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
-                    lancerAnimationBille();
+                    lancerAnimationBille(from, d);
                     son.playSoundEffect(1);
                     changePlayer();
                 }
                 else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
-                    lancerAnimationBille();
+                    lancerAnimationBille(from, d);
                     son.playSoundEffect(1);
                 } else {
                     System.out.println(moveStatus.getMessage());
@@ -77,8 +77,8 @@ public class GameController {
         }
     }
 
-    private void lancerAnimationBille(){
-        boardView.startAnimation(from, direction);
+    private void lancerAnimationBille(Position f, Direction d){
+        boardView.startAnimation(f, d);
     }
 
     private Position positionConvert(Point a){
@@ -103,6 +103,7 @@ public class GameController {
         }
         if(courant instanceof IA) {
             boardView.setFocusable(false);
+            threadAI = CreateAiThread();
             threadAI.start();//start the thread
         } else {
             boardView.setFocusable(true);
@@ -110,25 +111,26 @@ public class GameController {
         }
     }
 
-    private void aiPlayer() {
+    public void pause(long milis){
+        try {
+            sleep(milis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private synchronized void aiPlayer() {
+        while (boardView.isAnimating()){
+            pause(1);
+        }
+        pause(300);
         IA aiPlayer = (IA) courant;
         Mouvement mouvement = aiPlayer.getMouvement(board);
         MoveStatus moveStatus = aiPlayer.move(board, mouvement);
         if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
-            try{
-                sleep(1000);
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-            }
-            from = mouvement.getPosition();
-            direction = mouvement.getDirection();
-            lancerAnimationBille();
+            lancerAnimationBille(mouvement.getPosition(), mouvement.getDirection());
             changePlayer();
-            try {
-                threadAI.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            threadAI.interrupt();
         }
         else aiPlayer();
     }
@@ -186,7 +188,7 @@ public class GameController {
                             if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) {
                                 changePlayer();
                                 son.playSoundEffect(1);
-                                lancerAnimationBille();
+                                lancerAnimationBille(from, direction);
                             } else if(!moveStatus.isLegal()) {
                                 System.out.println(moveStatus.getMessage());
                             }

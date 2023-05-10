@@ -12,6 +12,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.*;
+import javax.swing.plaf.synth.SynthScrollBarUI;
+
 import java.awt.*;
 import java.util.Date;
 
@@ -42,6 +44,10 @@ public class BoardView extends JPanel implements Observer<Data> {
         board.addObserver(this);
         setPreferredSize(new Dimension(HEIGHT, HEIGHT));
         setSize(new Dimension(HEIGHT, HEIGHT));
+    }
+
+    public boolean isAnimating(){
+        return is_animating;
     }
 
     private void drawGrid(Graphics2D graphics2D) {
@@ -106,7 +112,7 @@ public class BoardView extends JPanel implements Observer<Data> {
     }
 
     public void draw(Graphics2D graphics2D) {
-        is_animating = false;
+        boolean annim = false;
         for (int i = 0; i < board.size(); i++) {
             for (int j = 0; j < board.size(); j++) {
                 BilleAnimateView b = null;
@@ -117,7 +123,7 @@ public class BoardView extends JPanel implements Observer<Data> {
                             BilleAnimateView.width, null);
 
                     if (b.is_animate()) {
-                        is_animating = true;
+                        annim = true;
                         Position nibPose = new Position(i, j).next(b.getAnimation().getDirection());
                         b.update(
                                 (estDansLimite(nibPose) && billeAnimateViews[nibPose.getI()][nibPose.getJ()] != null) ?
@@ -127,6 +133,7 @@ public class BoardView extends JPanel implements Observer<Data> {
                 }
             }
         }
+        is_animating = annim;
     }
 
     public BilleAnimateView getAnimatedBille(int i, int j) {
