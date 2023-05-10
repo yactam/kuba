@@ -8,6 +8,7 @@ import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
 import com.kuba.model.player.IA;
+import com.kuba.online.OnlineController;
 import com.kuba.vue.BilleAnimateView;
 import com.kuba.vue.GameView;
 
@@ -47,6 +48,8 @@ public class GameController {
         gameView.recommencer(e -> {
             blanc.resetScore();
             noir.resetScore();
+            if(son.isPlaying())
+                son.stopMusic();
             game.moveToBoard((board.size()+1) / 4, blanc, noir);
         });
 
@@ -68,6 +71,7 @@ public class GameController {
             enableController(false);
             gameView.showError((courant == blanc ? noir.getNom() : blanc.getNom()) + " a gagné la partie.");
         });
+        enableController(true);
     }
 
     public void enableController(boolean enable) {
@@ -144,13 +148,13 @@ public class GameController {
 
     private synchronized void aiPlayer() {
         while (gameView.isAnimating()){
-            //System.out.println("is_animating");
             pause(1);
         }
-        pause(3000);
+        pause(2000);
         IA aiPlayer = (IA) courant;
         Mouvement mouvement = aiPlayer.getMouvement(board);
         MoveStatus moveStatus = aiPlayer.move(board, mouvement);
+        son.playSoundEffect(1);
         lancerAnimationBille(mouvement.getPosition(), mouvement.getDirection());
         gameView.updateScore();
         if(checkEndGame()) return;

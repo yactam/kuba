@@ -50,7 +50,7 @@ public class Son {
     }
 
     private void stop() {
-        clip.stop();
+        if(clip != null) clip.stop();
     }
 
     public void playMusic(int i) {
@@ -69,7 +69,8 @@ public class Son {
     }
 
     public void stopMusic() {
-        stop();
+        if(isPlaying)
+            stop();
         isPlaying = false;
         mute=true;
     }
