@@ -100,6 +100,7 @@ public class OnlineController {
     }
 
     private void deplacement(Direction d) {
+
         if(courant.equals(jOnlineValidation)){
             turn = true;
             if(d !=null && from != null){
@@ -112,7 +113,7 @@ public class OnlineController {
                 else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
                     lancerAnimationBille(from, d);
                     son.playSoundEffect(1);
-                    turn = false;
+                    //turn = false;
                 } else {
                     son.playSoundEffect(3);
                     System.out.println(moveStatus.getMessage());
@@ -130,8 +131,11 @@ public class OnlineController {
                 System.out.println("DATA SENT");
                 ((JPanel)board.getObserver()).setFocusable(false);
                 ((JPanel)board.getObserver()).setEnabled(false);
-                courant = (courant.equals(blanc)) ? noir : blanc;
+                if(!turn)courant = (courant.equals(blanc)) ? noir : blanc;
             }
+        }
+        else{
+            playersPanel.showError(" Not your turn ");
         }
 
     }
@@ -156,10 +160,10 @@ public class OnlineController {
         try{
             if(mv != null){
                 System.out.println("ServerGestion");
+
                 Joueur j = (jOnlineValidation.equals(blanc)) ? noir : blanc;
                 MoveStatus moveStatus = j.move(board, mv);
                 if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
-                    //lancerAnimationBille();
                     board.notifyObservers();
                     son.playSoundEffect(1);
                     ((JPanel)board.getObserver()).setFocusable(true);
@@ -167,12 +171,8 @@ public class OnlineController {
                     changePlayer();
                 }
                 else if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
-                    //lancerAnimationBille();
                     board.notifyObservers();
                     son.playSoundEffect(1);
-                    ((JPanel)board.getObserver()).setFocusable(true);
-                    ((JPanel)board.getObserver()).setEnabled(true);
-                    changePlayer();
                 } else {
                     son.playSoundEffect(3);
                     System.out.println(moveStatus.getMessage());
