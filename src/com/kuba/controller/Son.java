@@ -8,25 +8,22 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class Son {
-    Clip clip;
-    float previousVolume=0;
-    float currentVolume=0;
-    FloatControl fc;
-    public boolean mute=false;
-    public boolean muteEffect=false;
-    public boolean isPlaying;
-    ArrayList<URL> sounds = new ArrayList<URL>();
+    private Clip clip;
+    private float previousVolume=0;
+    private float currentVolume=0;
+    private FloatControl fc;
+    private boolean mute=false;
+    private boolean isPlaying;
+    ArrayList<URL> sounds = new ArrayList<>();
 
     public Son() {
         try{
             sounds.add(getClass().getResource("/resources/audio/game.wav"));
-            sounds.add(getClass().getResource("/resources/audio/move2.wav"));
             sounds.add(getClass().getResource("/resources/audio/move.wav"));
-            sounds.add(getClass().getResource("/resources/audio/error.wav"));
+            sounds.add(getClass().getResource("/resources/audio/fail.wav"));
         }
         catch(Exception e){
             System.out.println(" Error on loading sounds ");
-            //e.printStackTrace();
         }
     }
 
@@ -64,12 +61,10 @@ public class Son {
     }
 
     public void playSoundEffect(int i) {
+        boolean muteEffect = false;
         if(!muteEffect){
             setSound(i);
             play();
-        }
-        else{
-            System.err.println(" Son off");
         }
     }
 

@@ -1,14 +1,10 @@
 package test.model;
 
-import com.kuba.model.mouvement.Direction;
-import com.kuba.model.mouvement.Mouvement;
-import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 

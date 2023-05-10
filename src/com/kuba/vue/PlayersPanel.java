@@ -15,7 +15,7 @@ public class PlayersPanel extends Background {
     private JButton exit, abandonner, recommencer, mute, menu;
 
     public PlayersPanel(Joueur j1, Joueur j2, int WIDTH, int HEIGHT) {
-        super("src/resources/panel.png", new Dimension((int) (0.3 * WIDTH), (int) (0.9 * HEIGHT)));
+        super("src/resources/images/panel.png", new Dimension((int) (0.3 * WIDTH), (int) (0.9 * HEIGHT)));
         setLayout(null);
 
         p1 = new PlayerView(j1);
@@ -41,11 +41,11 @@ public class PlayersPanel extends Background {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.weightx = 1;
         constraints.weighty = 1;
-        abandonner = new JButton(new ImageIcon("src/resources/end.png"));
-        exit = new JButton(new ImageIcon("src/resources/return.png"));
-        mute = new JButton(new ImageIcon("src/resources/mute.png"));
-        recommencer = new JButton(new ImageIcon("src/resources/restart.png"));
-        menu = new JButton(new ImageIcon("src/resources/exit.png"));
+        abandonner = new JButton(new ImageIcon("src/resources/images/end.png"));
+        exit = new JButton(new ImageIcon("src/resources/images/return.png"));
+        mute = new JButton(new ImageIcon("src/resources/images/mute.png"));
+        recommencer = new JButton(new ImageIcon("src/resources/images/restart.png"));
+        menu = new JButton(new ImageIcon("src/resources/images/exit.png"));
         constraints.gridx = 0;
         constraints.gridy = 0;
         buttons.add(abandonner, constraints);
@@ -63,7 +63,7 @@ public class PlayersPanel extends Background {
     private void style() {
         setCurrent(1);
         errors.setHorizontalAlignment(JLabel.CENTER);
-        Font f2 = PlayerView.f1.deriveFont((float) (0.021 * GameView.WIDTH));
+        Font f2 = PlayerView.f1.deriveFont((float) (0.014 * GameView.WIDTH));
         errors.setFont(f2);
         errors.setForeground(new Color(255, 120, 0));
         abandonner.setBorderPainted(false);

@@ -3,7 +3,7 @@ package com.kuba;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import com.kuba.reseau.*;
+import com.kuba.online.*;
 
 public class GameOnline extends JFrame {
     private JButton bouton;
@@ -18,7 +18,16 @@ public class GameOnline extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setSize(600, 400); 
+        setSize(600, 400);
+        
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Rectangle screenRect = ge.getMaximumWindowBounds();
+
+        int x2 = (screenRect.width - this.getWidth()) / 2;
+        int y2 = (screenRect.height - this.getHeight()) / 2;
+
+        this.setLocation(x2, y2);
+        
         setVisible(true);
         new Controller();
     }

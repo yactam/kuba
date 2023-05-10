@@ -5,6 +5,6 @@ import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
 
 
-public interface BoardEvaluator {
-    int evaluate(Board board, Joueur currentPlayer, Joueur opponent);
+public interface Evaluator {
+    int evaluate(Joueur currentPlayer, Joueur opponent);
 }

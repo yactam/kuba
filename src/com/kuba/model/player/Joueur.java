@@ -7,7 +7,7 @@ import com.kuba.model.mouvement.*;
 public class Joueur {
 
     private final String nom;
-    private Score score;
+    private final Score score;
     private final Couleur couleur;
 
 
@@ -22,42 +22,43 @@ public class Joueur {
     }
 
     public void capturerBilleAdversaire() {
-        this.score.updateAdversaire();
+        score.updateAdversaire();
     }
 
     @Override
     public String toString() {
-        return "Joueur : " + this.nom + " Nombre de billes adversaires capturées : " + this.score.getAdversaire() + " Nombre de billes rouge capturé : " + this.score.getRouges() + " Couleur : " + couleur.toString();
+        return "Joueur : " + this.nom + " Nombre de billes adversaires capturées : "
+                + score.getAdversaire() + " Nombre de billes rouge capturé : "
+                + score.getRouges() + " Couleur : " + couleur.toString();
     }
 
     public String getNom() {
         return nom;
     }
-
     public Couleur getCouleur() {
         return couleur;
     }
-    public int getNbAdversaireCapturee() {
+    public int getNbAdversaireCaptured() {
         return score.getAdversaire();
     }
-    public void setNbAdversaireCapturee(int a) {
+    void setNbAdversaireCaptured(int a) {
         score.setAdversaire(a);
     }
 
-    public void setNbRougesCapturee(int r) {
+    void setNbRougesCaptured(int r) {
         score.setRouges(r);
     }
 
-    public int getNbBilleRougeCapturee() {
+    public int getNbBilleRougeCaptured() {
         return score.getRouges();
     }
 
     public int getScore() {
-        return 2 * getNbBilleRougeCapturee() + getNbAdversaireCapturee();
+        return 2 * getNbBilleRougeCaptured() + getNbAdversaireCaptured();
     }
-
-    public MoveStatus move(Board board, Position pos, Direction dir){
-        return board.update(new Mouvement(pos, dir), this);
+    public void resetScore() {
+        this.setNbAdversaireCaptured(0);
+        this.setNbRougesCaptured(0);
     }
 
     public MoveStatus move(Board board, Mouvement mouvement) {
@@ -68,7 +69,7 @@ public class Joueur {
     public boolean equals(Object o) {
         if(o == this) return true;
         if(!(o instanceof Joueur joueur)) return false;
-        return this.nom.equals(joueur.nom) && this.getNbBilleRougeCapturee() == joueur.getNbBilleRougeCapturee() && this.getNbAdversaireCapturee() == joueur.getNbAdversaireCapturee();
+        return this.nom.equals(joueur.nom) && this.getNbBilleRougeCaptured() == joueur.getNbBilleRougeCaptured() && this.getNbAdversaireCaptured() == joueur.getNbAdversaireCaptured();
     }
 }
 

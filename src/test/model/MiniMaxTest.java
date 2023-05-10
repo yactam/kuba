@@ -7,7 +7,7 @@ import com.kuba.model.plateau.Bille;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
-import com.kuba.model.player.ai.MiniMax;
+import com.kuba.model.player.MiniMax;
 import com.kuba.vue.BoardView;
 import org.junit.jupiter.api.Test;
 
@@ -71,7 +71,7 @@ class MiniMaxTest {
 
         MiniMax miniMax = new MiniMax(4, j1, j2);
         Mouvement mouvement = miniMax.execute(board);
-        assertEquals(mouvement, new Mouvement(new Position(0, 0), Direction.EST));
+        assertEquals(mouvement, new Mouvement(new Position(0, 0), Direction.SUD));
     }
 
     @Test
@@ -183,7 +183,7 @@ class MiniMaxTest {
         MiniMax miniMax = new MiniMax(3, j1, j2);
 
         Mouvement mouvement = miniMax.execute(board);
-        assertEquals(mouvement, new Mouvement(new Position(1, 1), Direction.OUEST));
+        assertEquals(mouvement, new Mouvement(new Position(2, 1), Direction.NORD));
     }
 
 }

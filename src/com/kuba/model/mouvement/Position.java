@@ -34,7 +34,7 @@ public class Position implements Cloneable , Serializable {
 		return p;
 	}
 	public Position next(Direction dir) {
-		return new Position(i + dir.getI(), j + dir.getJ());
+		return new Position(i + dir.getDi(), j + dir.getDj());
 	}
 
 	public Position prev(Direction dir) {

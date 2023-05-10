@@ -1,9 +1,10 @@
-package com.kuba.model.player.ai;
+package com.kuba.model.player;
 
 import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.plateau.Couleur;
 import com.kuba.model.player.Joueur;
+import com.kuba.model.player.MiniMax;
 
 import java.util.Random;
 

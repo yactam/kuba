@@ -2,28 +2,30 @@ package com.kuba.vue;
 
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
-import java.io.ObjectOutputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.kuba.controller.GameController;
+import com.kuba.model.mouvement.Direction;
+import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
+import com.kuba.vue.BilleAnimateView;
 import com.kuba.Game;
+import com.kuba.online.OnlineController;
 
 public class GameView extends Background {
     private final BoardView boardView;
     private final PlayersPanel playersPanel;
-    public GameController control;
-    public Board plateau;
-    private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public static final int HEIGHT = screenSize.height, WIDTH = screenSize.width;
 
     public GameView(Game g, int n, Joueur j1, Joueur j2) {
-        super("src/resources/table.jpg", new Dimension(WIDTH, HEIGHT));
+        super("src/resources/images/table.jpg", new Dimension(WIDTH, HEIGHT));
         setLayout(null);
         setSize(new Dimension(WIDTH, HEIGHT));
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(new Color(0,0,0,0));
-        plateau = new Board(n);
+        Board plateau = new Board(n);
         boardView = new BoardView(plateau);
         playersPanel = new PlayersPanel(j1, j2, WIDTH, HEIGHT);
 
@@ -33,31 +35,7 @@ public class GameView extends Background {
         add(boardView);
         add(playersPanel);
 
-        control = new GameController(g, plateau, this, j1, j2);
-    }
-
-    public GameView(Game g,int n, Joueur j1, Joueur j2, boolean online,ObjectOutputStream out,Joueur j) {
-        super("src/resources/table.jpg", new Dimension(WIDTH, HEIGHT));
-        setLayout(null);
-        setSize(new Dimension(WIDTH, HEIGHT));
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        setBackground(new Color(0,0,0,0));
-         plateau = new Board(n);
-
-        boardView = new BoardView(plateau);
-        playersPanel = new PlayersPanel(j1, j2, WIDTH, HEIGHT);
-
-        boardView.setLocation((int) (0.1 * WIDTH), (int) (0.05 * HEIGHT));
-        playersPanel.setLocation((int) (0.65 * WIDTH), (int) (0.05 * HEIGHT));
-
-        add(boardView);
-        add(playersPanel);
-
-        control = new GameController(g,plateau,boardView,this,j1, j2,online,out,j);
-    }
-
-    public BoardView boardview() {
-        return boardView;
+        new GameController(g, plateau, this, j1, j2);
     }
 
     public void showError(String message) {
@@ -93,5 +71,21 @@ public class GameView extends Background {
 
     public void unmute(boolean isPlaying){
         playersPanel.unmute(isPlaying);
+    }
+
+    public void startAnimation(Position from, Direction direction) {
+        boardView.startAnimation(from, direction);
+    }
+
+    public void enableController(boolean enable) {
+        boardView.setFocusable(enable);
+        if(enable) {
+            boardView.requestFocusInWindow();
+            boardView.requestFocus();
+        }
+    }
+
+    public boolean isAnimating() {
+        return boardView.isAnimating();
     }
 }

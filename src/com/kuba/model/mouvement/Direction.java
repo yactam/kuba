@@ -3,18 +3,18 @@ import java.io.Serializable;
 public enum Direction implements Serializable{
 	NORD(-1, 0), SUD(1, 0), OUEST(0, -1), EST(0, 1);
 	static final Direction[] reverse = {SUD, NORD, EST, OUEST};
-	private final int i;
-	private final int j;
+	private final int di;
+	private final int dj;
 
 	Direction(int i, int j) {
-		this.i = i;
-		this.j = j;
+		this.di = i;
+		this.dj = j;
 	}
-	public int getI() {
-		return this.i;
+	public int getDi() {
+		return this.di;
 	}
-	public int getJ() {
-		return this.j;
+	public int getDj() {
+		return this.dj;
 	}
 	public Direction reverse() {
 		return reverse[this.ordinal()];

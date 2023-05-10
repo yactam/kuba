@@ -1,7 +1,7 @@
 package com.kuba.model.plateau;
 
 
-public class Cell implements Cloneable{
+public class Cell implements Cloneable {
 
     private Bille bille;
 
@@ -36,7 +36,7 @@ public class Cell implements Cloneable{
             e.printStackTrace();
         }
         assert c != null;
-        c.bille = (bille != null) ? (Bille) bille.clone() : null;
+        c.bille = (bille != null) ? bille.copy() : null;
         return c;
     }
 }
