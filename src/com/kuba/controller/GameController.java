@@ -17,8 +17,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import static java.lang.Thread.sleep;
 
 public class GameController {
@@ -29,7 +27,7 @@ public class GameController {
     private final Game game;
     private final Son son;
     private final GameView gameView;
-
+    private Thread threadAI;
     public GameController(Game g, Board board, GameView gameView, Joueur blanc, Joueur noir) {
         game = g;
         this.gameView = gameView;
@@ -40,6 +38,7 @@ public class GameController {
         son=new Son();
         initListeners();
         enableController(true);
+        threadAI = CreateAiThread();
     }
 
     private void initListeners() {
@@ -77,16 +76,15 @@ public class GameController {
 
     private void deplacement(Direction d) throws InterruptedException {
         gameView.cleanError();
-        if(d !=null && from != null){
+        if (d != null && from != null) {
             MoveStatus moveStatus = courant.move(board, new Mouvement(from, d));
-            if(moveStatus.getStatus() == MoveStatus.Status.INVALID_MOVE){
+            if (moveStatus.getStatus() == MoveStatus.Status.INVALID_MOVE) {
                 son.playSoundEffect(2);
                 gameView.showError(moveStatus.getMessage());
-            }
-            else {
+            } else {
                 son.playSoundEffect(1);
                 lancerAnimationBille(from, d);
-                if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
+                if (moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT) {
                     from = from.next(d);
                     gameView.updateScore();
                     checkEndGame();
@@ -95,7 +93,10 @@ public class GameController {
                 }
             }
         }
+    }
 
+    private Thread CreateAiThread(){
+        return new Thread(this::aiPlayer);
     }
 
     private void lancerAnimationBille(Position position, Direction direction){
@@ -103,7 +104,7 @@ public class GameController {
     }
 
     private boolean checkEndGame() {
-        if(board.gameOver(blanc, noir)) {
+        if (board.gameOver(blanc, noir)) {
             gameView.showError(board.getWinner(blanc, noir).getNom() + " a gagné la partie.");
             enableController(false);
             return true;
@@ -126,20 +127,36 @@ public class GameController {
         }
         if(courant instanceof IA) {
             enableController(false);
-            aiPlayer();
+            threadAI = CreateAiThread();
+            threadAI.start();//start the thread
         } else {
             enableController(true);
         }
     }
 
-    private void aiPlayer() {
+    private void pause(long millis){
+        try {
+            sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private synchronized void aiPlayer() {
+        while (gameView.isAnimating()){
+            pause(1);
+        }
+        pause(300);
         IA aiPlayer = (IA) courant;
         Mouvement mouvement = aiPlayer.getMouvement(board);
         MoveStatus moveStatus = aiPlayer.move(board, mouvement);
-        //lancerAnimationBille(mouvement.getPosition(), mouvement.getDirection());
+        lancerAnimationBille(mouvement.getPosition(), mouvement.getDirection());
         gameView.updateScore();
         if(checkEndGame()) return;
-        if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE) changePlayer();
+        if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
+            changePlayer();
+            threadAI.interrupt();
+        }
         else aiPlayer();
     }
 
@@ -180,7 +197,6 @@ public class GameController {
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
-
                 }
             }
         }

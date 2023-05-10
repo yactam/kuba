@@ -75,7 +75,6 @@ public class MenuView extends JPanel {
         start = new JButton(new ImageIcon("src/resources/images/launch.png"));
         exit = new JButton(new ImageIcon("src/resources/images/return.png"));
         boardSizes.setSelectedIndex(1);
-
         styleButtons();
     }
 

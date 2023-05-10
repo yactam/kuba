@@ -47,6 +47,19 @@ public class BoardView extends JPanel implements Observer<Data> {
     }
 
     @Override
+    public void paintComponent(Graphics g) {
+        Graphics2D graphics2D = (Graphics2D) g;
+        drawGrid(graphics2D);
+        draw(graphics2D);
+        if (!is_animating && timer != null){
+            update(board);
+            timer.cancel();
+            timer.purge();
+        }
+        //repaint();
+    }
+
+    @Override
     public void update(Data e) {
         board = e;
         for(int i = 0; i < billeAnimateViews.length; i++) {
@@ -77,18 +90,6 @@ public class BoardView extends JPanel implements Observer<Data> {
         };
     }
 
-    @Override
-    public void paintComponent(Graphics g) {
-        Graphics2D graphics2D = (Graphics2D) g;
-        drawGrid(graphics2D);
-        draw(graphics2D);
-        if (!is_animating && timer != null){
-            update(board);
-            timer.cancel();
-            timer.purge();
-        }
-        repaint();
-    }
     private void drawGrid(Graphics2D graphics2D) {
         graphics2D.setColor(Color.LIGHT_GRAY);
         graphics2D.fillRect(0, 0, HEIGHT, HEIGHT);
