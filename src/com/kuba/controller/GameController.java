@@ -20,7 +20,7 @@ import java.awt.event.MouseEvent;
 import static java.lang.Thread.sleep;
 
 public class GameController {
-    public final Board board;
+    private final Board board;
     private final Joueur blanc, noir;
     private Joueur courant;
     private Position from;
@@ -144,20 +144,23 @@ public class GameController {
 
     private synchronized void aiPlayer() {
         while (gameView.isAnimating()){
+            //System.out.println("is_animating");
             pause(1);
         }
-        pause(300);
+        pause(3000);
         IA aiPlayer = (IA) courant;
         Mouvement mouvement = aiPlayer.getMouvement(board);
         MoveStatus moveStatus = aiPlayer.move(board, mouvement);
         lancerAnimationBille(mouvement.getPosition(), mouvement.getDirection());
         gameView.updateScore();
         if(checkEndGame()) return;
-        if(moveStatus.getStatus() == MoveStatus.Status.BASIC_MOVE){
-            changePlayer();
+        if(moveStatus.getStatus() == MoveStatus.Status.MOVE_OUT){
+            aiPlayer();
+        } else {
             threadAI.interrupt();
+            changePlayer();
         }
-        else aiPlayer();
+
     }
 
     private class KeyController extends KeyAdapter {

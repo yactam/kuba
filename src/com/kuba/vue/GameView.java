@@ -10,6 +10,7 @@ import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
 import com.kuba.Game;
+import com.kuba.online.OnlineController;
 
 public class GameView extends Background {
     private final BoardView boardView;

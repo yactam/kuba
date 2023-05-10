@@ -56,7 +56,6 @@ public class BoardView extends JPanel implements Observer<Data> {
             timer.cancel();
             timer.purge();
         }
-        //repaint();
     }
 
     @Override
@@ -78,6 +77,7 @@ public class BoardView extends JPanel implements Observer<Data> {
         return new TimerTask() {
             @Override
             public void run() {
+                MouseInfo.getPointerInfo();
                 repaint();
                 dt = new Date(dt.getTime() + sleep_time);
                 try {
@@ -111,11 +111,9 @@ public class BoardView extends JPanel implements Observer<Data> {
         is_animating = false;
         for (int i = 0; i < board.size(); i++) {
             for (int j = 0; j < board.size(); j++) {
-                BilleAnimateView b;
-                b = billeAnimateViews[i][j];
+                BilleAnimateView b = billeAnimateViews[i][j];
                 if (b != null) {
-                    graphics2D.drawImage(b.image(), b.getX(),
-                            b.getY(), BilleAnimateView.Diameter,
+                    graphics2D.drawImage(b.image(), b.getX(), b.getY(), BilleAnimateView.Diameter,
                             BilleAnimateView.Diameter, null);
 
                     if (b.is_animate()) {

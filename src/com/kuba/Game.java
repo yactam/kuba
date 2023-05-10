@@ -2,30 +2,19 @@ package com.kuba;
 
 import com.kuba.model.player.Joueur;
 import com.kuba.vue.*;
-import java.io.ObjectOutputStream;
+
 import java.awt.*;
 import javax.swing.*;
 
+import static com.kuba.vue.GameView.screenSize;
+
 public class Game extends JFrame {
-    public final Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-    public MenuView menu = new MenuView(this);
-    public GameView board;
+    private final MenuView menu = new MenuView(this);
 
     public Game() {
-        setSize(screensize);
+        setSize(screenSize);
         setContentPane(menu);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setTitle("Kuba: The Game");
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
-    }
-
-    public Game(int n, Joueur j1, Joueur j2) {
-        board = new GameView(this,n, j1, j2);
-        setContentPane(board);
-        setUndecorated(true);
-        setDefaultCloseOperation(EXIT_ON_CLOSE); 
         setTitle("Kuba: The Game");
         pack();
         setLocationRelativeTo(null);
@@ -38,11 +27,10 @@ public class Game extends JFrame {
         validate();
     }
 
-    public void moveToBoard(int n, Joueur j1, Joueur j2){     
-        board = new GameView(this, n, j1, j2);
-        setContentPane(board);
+    public void moveToBoard(int n, Joueur j1, Joueur j2){
+        GameView gameView = new GameView(this, n, j1, j2);
+        setContentPane(gameView);
         invalidate();
         validate();
     }
-
 }
