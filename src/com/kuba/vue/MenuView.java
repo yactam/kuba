@@ -17,7 +17,7 @@ public class MenuView extends JPanel {
     private JTextField playerOne, playerTwo;
     private JCheckBox botOne;
     private JComboBox<String> boardSizes;
-    private JButton start, exit;
+    private JButton start, exit, settings;
     public MenuView(Game g) {
         game = g;
         setPreferredSize(screenSize);
@@ -35,6 +35,7 @@ public class MenuView extends JPanel {
         background.add(boardSizes);
         background.add(start);
         background.add(exit);
+        background.add(settings);
         add(background);
         new MenuController();
     }
@@ -74,6 +75,7 @@ public class MenuView extends JPanel {
         boardSizes = new JComboBox<>(choices);
         start = new JButton(new ImageIcon("src/resources/images/launch.png"));
         exit = new JButton(new ImageIcon("src/resources/images/return.png"));
+        settings = new JButton(new ImageIcon("src/resources/images/settings.png"));
         boardSizes.setSelectedIndex(1);
         styleButtons();
     }
@@ -83,11 +85,14 @@ public class MenuView extends JPanel {
         boardSizes.setBounds((int)(0.573*getWidth()), (int)(0.654*getHeight()), (int)(0.056*getWidth()), (int)(0.066*getHeight()));
         start.setBounds((int) (0.465 * getWidth()), (int) (0.814 * getHeight()), 130, 60);
         exit.setBounds((int) (0.92 * getWidth()), (int) (0.036 * getHeight()), 50, 50);
+        settings.setBounds((int) (0.86 * getWidth()), (int) (0.036 * getHeight()), 50, 50);
 
         start.setBorderPainted(false);
         start.setBackground(new Color(0,0,0,0));
         exit.setBorderPainted(false);
         exit.setBackground(new Color(0,0,0,0));
+        settings.setBorderPainted(false);
+        settings.setBackground(new Color(0,0,0,0));
     }
 
     private class MenuController extends MouseAdapter {
@@ -98,6 +103,10 @@ public class MenuView extends JPanel {
                 Joueur j1 = new Joueur(playerOne.getText(), Couleur.BLANC);
                 Joueur j2 = (botOne.isSelected()) ? new IA(Couleur.NOIR, j1) : new Joueur(playerTwo.getText(), Couleur.NOIR);
                 game.moveToBoard(i, j1, j2);
+            });
+
+            settings.addActionListener(e -> {
+                game.moveToSettings();
             });
 
             exit.addActionListener(e -> {

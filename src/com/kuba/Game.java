@@ -10,6 +10,7 @@ import static com.kuba.vue.GameView.screenSize;
 
 public class Game extends JFrame {
     private final MenuView menu = new MenuView(this);
+    private final Settings settings = new Settings(this);
 
     public Game() {
         setSize(screenSize);
@@ -30,6 +31,12 @@ public class Game extends JFrame {
     public void moveToBoard(int n, Joueur j1, Joueur j2){
         GameView gameView = new GameView(this, n, j1, j2);
         setContentPane(gameView);
+        invalidate();
+        validate();
+    }
+
+    public void moveToSettings() {
+        setContentPane(settings);
         invalidate();
         validate();
     }
