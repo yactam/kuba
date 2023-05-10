@@ -21,6 +21,7 @@ import static com.kuba.vue.GameView.screenSize;
 public class BoardView extends JPanel implements Observer<Data> {
     private Data board;
     private final BilleAnimateView[][] billeAnimateViews;
+    private BufferedImage grid;
     public static int HEIGHT = screenSize.height - 100;
     private Timer timer;
     private static final int sleep_time = 5;
@@ -43,13 +44,21 @@ public class BoardView extends JPanel implements Observer<Data> {
         board.addObserver(this);
         setPreferredSize(new Dimension(HEIGHT, HEIGHT));
         setSize(new Dimension(HEIGHT, HEIGHT));
+        createBackgroundImage();
         setBorder(BorderFactory.createLineBorder(Color.WHITE, 5, true));
     }
+
+    private void createBackgroundImage() {
+        grid = new BufferedImage(BilleAnimateView.Diameter * board.size(), BilleAnimateView.Diameter * board.size(), BufferedImage.TYPE_INT_RGB);
+        Graphics g = grid.getGraphics();
+        drawGrid((Graphics2D) g);
+    }
+
 
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D graphics2D = (Graphics2D) g;
-        drawGrid(graphics2D);
+        graphics2D.drawImage(grid, 0, 0, null);
         draw(graphics2D);
         if (!is_animating && timer != null){
             update(board);
