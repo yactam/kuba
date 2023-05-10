@@ -101,8 +101,8 @@ public class PlayersPanel extends Background {
     }
 
     public void unmute(boolean isPlaying){
-        if (isPlaying) mute.setIcon(new ImageIcon("src/resources/unmute.png"));
-        else mute.setIcon(new ImageIcon("src/resources/mute.png"));
+        if (!isPlaying) mute.setIcon(new ImageIcon("src/resources/images/unmute.png"));
+        else mute.setIcon(new ImageIcon("src/resources/images/mute.png"));
     }
 
     public void recommencerAddListener(ActionListener a) {
