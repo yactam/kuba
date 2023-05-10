@@ -1,14 +1,12 @@
 package com.kuba.online;
 
 import com.kuba.Game;
-import com.kuba.controller.GameController;
 import com.kuba.controller.Son;
 import com.kuba.model.mouvement.Direction;
 import com.kuba.model.mouvement.Mouvement;
 import com.kuba.model.mouvement.MoveStatus;
 import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Board;
-import com.kuba.model.player.IA;
 import com.kuba.model.player.Joueur;
 import com.kuba.vue.*;
 
@@ -30,18 +28,14 @@ public class OnlineController {
     private final Joueur blanc, noir;
     private Joueur courant;
     private Position from;
-    private final Game game;
-    private Direction direction;
     private final Son son;
-    private Joueur jOnlineValidation;
+    private final Joueur jOnlineValidation;
     public Background view;
     private boolean turn=false;
-    private int lenTabBytes;
     public BoardView boardView;
     private PlayersPanel playersPanel;
 
     public OnlineController(Game g, Joueur blanc, Joueur noir, ObjectOutputStream out, Joueur j) {
-        game = g;
         this.board = new Board(2);
         this.blanc = blanc;
         this.noir = noir;
@@ -80,11 +74,6 @@ public class OnlineController {
         view.setFocusable(enable);
         if(enable) view.requestFocusInWindow();
     }
-
-    private void lancerAnimationBille(){
-        boardView.startAnimation(from, direction);
-    }
-
 
     private Position positionConvert(Point a){
         return new Position(a.y / BilleAnimateView.Diameter, a.x / BilleAnimateView.Diameter);

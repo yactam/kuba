@@ -8,7 +8,6 @@ import com.kuba.model.mouvement.Position;
 import com.kuba.model.plateau.Board;
 import com.kuba.model.player.Joueur;
 import com.kuba.model.player.IA;
-import com.kuba.online.OnlineController;
 import com.kuba.vue.BilleAnimateView;
 import com.kuba.vue.GameView;
 
@@ -150,7 +149,7 @@ public class GameController {
         while (gameView.isAnimating()){
             pause(1);
         }
-        pause(2000);
+        pause(3500);
         IA aiPlayer = (IA) courant;
         Mouvement mouvement = aiPlayer.getMouvement(board);
         MoveStatus moveStatus = aiPlayer.move(board, mouvement);
